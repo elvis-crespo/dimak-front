@@ -1,0 +1,22 @@
+* {
+  box-sizing: border-box;
+  padding: 0%;
+  margin: 0%;
+  outline: 0;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  /* scrollbar-color: #ff7d12 #222222; */
+  scrollbar-color: #edeeef #222222;
+  transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2), width 0.1s linear,
+  min-width 0.1s linear, max-width 0.1s linear;
+}
+
+h1, h2, h3, h4 {
+  text-wrap: balance;
+}
+/* 
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
