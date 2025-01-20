@@ -190,12 +190,6 @@ export const CustomerTable = ({ data, columnsHeader, columnKeys }) => {
                     width="40px !important"
                     height="20px !important"
                     CustomColor="blue"
-                    // style={{
-                    //   background: "transparent",
-                    //   border: "none",
-                    //   width: "40px !important",
-                    //   height: "40px !important",
-                    // }}
                   />
                 </td>
               </tr>

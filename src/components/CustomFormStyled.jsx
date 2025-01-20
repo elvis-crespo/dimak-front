@@ -560,16 +560,66 @@ export const Container = styled.div`
   background-color: ${({ theme }) => theme.background};
   color: ${({ theme }) => theme.text};
   // max-width: 64rem;
-  max-width: 100vw;
+  min-width: 100vw;
   min-height: 100vh;
   flex: 1;
-  margin-left: auto;
-  margin-right: auto;
+  // margin-left: auto;
+  // margin-right: auto;
   scroll-margin-top: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  // width: 100%;
+  // height: 100%;
+  --s: 37px; /* control the size */
+  --c: #0000, ${({ theme }) => theme.bgContainer} 0.5deg 119.5deg, #0000 120deg;
+  --g1: conic-gradient(from 60deg at 56.25% calc(425% / 6), var(--c));
+  --g2: conic-gradient(from 180deg at 43.75% calc(425% / 6), var(--c));
+  --g3: conic-gradient(from -60deg at 50% calc(175% / 12), var(--c));
+  background: var(--g1), var(--g1) var(--s) calc(1.73 * var(--s)), var(--g2),
+    var(--g2) var(--s) calc(1.73 * var(--s)), var(--g3) var(--s) 0,
+    var(--g3) 0 calc(1.73 * var(--s)) ${({ theme }) => theme.bgContainer2};
+  background-size: calc(2 * var(--s)) calc(3.46 * var(--s));
+
+  // content: "";
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // width: 100%;
+  // height: 100%;
+  // background-image: radial-gradient(
+  //   rgba(255, 255, 255, 0.171) 2px,
+  //   transparent 0
+  // );
+
+  // width: 100%;
+  // height: 100%;
+  // /* Add your background pattern here */
+  // background-color: #313131;
+  // background-image: radial-gradient(rgba(255, 255, 255, 0.171) 2px, transparent 0);
+  // background-size: 30px 30px;
+  // background-position: -5px -5px
+  // background-size: 30px 30px;
+
+  // width: 100%;
+  // height: 100%;
+  // /* Add your background pattern here */
+  // background-color:rgb(219, 219, 219);
+  // background-image: radial-gradient(rgba(0, 0, 0, 0.17) 2px, transparent 0);
+  // background-size: 30px 30px;
+  // background-position: -5px -5px
+  // background-size: 30px 30px;
+
+  // width: 100%;
+  // height: 100%;
+  // /* Add your background pattern here */
+  // background-color:${({ theme }) => theme.bgContainer};
+  // background-image: radial-gradient(${({ theme }) =>
+    theme.bgContainer2} 2px, transparent 0);
+  // background-size: 30px 30px;
+  // background-position: -5px -5px
+  // background-size: 30px 30px;
 `;
 export const ResponsiveContainerCard = styled(Container)`
   justify-content: space-evenly;
@@ -586,11 +636,9 @@ export const ResponsiveContainerCard = styled(Container)`
 `;
 
 export const FormContainer = styled.div`
-  // max-width: 650px;
   max-width: 700px;
   margin: 2rem auto;
   padding: 2rem;
-  background-color: rgb(0, 0, 0);
   background-color: ${({ theme }) => theme.bgForm};
   border-radius: 10px;
   border: 0px solid #fff;

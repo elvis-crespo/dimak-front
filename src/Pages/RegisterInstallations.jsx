@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useForm } from "../Hooks/useForm";
 import {
   Container,
@@ -14,145 +13,244 @@ import {
   Title,
 } from "../components/CustomFormStyled";
 
-export default function RegisterInstallations ()  {
+import axios from "axios";
+import { API_BASE_URL } from "../utils/config";
+import Swal from "sweetalert2";
 
-    const { values, handleChange, resetForm } = useForm({
-      plate: "",
-      technicianName: "",
-      date: "",
-      installationCompleted: "",
+import { useState } from "react";
+import { validateFields } from "../utils/validateFields.JS";
+
+export default function RegisterInstallations() {
+  const { values, handleChange, resetForm } = useForm({
+    plate: "",
+    technicianName: "",
+    date: "",
+    installationCompleted: "",
+    File: null, // Campo para el archivo
+  });
+
+  // Estado para almacenar los errores de validación
+  const [errors, setErrors] = useState({});
+
+  // Manejo del cambio del archivo
+  const handleFileChange = (e) => {
+    const file = e.target.files && e.target.files[0]; // Validar archivo
+
+    if (!file) {
+      console.error("No se seleccionó ningún archivo");
+      return;
+    }
+
+    values.File = file; // Guardar el archivo en los valores del formulario
+  };
+
+  const HandleReset = () => {
+    resetForm(); // Resetea los valores controlados por el hook
+    values.File = null; // Limpia el valor del archivo
+    const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
+    if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
+    setErrors({});
+  };
+
+  // Función para validar el formulario
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Validar cada campo usando las funciones de validación
+    Object.keys(values).forEach((field) => {
+      const error = validateFields[field](values[field]);
+      if (error) {
+        newErrors[field] = error; // Si hay error, lo agregamos al objeto newErrors
+      }
     });
 
-    console.log("values", values);
+    return newErrors;
+  };
 
+  // Lógica de envío del formulario con Axios
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
 
+    const validationErrors = validateForm(); // Validar el formulario
+    if (Object.keys(validationErrors).length > 0) {
+      // Si hay errores, no enviar el formulario y mostrar los errores
+      setErrors(validationErrors);
+      return;
+    }
 
-    const handleFormSubmit = async (data) => {
-     
-      const { year, ...rest } = data; // Extraemos el año si necesitas validarlo por separado
+    // if (!values.File) {
+    //   console.error("No se ha seleccionado un archivo");
+    //   return;
+    // }
 
-      const validatedYear = isNaN(parseInt(year)) ? 0 : parseInt(year); // Validación del año
+    const formData = new FormData();
 
-      // Crear un objeto FormData
-      const formData = new FormData();
-      formData.append("Plate", rest.plate);
-      formData.append("OwnerName", rest.ownerName);
-      formData.append("Brand", rest.brand);
-      formData.append("Model", rest.model);
-      formData.append("Year", validatedYear);
-      formData.append("Chassis", rest.chassis);
-      formData.append("TechnicianName", rest.technicianName);
-      formData.append("Date", rest.date);
-      formData.append("InstallationCompleted", rest.installationCompleted);
+    // Agregar los valores al FormData
+    formData.append("File", values.File); // Archivo
+    Object.entries(values).forEach(([key, value]) => {
+      if (key !== "File") formData.append(key, value);
+    });
 
-      // const file = values.installationPhoto; // Define the file variable
+    // Confirmación de SweetAlert
+    Swal.fire({
+      title: "¿Deseas Guardar esta Instalación?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Guardar",
+      denyButtonText: `No guardar`,
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await HandleFetch(formData);
+        console.log("resultado ", response);
 
-      try {
-        const response = await axios.post(
-          "https://localhost:7131/api/v1/vehicle/registerv2", // URL del endpoint
-          formData, // Enviar el FormData
-          {
-            headers: {
-              "Content-Type": "multipart/form-data", // Encabezado para multipart/form-data
-            },
-          }
-        );
-
-        console.log(response.data);
-
-        resetForm(); // Resetea el formulario después de enviar
-      } catch (error) {
-        console.error(error);
+        if (response.isSuccess === true) {
+          // Si la respuesta es exitosa, mostramos un SweetAlert de éxito
+          Swal.fire({
+            title: "¡Guardado!",
+            text: `Instalación con placa ${values.plate} ha sido guardada.`,
+            icon: "success",
+          });
+          HandleReset(); 
+        }
+      } else if (result.isDenied) {
+        Swal.fire("Cambios no guardados", "", "info");
       }
-    };
+    });
+  };
+
+  const HandleFetch = async (formData) => {
+    const url = `${API_BASE_URL}/installation/save?plate=${values.plate}&InstallationCompleted=${values.installationCompleted}&TechnicianName=${values.technicianName}&Date=${values.date}`;
+
+    try {
+      // Enviar solicitud con Axios
+      const response = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Indicar que es un envío con archivos
+        },
+      });
+
+      return response.data; // Retornar datos del servidor
+    } catch (error) {
+      // Verificar si el error es de red o de conexión
+      if (error.message === "Network Error" || error.code === "ECONNREFUSED") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "¡Hubo un problema al conectar con el servidor! Verifica si el servidor está en ejecución.",
+        });
+      } else if (!error.response) {
+        // Otro error sin respuesta del servidor
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un problema desconocido con el servidor.",
+        });
+      } else {
+        // Error con respuesta del servidor (404, 500, etc.)
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: `Error al guardar la instalación: ${
+            error.response.data?.message || error.message
+          }`,
+        });
+      }
+
+      console.error("Error al enviar los datos de instalación:", error);
+
+      return error.response?.data; // Retornar el error desde el servidor si existe
+    }
+  };
 
   return (
-    <>
-      {/* <Sidebar /> */}
+    <Container id="register">
+      <FormContainer style={{ margin: "30px 0" }}>
+        <Title>Instalaciones de Vehículo</Title>
+        <StyledForm onSubmit={handleFormSubmit}>
+          <SectionTitle>Detalles de la Instalación</SectionTitle>
 
-      <Container id="register">
-        <FormContainer style={{ margin: "30px 0" }}>
-          <Title>Instalaciones de Vehículo</Title>
-          <StyledForm onSubmit={handleFormSubmit}>
-            <SectionTitle>Installation Details</SectionTitle>
+          <FormField>
+            <Label htmlFor="plate">
+              Placa <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Input
+              id="plate"
+              name="plate"
+              type="text"
+              required
+              value={values.plate}
+              onChange={handleChange}
+            />
+            {errors.plate && (
+              <span style={{ color: "red" }}>{errors.plate}</span>
+            )}
+          </FormField>
 
-            <FormField>
-              <Label htmlFor="plate">
-                Placa <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Input
-                id="plate"
-                name="plate"
-                type="text"
-                placeholder={""}
-                required={true}
-                value={values.technicianName}
-                onChange={handleChange}
-              />
-            </FormField>
+          <FormField>
+            <Label htmlFor="technicianName">
+              Técnico <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Input
+              id="technicianName"
+              name="technicianName"
+              type="text"
+              required
+              value={values.technicianName}
+              onChange={handleChange}
+            />
+            {errors.technicianName && (
+              <span style={{ color: "red" }}>{errors.technicianName}</span>
+            )}
+          </FormField>
 
-            <FormField>
-              <Label htmlFor="technicianName">
-                Tecnico <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Input
-                id="technicianName"
-                name="technicianName"
-                type="text"
-                placeholder={""}
-                required={true}
-                value={values.technicianName}
-                onChange={handleChange}
-              />
-            </FormField>
+          <FormField>
+            <Label htmlFor="date">
+              Fecha <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Input
+              id="date"
+              name="date"
+              type="datetime-local"
+              required
+              value={values.date}
+              onChange={handleChange}
+            />
+            {errors.date && <span style={{ color: "red" }}>{errors.date}</span>}
+          </FormField>
 
-            <FormField>
-              <Label htmlFor="date">
-                Fecha <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Input
-                id="date"
-                name="date"
-                type="datetime-local"
-                placeholder={""}
-                required={true}
-                value={values.date}
-                onChange={handleChange}
-              />
-            </FormField>
+          <FormField>
+            <Label htmlFor="installationCompleted">
+              Instalación Completada
+            </Label>
+            <TextArea
+              id="installationCompleted"
+              name="installationCompleted"
+              placeholder="Escribe una descripción"
+              value={values.installationCompleted}
+              onChange={handleChange}
+            />
+            {errors.installationCompleted && (
+              <span style={{ color: "red" }}>
+                {errors.installationCompleted}
+              </span>
+            )}
+          </FormField>
 
-            <FormField>
-              <Label htmlFor="installationCompleted">
-                Instalacion Completada
-              </Label>
-              <TextArea
-                id="installationCompleted"
-                name="installationCompleted"
-                type="placeholder"
-                placeholder={"Escribe una descripción"}
-                required={false}
-                value={values.installationCompleted}
-                onChange={handleChange}
-              />
-            </FormField>
+          <FormField>
+            <Label htmlFor="installationPhoto">Foto de Instalación</Label>
+            <InputFile
+              id="installationPhoto"
+              name="installationPhoto"
+              type="file"
+              onChange={handleFileChange}
+            />
+            {errors.File && <span style={{ color: "red" }}>{errors.File}</span>}
+          </FormField>
 
-            <FormField>
-              <Label htmlFor="installationPhoto">Foto de Instalacion</Label>
-              <InputFile
-                id="installationPhoto"
-                name="installationPhoto"
-                type="file"
-                placeholder={""}
-                required={false}
-                value={values.installationPhoto}
-                onChange={handleChange}
-              />
-            </FormField>
-
-            <SubmitButton type="submit">Enviar</SubmitButton>
-          </StyledForm>
-        </FormContainer>
-      </Container>
-      </>
+          <SubmitButton type="submit">Enviar</SubmitButton>
+        </StyledForm>
+      </FormContainer>
+    </Container>
   );
 }

@@ -14,6 +14,11 @@ export const lightTheme = {
   buttonBackground: "#495057",
   buttonTextColor: "#000",
 
+  bgContainer: "#f8f9fc",
+  bgContainer2: "#fff",
+
+  backgroundGradient: "linear-gradient(744deg, rgb(253, 0, 0), rgba(243, 66, 66, 0.73) 60%, rgba(235, 133, 0, 0.9))",
+
   inputBackground: "#FFFFFF",
   inputText: "#000000",
   labelText: "rgba(0, 0, 0, 0.25)",
@@ -38,6 +43,11 @@ export const darkTheme = {
   labelForm: "#ffffffab;",
   buttonBackground: "#495057",
   buttonTextColor: "#000",
+
+  bgContainer: " #282828",
+  bgContainer2: "#1e1e1e",
+
+  backgroundGradient: "linear-gradient(744deg, rgb(0, 0, 0), rgba(55, 56, 53, 0.73) 60%, rgba(173, 171, 168, 0.9))",
 
   inputBackground: "#000",
   inputText: "#FFFFFF",

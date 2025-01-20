@@ -17,43 +17,22 @@ import { useState } from "react";
 import { useForm } from "../Hooks/useForm";
 import axios from "axios";
 import styled from "styled-components";
-import { NavLink } from "react-router-dom";
+import Swal from "sweetalert2";
+import { API_BASE_URL } from "../utils/config";
+import { validateFields } from "../utils/validateFields.JS";
 
 const Layout = styled.div`
   display: flex;
-  height: 100vh;
+  overflow-x: hidden;
+  // overflow-y: hidden;
+  // @media (max-width: 920px) {
+  //   min-height: 100vh;
+  // }
 `;
-
 
 export default function RegisterVehicle() {
   const [responseData, setResponseData] = useState(null);
   const [messageType, setMessageType] = useState("");
-
-  // console.log("datos", responseData);
-  // console.log("messageType", messageType);
-
-  // const menuItems = [
-  //   { path: "/register", label: "Registrar" },
-  //   // { path: "/resgister-installations", label: "Registrar instalación" },
-  //   { path: "/search", label: "Consultar" },
-  //   // { path: "/instllationsRecords", label: "Historial de instalaciones" },
-  //   { path: "/update", label: "Actualizar" },
-  //   { path: "/delete", label: "Eliminar" },
-  // ];
-
-  const { values, handleChange, resetForm } = useForm({
-    plate: "",
-    ownerName: "",
-    brand: "",
-    model: "",
-    year: "",
-    chassis: "",
-    technicianName: "",
-    date: "",
-    installationCompleted: "",
-  });
-
-  console.log("values", values);
 
   const carBrands = [
     { label: "Toyota", value: "toyota" },
@@ -86,82 +65,162 @@ export default function RegisterVehicle() {
     { label: "Otros", value: "others" },
   ];
 
-  const handleFormSubmit = async (data) => {
-    // const { year, ...rest } = data; // Si necesitas alguna manipulación adicional
-    // if (isCustomBrand) data.brand = customBrand;
-    // const validatedYear = isNaN(parseInt(year)) ? 0 : parseInt(year); // Validación de año
-    // // const brand = data.brand === "other" ? data.customBrand : data.brand;
+  const { values, handleChange, resetForm } = useForm({
+    plate: "",
+    ownerName: "",
+    brand: "",
+    model: "",
+    year: "",
+    technicianName: "",
+    date: "",
+    installationCompleted: "",
+    File: null, // Campo para el archivo
+  });
 
-    // try {
-    //   const response = await axios.post(
-    //     "https://localhost:7131/api/v1/vehicle/register",
-    //     { ...rest, year: validatedYear }
-    //   );
-    //   console.log(response.data);
-    //   setResponseData(response.data);
-    //   setMessageType("success");
-    //   resetForm(); // Resetea el formulario después de enviar
-    // } catch (error) {
-    //   setResponseData(
-    //     error.response?.data || { message: "Error al registrar el vehículo" }
-    //   );
-    //   setMessageType("error");
-    // }
-    const { year, ...rest } = data; // Extraemos el año si necesitas validarlo por separado
+  // Estado para almacenar los errores de validación
+  const [errors, setErrors] = useState({});
 
-    const validatedYear = isNaN(parseInt(year)) ? 0 : parseInt(year); // Validación del año
+  // Manejo del cambio del archivo
+  const handleFileChange = (e) => {
+    console.log("Archivos seleccionados:", e.target.files); // Verifica si se está capturando el archivo
+    const file = e.target.files && e.target.files[0]; // Validar archivo
 
-    // Crear un objeto FormData
-    const formData = new FormData();
-    formData.append("Plate", rest.plate);
-    formData.append("OwnerName", rest.ownerName);
-    formData.append("Brand", rest.brand);
-    formData.append("Model", rest.model);
-    formData.append("Year", validatedYear);
-    formData.append("Chassis", rest.chassis);
-    formData.append("TechnicianName", rest.technicianName);
-    formData.append("Date", rest.date);
-    formData.append("InstallationCompleted", rest.installationCompleted);
-
-    const file = values.installationPhoto; // Define the file variable
-
-    try {
-      const response = await axios.post(
-        "https://localhost:7131/api/v1/vehicle/registerv2", // URL del endpoint
-        formData, // Enviar el FormData
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Encabezado para multipart/form-data
-          },
-        }
-      );
-
-      console.log(response.data);
-      setResponseData(response.data);
-      setMessageType("success");
-      resetForm(); // Resetea el formulario después de enviar
-    } catch (error) {
-      setResponseData(
-        error.response?.data || { message: "Error al registrar el vehículo" }
-      );
-      setMessageType("error");
+    if (!file) {
+      console.error("No se seleccionó ningún archivo");
+      return;
     }
+
+    values.File = file; // Guardar el archivo en los valores del formulario
   };
 
-  // const [isExpanded, setIsExpanded] = useState(true);
+  const resetFormAndFile = () => {
+    resetForm(); // Resetea los valores controlados por el hook
+    values.File = null; // Limpia el valor del archivo
+    const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
+    if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
+    setErrors({});
+  };
 
-  // const toggleSidebar = () => {
-  //   setIsExpanded((prev) => !prev);
-  // };
+   // Función para validar el formulario
+    const validateForm = () => {
+      const newErrors = {};
+  
+      // Validar cada campo usando las funciones de validación
+      Object.keys(values).forEach((field) => {
+        const error = validateFields[field](values[field]);
+        if (error) {
+          newErrors[field] = error; // Si hay error, lo agregamos al objeto newErrors
+        }
+      });
+  
+      return newErrors;
+    };
+
+  // Lógica de envío del formulario con Axios
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validar el formulario
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    // if (!values.File) {
+    //   console.error("No se ha seleccionado un archivo");
+    //   return;
+    // }
+
+    const formData = new FormData();
+
+    // Agregar los valores al FormData
+    formData.append("File", values.File); // Archivo
+    Object.entries(values).forEach(([key, value]) => {
+      if (key !== "File") formData.append(key, value);
+    });
+
+    // Confirmación de SweetAlert
+    Swal.fire({
+      title: "¿Deseas Guardar esta Instalación?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Guardar",
+      denyButtonText: `No guardar`,
+      cancelButtonText: "Cancelar",
+      icon: "question",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await HandleFetch(formData);
+        console.log("resultado ", response);
+
+        if (response.isSuccess === true) {
+          // Si la respuesta es exitosa, mostramos un SweetAlert de éxito
+          Swal.fire({
+            title: "¡Guardado!",
+            text: `Vehículo con placa ${values.plate} ha sido guardado.`,
+            icon: "success",
+          });
+          // resetForm();
+          // values.File = null;
+          resetFormAndFile();
+        }
+      } else if (result.isDenied) {
+        Swal.fire("Cambios no guardados", "", "info");
+      }
+    });
+  };
+
+  const HandleFetch = async (formData) => {
+    const url = `${API_BASE_URL}/vehicle/registerv2`;
+
+    try {
+      // Enviar solicitud con Axios
+      const response = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Indicar que es un envío con archivos
+        },
+      });
+
+      console.log("revisa aw", response.data);
+      return response.data; // Retornar datos del servidor
+    } catch (error) {
+      // Verificar si el error es de red o de conexión
+      if (error.message === "Network Error" || error.code === "ECONNREFUSED") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "¡Hubo un problema al conectar con el servidor! Verifica si el servidor está en ejecución.",
+        });
+      } else if (!error.response) {
+        // Otro error sin respuesta del servidor
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un problema desconocido con el servidor.",
+        });
+      } else {
+        // Error con respuesta del servidor (404, 500, etc.)
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: `Error al guardar la instalación: ${
+            error.response.data?.message || error.message
+          }`,
+        });
+      }
+
+      console.error("Error al enviar los datos de instalación:", error);
+
+      return error.response?.data; // Retornar el error desde el servidor si existe
+    }
+  };
 
   return (
     <>
       <Layout>
-        {/* <div style={{ display: "flex" }}> */}
-        {/* <Sidebar /> */}
-        {/* 'https://localhost:7131/api/v1/installation/string?InstallationCompleted=sdf&TechnicianName=dfds&Date=2014-05-05' */}
-        <Container id="register" style={{ minHeight: "min-content" }}>
-          <FormContainer>
+        <Container id="register">
+          <FormContainer style={{ margin: "30px 0" }}>
             <Title>Registro de Vehículo</Title>
             <StyledForm onSubmit={handleFormSubmit}>
               <SectionTitle>Car Details</SectionTitle>
@@ -178,6 +237,9 @@ export default function RegisterVehicle() {
                   value={values.plate}
                   onChange={handleChange}
                 />
+                {errors.plate && (
+                  <span style={{ color: "red" }}>{errors.plate}</span>
+                )}
               </FormField>
 
               <FormField>
@@ -193,6 +255,9 @@ export default function RegisterVehicle() {
                   value={values.ownerName}
                   onChange={handleChange}
                 />
+                {errors.ownerName && (
+                  <span style={{ color: "red" }}>{errors.ownerName}</span>
+                )}
               </FormField>
 
               <FormField>
@@ -224,6 +289,9 @@ export default function RegisterVehicle() {
                     onChange={handleChange}
                   />
                 }
+                {errors.brand && (
+                  <span style={{ color: "red" }}>{errors.brand}</span>
+                )}
               </FormField>
 
               <FormField>
@@ -237,6 +305,9 @@ export default function RegisterVehicle() {
                   value={values.model}
                   onChange={handleChange}
                 />
+                {errors.model && (
+                  <span style={{ color: "red" }}>{errors.model}</span>
+                )}
               </FormField>
 
               <FormField>
@@ -250,6 +321,9 @@ export default function RegisterVehicle() {
                   value={values.year}
                   onChange={handleChange}
                 />
+                {errors.year && (
+                  <span style={{ color: "red" }}>{errors.year}</span>
+                )}
               </FormField>
 
               <SectionTitle style={{ marginTop: "30px" }}>
@@ -269,6 +343,9 @@ export default function RegisterVehicle() {
                   value={values.technicianName}
                   onChange={handleChange}
                 />
+                {errors.technicianName && (
+                  <span style={{ color: "red" }}>{errors.technicianName}</span>
+                )}
               </FormField>
 
               <FormField>
@@ -284,6 +361,9 @@ export default function RegisterVehicle() {
                   value={values.date}
                   onChange={handleChange}
                 />
+                {errors.date && (
+                  <span style={{ color: "red" }}>{errors.date}</span>
+                )}
               </FormField>
 
               <FormField>
@@ -299,6 +379,11 @@ export default function RegisterVehicle() {
                   value={values.installationCompleted}
                   onChange={handleChange}
                 />
+                {errors.installationCompleted && (
+                  <span style={{ color: "red" }}>
+                    {errors.installationCompleted}
+                  </span>
+                )}
               </FormField>
 
               <FormField>
@@ -309,23 +394,20 @@ export default function RegisterVehicle() {
                   type="file"
                   placeholder={""}
                   required={false}
-                  value={values.installationPhoto}
-                  onChange={handleChange}
+                  // value={values.installationPhoto}
+                  onChange={handleFileChange}
                 />
+                {errors.File && (
+                  <span style={{ color: "red" }}>{errors.File}</span>
+                )}
               </FormField>
 
               <SubmitButton type="submit">Enviar</SubmitButton>
+              <SubmitButton type="reset" onClick={resetForm}>
+                Limpiar
+              </SubmitButton>
             </StyledForm>
           </FormContainer>
-
-          <NavLink to="/resgister-installations">
-            <button onClick={handleFormSubmit} to="/register-installations">
-              Añadir una Instalación
-            </button>
-          </NavLink>
-          {/* values={values} 
-          handleChange={handleChange} 
-          onSubmit={handleFormSubmit}  */}
         </Container>
       </Layout>
     </>

@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-/* eslint-disable react/prop-types */
 const Path = styled.path`
   fill: ${({ theme }) => theme.svgFill1};
 `;

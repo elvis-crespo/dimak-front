@@ -7,10 +7,10 @@ import { LuFileSearch } from "react-icons/lu";
 export default function SearchCards() {
   return (
     <>
-      <ResponsiveContainerCard >
+      <ResponsiveContainerCard>
         <div>
           <NavLink to="/search-plate">
-            <Card title={"Vehiculo"} subtitle={"Buscar por Placa"}>
+            <Card title={"Vehículo"} subtitle={"Buscar por Placa"}>
               <LuFileSearch
                 style={{ fontSize: "4em", paddingBottom: "10px" }}
               />
@@ -20,7 +20,17 @@ export default function SearchCards() {
 
         <div>
           <NavLink to="/search-owner">
-            <Card title={"vehiculo"} subtitle={"Buscar por Propietario"}>
+            <Card title={"Vehículo"} subtitle={"Buscar por Propietario"}>
+              <LuFileSearch
+                style={{ fontSize: "4em", paddingBottom: "10px" }}
+              />
+            </Card>
+          </NavLink>
+        </div>
+
+        <div>
+          <NavLink to="/instllationsRecords">
+            <Card title={"Instalación"} subtitle={"Consultar por placa"}>
               <LuFileSearch
                 style={{ fontSize: "4em", paddingBottom: "10px" }}
               />

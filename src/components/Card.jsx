@@ -40,8 +40,7 @@ const Wave = styled.div`
   top: 0;
   margin-left: -50%;
   margin-top: -70%;
-  background: linear-gradient(744deg,rgb(253, 0, 0),rgba(243, 66, 66, 0.73) 60%,rgba(235, 133, 0, 0.9));
-//   background: linear-gradient(744deg,rgb(0, 0, 0),rgba(55, 56, 53, 0.73) 60%,rgba(173, 171, 168, 0.9));
+  background: ${({ theme }) => theme.backgroundGradient};
   border-radius: 40%;
   animation: ${waveAnimation} 5000ms infinite linear;
 

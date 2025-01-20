@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import Swal from "sweetalert2";
 import {
   Container,
   FormContainer,
@@ -11,6 +12,8 @@ import {
   Title,
 } from "../components/CustomFormStyled";
 import { useForm } from "../Hooks/useForm";
+import axios from "axios";
+import { API_BASE_URL } from "../utils/config";
 
 export default function RegisterUpdate() {
   const menuItems = [
@@ -30,9 +33,92 @@ export default function RegisterUpdate() {
     year: "",
   });
 
-  const handleFormSubmit = async (data) => {
-    console.log(data);
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+   
+    // Confirmación de SweetAlert
+    Swal.fire({
+      title: "¿Quieres guardar los cambios?",
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Guardar",
+      denyButtonText: `No guardar`,
+      cancelButtonAriaLabel: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await handleFetch();
+        console.log("resultado pagina actualizar", response);
+
+        if (response.isSuccess === true) {
+          // Si la respuesta es exitosa, mostramos un SweetAlert de éxito
+          Swal.fire({
+            title: "¡Actualizado!",
+            text: `Vehículo con placa ${values.plate} ha sido actualizado.`,
+            icon: "success",
+          });
+
+          // Restablece el formulario después de mostrar el alert
+          resetForm();
+        } else {
+          // Si la respuesta es un error, mostramos un SweetAlert con el mensaje de error
+          Swal.fire({
+            title: "Error",
+            text:
+              // response.message || "Hubo un problema al eliminar el vehículo.",
+              response.message || "Hubo un problema al eliminar el vehículo.",
+            icon: "error",
+          });
+        }
+      }
+    });
   };
+
+  const handleFetch = async () => {
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/vehicle/update?plate=${values.plate}`, 
+        values,
+        {
+          headers: {
+            "Content-Type": "application/json", 
+          },
+        }
+      );
+      console.log("response", response.data);
+      return response.data; // Aquí espero que response.data contenga un campo `success` y `message` desde el backend.
+    } catch (error) {
+      // Verifica si el error es de red (servidor caído o no accesible)
+      if (error.message === "Network Error" || error.code === "ECONNREFUSED") {
+        // Error de conexión, el servidor no está disponible
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "¡Hubo un problema al conectar con el servidor! Verifica si el servidor está en ejecución.",
+        });
+      } else if (!error.response) {
+        // Otro tipo de error en la respuesta del servidor (sin respuesta)
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un problema desconocido con el servidor.",
+        });
+      } else {
+        // Si hay una respuesta del servidor con un error (404, 500, etc.)
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: `Error al eliminar el vehículo: ${
+            error.response.data?.message || error.message
+          }`,
+        });
+      }
+
+      console.error("Error deleting vehicle:", error);
+
+      return error.response.data;
+    }
+  };
+
   return (
     <>
       <Container>

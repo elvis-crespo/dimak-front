@@ -10,13 +10,17 @@ import { Sidebar } from "./components/SideBar";
 // Lazy loaded components
 const RegisterCards = React.lazy(() => import("./Pages/RegisterCards"));
 const RegisterVehicle = React.lazy(() => import("./Pages/RegisterVehicle"));
+const RegisterUpdate = React.lazy(() => import("./Pages/RegisterUpdate"));
 const ResgisterIntallations = React.lazy(() => import("./Pages/RegisterInstallations"));
-const NotFound = React.lazy(() => import("./Pages/NotFound"));
+
+const SearchCards = React.lazy(() => import("./Pages/SearchCards"));
 const SearchPlate = React.lazy(() => import("./Pages/SearchPlate"));
 const SearchOwner = React.lazy(() => import("./Pages/SearchOwner"));
-const SearchCards = React.lazy(() => import("./Pages/SearchCards"));
 const InstallationsTable = React.lazy(() => import("./Pages/InstallationsTable"));
-const RegisterUpdate = React.lazy(() => import("./Pages/RegisterUpdate"));
+
+const DeleteVehicle = React.lazy(() => import("./Pages/DeleteVehicle"));
+
+const NotFound = React.lazy(() => import("./Pages/NotFound"));
 
 function App() {
   // const themes = useSelector((state) => state.theme); // dark or light object
@@ -24,11 +28,22 @@ function App() {
 
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
-      <BrowserRouter>
+      <BrowserRouter
+        // basename={process.env.PUBLIC_URL}
+        future={{
+          v7_startTransition: true, // Habilitar la future flag
+        }}
+      >
         <Sidebar theme={theme}></Sidebar>
         <Suspense
           fallback={
-            <div style={{ paddingLeft: "280px", alignItems: "center",  minHeight: "100vh"}}>
+            <div
+              style={{
+                paddingLeft: "280px",
+                alignItems: "center",
+                minHeight: "100vh",
+              }}
+            >
               Loading... ❤️
             </div>
           }
@@ -41,6 +56,7 @@ function App() {
             <Route path="/search" element={<SearchCards />} />
             <Route path="/search-owner" element={<SearchOwner />} />
             <Route path="/update" element={<RegisterUpdate />} />
+            <Route path="/delete" element={<DeleteVehicle />} />
             <Route
               path="/instllationsRecords"
               element={<InstallationsTable />}
