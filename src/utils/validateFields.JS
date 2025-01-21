@@ -1,34 +1,3 @@
-// export const validateFields = {
-
-//   ownerName: (value) => {
-//     const regex = /^[a-zA-Z\s]+$/; // Solo letras y espacios
-//     if (!value) return "El nombre del propietario es obligatorio.";
-//     if (!regex.test(value)) return "El nombre solo puede contener letras.";
-//     return null;
-//   },
-
-//   brand: (value) => {
-//     if (!value) return "La marca del auto es obligatoria.";
-//     return null;
-//   },
-
-//   model: (value) => {
-//     const regex = /^[a-zA-Z0-9\s]+$/; // Letras, números y espacios
-//     if (!value) return "El modelo del auto es obligatorio.";
-//     if (!regex.test(value))
-//       return "El modelo no puede tener caracteres especiales.";
-//     return null;
-//   },
-
-//   year: (value) => {
-//     const regex = /^\d{4}$/; // Solo números de 4 dígitos
-//     if (!value) return "El año del vehículo es obligatorio.";
-//     if (!regex.test(value)) return "El año debe tener 4 dígitos numéricos.";
-//     return null;
-//   },
-
-// };
-
 export const validateFields = {
   plate: (value) => {
     const regex = /^[A-Z]{3}-\d{4}$/; // Tres letras mayúsculas, guion, cuatro números

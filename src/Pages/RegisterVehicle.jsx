@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {
   Container,
   FormContainer,
@@ -31,9 +30,6 @@ const Layout = styled.div`
 `;
 
 export default function RegisterVehicle() {
-  const [responseData, setResponseData] = useState(null);
-  const [messageType, setMessageType] = useState("");
-
   const carBrands = [
     { label: "Toyota", value: "toyota" },
     { label: "Honda", value: "honda" },
@@ -62,7 +58,6 @@ export default function RegisterVehicle() {
     { label: "Suzuki", value: "suzuki" },
     { label: "Fiat", value: "fiat" },
     { label: "Land Rover", value: "land_rover" },
-    { label: "Otros", value: "others" },
   ];
 
   const { values, handleChange, resetForm } = useForm({
@@ -101,20 +96,32 @@ export default function RegisterVehicle() {
     setErrors({});
   };
 
-   // Función para validar el formulario
-    const validateForm = () => {
-      const newErrors = {};
   
-      // Validar cada campo usando las funciones de validación
-      Object.keys(values).forEach((field) => {
-        const error = validateFields[field](values[field]);
-        if (error) {
-          newErrors[field] = error; // Si hay error, lo agregamos al objeto newErrors
-        }
-      });
-  
-      return newErrors;
-    };
+  const [customBrand, setCustomBrand] = useState("");
+
+  console.log("customBrand", customBrand);
+  console.log("values.brand", values.brand);
+
+  const handleCustomBrandChange = (e) => {
+    e.preventDefault();
+    setCustomBrand(e.target.value); 
+  };
+
+
+  // Función para validar el formulario
+  const validateForm = () => {
+    const newErrors = {};
+    values.brand = customBrand;
+    // Validar cada campo usando las funciones de validación
+    Object.keys(values).forEach((field) => {
+      const error = validateFields[field](values[field]);
+      if (error) {
+        newErrors[field] = error; // Si hay error, lo agregamos al objeto newErrors
+      }
+    });
+
+    return newErrors;
+  };
 
   // Lógica de envío del formulario con Axios
   const handleFormSubmit = async (e) => {
@@ -155,14 +162,11 @@ export default function RegisterVehicle() {
         console.log("resultado ", response);
 
         if (response.isSuccess === true) {
-          // Si la respuesta es exitosa, mostramos un SweetAlert de éxito
           Swal.fire({
             title: "¡Guardado!",
             text: `Vehículo con placa ${values.plate} ha sido guardado.`,
             icon: "success",
           });
-          // resetForm();
-          // values.File = null;
           resetFormAndFile();
         }
       } else if (result.isDenied) {
@@ -265,13 +269,52 @@ export default function RegisterVehicle() {
                 <Select
                   id="brand"
                   name="brand"
+                  value={values.brand || ""} // Asegura que tenga un valor inicial válido
+                  onChange={(e) => {
+                    handleChange(e); // Actualiza el estado
+                  }}
+                >
+                  <option value="" disabled>
+                    Selecciona una marca
+                  </option>
+                  {carBrands.map((brand) => (
+                    <option key={brand.value} value={brand.value}>
+                      {brand.label}
+                    </option>
+                  ))}
+                  <option value="others">Otros</option>
+                </Select>
+              </FormField>
+
+              {values.brand === "others" && (
+                <FormField>
+                  <Label htmlFor="customBrand">Marca Personalizada</Label>
+                  <Input
+                    id="customBrand"
+                    name="customBrand"
+                    type="text"
+                    value={customBrand}
+                    onChange={handleCustomBrandChange}
+                  />
+                  {errors.brand && (
+                    <span style={{ color: "red" }}>{errors.brand}</span>
+                  )}
+                </FormField>
+              )}
+
+              {/* <FormField>
+                <Label htmlFor="brand">Marca</Label>
+                <Select
+                  id="brand"
+                  name="brand"
                   type="select"
                   placeholder={""}
-                  required={false}
+                  // required={false}
                   value={values.brand}
-                  onChange={(e) => {
-                    handleChange(e); // También actualiza el formulario
-                  }}
+                  // onChange={(e) => {
+                  //   handleChange(e); // También actualiza el formulario
+                  // }}
+                  onChange={handleChange}
                 >
                   {carBrands.map((brand) => (
                     <option key={brand.value} value={brand.value}>
@@ -279,20 +322,31 @@ export default function RegisterVehicle() {
                     </option>
                   ))}
                 </Select>
-                {
+                {/* {
                   <Input
                     type="text"
                     placeholder="Escriba su marca de vehículo"
-                    // value={ customBrand}
-                    // onChange={handleChange}
                     value={values.brand}
                     onChange={handleChange}
                   />
-                }
-                {errors.brand && (
+                } */}
+              {/* {errors.brand && (
                   <span style={{ color: "red" }}>{errors.brand}</span>
-                )}
-              </FormField>
+                )} */}
+              {/* </FormField>  */}
+              {/* {values.brand === "others" ? (
+                <FormField>
+                  <Input
+                    type="text"
+                    placeholder="Escriba su marca de vehículo"
+                    value={customBrand}
+                    onChange={handleCustomBrandChange}
+                  />
+              </FormField> 
+              ) : null}
+              {errors.brand && (
+                <span style={{ color: "red" }}>{errors.brand}</span>
+              )} */}
 
               <FormField>
                 <Label htmlFor="model">Modelo</Label>
@@ -301,7 +355,7 @@ export default function RegisterVehicle() {
                   name="model"
                   type="text"
                   placeholder={""}
-                  required={false}
+                  // required={false}
                   value={values.model}
                   onChange={handleChange}
                 />
@@ -317,7 +371,7 @@ export default function RegisterVehicle() {
                   name="year"
                   type="number"
                   placeholder={"2025"}
-                  required={false}
+                  // required={false}
                   value={values.year}
                   onChange={handleChange}
                 />
@@ -394,7 +448,6 @@ export default function RegisterVehicle() {
                   type="file"
                   placeholder={""}
                   required={false}
-                  // value={values.installationPhoto}
                   onChange={handleFileChange}
                 />
                 {errors.File && (
@@ -413,3 +466,16 @@ export default function RegisterVehicle() {
     </>
   );
 }
+
+// onClick={() => {
+//                                           Swal.fire({
+//                                             imageUrl:
+//                                               "https://media.wired.com/photos/627b4658323db22d6ba1fed1/master/pass/Wanda-Dr-Strange-Multiverse-Madness-Culture.jpg",
+//                                             // imageWidth: 400,
+//                                             // imageHeight: 1400,
+//                                             imageAlt: "Imagen",
+//                                             customClass: {
+//                                               popup: "custom-swal-width", // Clase personalizada para el modal
+//                                             },
+//                                             showCloseButton: true,
+//                                           }

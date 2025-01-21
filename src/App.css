@@ -31,3 +31,33 @@ h1, h2, h3, h4 {
 .swal2-shown .swal2-height-auto{
   padding-right: 0 !important;
 } 
+
+.custom-swal-popup {
+  padding: 10px;
+  /* Márgenes finos dentro del modal */
+  max-width: 100%;
+  /* Mantiene el modal dentro del ancho de la pantalla */
+}
+
+.custom-swal-width {
+  max-width: 100%;
+  /* El modal ocupará hasta el 90% del ancho de la pantalla */
+  width: auto;
+  /* Deja que el ancho se adapte al contenido */
+}
+
+.swal2-image {
+  /* margin: 10px 5px; */
+  padding: 10px 5px;
+  width: 100%;
+  /* La imagen ocupará todo el ancho del modal */
+  height: auto;
+  /* Mantendrá las proporciones originales */
+  max-height: 80vh;
+  /* Limita la altura máxima al 80% del viewport */
+  object-fit: contain;
+  /* Asegura que la imagen cubra toda el espacio disponible */
+  object-position: center;
+  /* Asegura que la imagen se escale sin recortes */
+}
+

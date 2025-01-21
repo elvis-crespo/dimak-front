@@ -8,7 +8,7 @@ export const useForm = (initialValues) => {
     if (type === "file") {
       setValues({
         ...values,
-        [name]: files[0], // Asumiendo que solo se selecciona un archivo
+        [name]: files[0], 
       });
     } else {
       setValues({
