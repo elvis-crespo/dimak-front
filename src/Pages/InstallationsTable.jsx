@@ -1,63 +1,3 @@
-//localhost:7131/api/v1/installation/show?plate=1234
-// https: import { useState } from "react";
-// import { Container } from "../components/CustomFormStyled";
-// import { CustomerTable } from "../components/CustomTable";
-// import { SearchInput } from "../components/SearchInput";
-// import axios from "axios";
-
-// export default function InstallationsTable() {
-//   const columnsHeader = [
-//     "Placa",
-//     "Detalles de la Instalación",
-//     "Tecnico",
-//     "Fecha",
-//     "Foto",
-//   ];
-//   const columnKeys = [
-//     "plateId",
-//     "installationCompleted",
-//     "technicianName",
-//     "date",
-//     "photoUrl",
-//   ];
-
-//   const [inputValue, setInputValue] = useState("");
-//   const [data, setData] = useState([]);
-//   const handleSubmit = async (event) => {
-//     event.preventDefault();
-
-//     console.log("sd", inputValue);
-
-//     try {
-//       const response = await axios.get(
-//         `https://localhost:7131/api/v1/installation/${inputValue}/?pageSize=5`
-//       );
-//       setData(response.data.installationRecords);
-//       console.log("mis datos ", response.data.installationRecords);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-//   return (
-//     <>
-//       <Container style={{ justifyContent: "flex-start" }}>
-//         <SearchInput
-//           handleSubmit={handleSubmit}
-//           inputValue={inputValue}
-//           setInputValue={setInputValue}
-//           text={"Placa AAA-1234"}
-//         />
-//         <CustomerTable
-//           data={data}
-//           columnsHeader={columnsHeader}
-//           columnKeys={columnKeys}
-//         />
-//       </Container>
-//     </>
-//   );
-// }
-
-
 import { Container, Title } from "../components/CustomFormStyled";
 import { CustomerTable } from "../components/CustomTable";
 import axios from "axios";
@@ -65,10 +5,13 @@ import { useState } from "react";
 import { SearchInput } from "../components/SearchInput";
 import { API_BASE_URL } from "../utils/config";
 import Swal from "sweetalert2";
+ import { validateFields } from "../utils/validateFields.JS";
 
-export default function SearchPlate() {
+export default function SearchFactura() {
   const columnsHeader = [
     "Placa",
+    "Nº de Factura",
+    "Nº de ficha técnica",
     "Detalles de la Instalación",
     "Tecnico",
     "Fecha",
@@ -76,6 +19,8 @@ export default function SearchPlate() {
   ];
   const columnKeys = [
     "plateId",
+    "invoiceNumber",
+    "technicalFileNumber",
     "installationCompleted",
     "technicianName",
     "date",
@@ -83,24 +28,38 @@ export default function SearchPlate() {
   ];
 
   const [inputValue, setInputValue] = useState("");
+  const [lastSearchedValue, setLastSearchedValue] = useState("");
   const [data, setData] = useState([]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (inputValue.trim() === lastSearchedValue) return;
+
+     // Validar la placa antes de enviar
+        const validationError = validateFields.invoiceNumber(inputValue.trim());
+        if (validationError) {
+          Swal.fire({
+            icon: "error",
+            title: "Error de Validación",
+            text: validationError,
+          });
+          return;
+        }
+
     const response = await handleFetch();
 
     if (response.isSuccess === true) {
-      const transform = response.installationRecords;
+      const transform = [response.data];
       setData(transform);
-      console.log("mis datos 00", response.installationRecords);
+      setLastSearchedValue(inputValue.trim()); // Actualiza el último valor buscado.
     }
   };
-  //localhost:7131/api/v1/installation/show?plate=1234
-
+  
   const handleFetch = async () => {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/installation/show?plate=${inputValue}`,
+        `${API_BASE_URL}/installation/?invoiceNumber=${inputValue}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -108,6 +67,7 @@ export default function SearchPlate() {
         }
       );
       console.log("mis datos ", response.data.installationRecords);
+      console.log("mis datos 2", response.data);
       return response.data;
     } catch (error) {
       // Verifica si el error es de red (servidor caído o no accesible)
@@ -140,7 +100,10 @@ export default function SearchPlate() {
           handleSubmit={handleSubmit}
           inputValue={inputValue}
           setInputValue={setInputValue}
-          text={"Placa AAA-1234"}
+          text={"Ej. 001-001-123456789"}
+          disabled={
+            !inputValue.trim() || inputValue.trim() === lastSearchedValue
+          }
         />
         {data && data.length > 0 && (
           <>

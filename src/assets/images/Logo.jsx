@@ -1,135 +1,134 @@
+/* eslint-disable react/prop-types */
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Path = styled.path`
-  fill: ${({ theme }) => theme.svgFill1};
+  fill: ${({ customColor2 }) => customColor2} ;
+  transition: all 0.3s ease;
 `;
 const Path2 = styled.path`
-  fill: ${({ theme }) => theme.svgFill2};
+  fill: ${({ theme }) =>  theme.svgFill2};
+  transition: all 0.3s ease;
 `;
 const Path3 = styled.path`
-  fill: ${({ theme }) => theme.hover};
+  fill: ${({ theme, customColor }) => customColor || theme.hover};
+  transition: all 0.1s ease;
 `;
-export const Logo = () => {
+export const Logo = ({ currentColor, currentColor2, currentWidth, currentHeight }) => {
   return (
-    <div className="logo">
-      <a href="">
-        <svg
-          width="200"
-          height="200"
-          viewBox="0 0 2048 2048"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M0 0H2048V2048H0V0Z" fill="transparent" />
-          <Path
-            className="#ff0000"
-            d="M363 1068.5L312.5 1119L309 1122H483C493.913 1125.88 498.055 1129.87 500.5 1141.5L493 1182.5C490.736 1195.21 485.32 1199.69 471.5 1205H374.5L391 1135.5H303.5L273 1258.5H533C552.816 1252.09 559.963 1245.08 568 1228.5L593.5 1123.5C598 1093.5 581.5 1071.5 551.5 1068.5C521.5 1065.5 363 1068.5 363 1068.5Z"
-            fill=""
-          />
-          <Path
-            className="#ff0000"
-            d="M589 1258.5L621.5 1135.5H709.5L679.5 1258.5H589Z"
-            fill=""
-          />
-          <Path
-            className="#ff0000"
-            d="M725.5 1072L713 1120.5H625.5L637.5 1072H725.5Z"
-            fill=""
-          />
-          <Path
-            className="#ff0000"
-            d="M842 1072H758L699 1310L797 1263L826 1157L910 1263L1016 1182.5L995.5 1263H1083.5L1131 1072H1034L915 1163L842 1072Z"
-            fill=""
-          />
-          <Path
-            className="#ff0000"
-            d="M1210 1263H1112.5L1271.5 1072H1367.5L1432 1263H1343.5L1336 1240H1228L1210 1263Z"
-            fill=""
-          />
-          <Path
-            className="#ff0000"
-            d="M1456 1263L1502.5 1072H1590.5L1543.5 1263H1456Z"
-            fill=""
-          />
-          <Path
-            className="#ff0000"
-            d="M1730.5 1263L1629.5 1116.5L1578.5 1167L1645 1263H1730.5Z"
-            fill=""
-          />
-          <Path
-            className="#ff0000"
-            d="M1674.5 1072L1638 1109.5L1679 1167L1774.5 1072H1674.5Z"
-            fill=""
-          />
-          <Path
-            d="M363 1068.5L312.5 1119L309 1122H483C493.913 1125.88 498.055 1129.87 500.5 1141.5L493 1182.5C490.736 1195.21 485.32 1199.69 471.5 1205H374.5L391 1135.5H303.5L273 1258.5H533C552.816 1252.09 559.963 1245.08 568 1228.5L593.5 1123.5C598 1093.5 581.5 1071.5 551.5 1068.5C521.5 1065.5 363 1068.5 363 1068.5Z"
-            stroke=""
-          />
-          <Path
-            d="M589 1258.5L621.5 1135.5H709.5L679.5 1258.5H589Z"
-            stroke=""
-          />
-          <Path
-            d="M725.5 1072L713 1120.5H625.5L637.5 1072H725.5Z"
-            stroke=""
-          />
-          <Path
-            d="M842 1072H758L699 1310L797 1263L826 1157L910 1263L1016 1182.5L995.5 1263H1083.5L1131 1072H1034L915 1163L842 1072Z"
-            stroke=""
-          />
-          <Path
-            d="M1210 1263H1112.5L1271.5 1072H1367.5L1432 1263H1343.5L1336 1240H1228L1210 1263Z"
-            stroke=""
-          />
-          <Path
-            d="M1456 1263L1502.5 1072H1590.5L1543.5 1263H1456Z"
-            stroke=""
-          />
-          <Path
-            d="M1730.5 1263L1629.5 1116.5L1578.5 1167L1645 1263H1730.5Z"
-            stroke=""
-          />
-          <Path
-            d="M1674.5 1072L1638 1109.5L1679 1167L1774.5 1072H1674.5Z"
-            stroke=""
-          />
-          <Path2
-            d="M973.5 912.5L930 849.5L971.5 808H1080.5L973.5 912.5Z"
-            fill=""
-          />
-          <Path2
-            className=""
-            d="M865 914L919 861.5L1029.5 1024.5H940L865 914Z"
-            fill=""
-          />
-          <Path2
-            className=""
-            d="M1051.5 1024.5L1012 966H1118C1128.11 960.258 1132.72 956.23 1137 #ff0000148 895C1148 881.5 1128 866 1121 866H1045L1104.5 808H1176C1202 813.5 1223 831 1223 868C1223 905 1193 988.5 1193 988.5C1182.27 1010.66 1172.83 1018.01 1151.5 1024.5H1051.5Z"
-            fill=""
-          />
-          <Path2
-            className=""
-            d="M973.5 912.5L930 849.5L971.5 808H1080.5L973.5 912.5Z"
-            stroke=""
-          />
-          <Path2
-            className=""
-            d="M865 914L919 861.5L1029.5 1024.5H940L865 914Z"
-            stroke=""
-          />
-          <Path2
-            className=""
-            fill=""
-            d="M1051.5 1024.5L1012 966H1118C1128.11 960.258 1132.72 956.23 1137 946L1148 895C1148 881.5 1128 866 1121 866H1045L1104.5 808H1176C1202 813.5 1223 831 1223 868C1223 905 1193 988.5 1193 988.5C1182.27 1010.66 1172.83 1018.01 1151.5 1024.5H1051.5Z"
-            stroke=""
-          />
-          <Path3
-            d="M1314.5 1189.5H1269L1301.5 1143L1314.5 1189.5Z"
-            fill="none"
-            stroke="red"
-          />
-        </svg>
-      </a>
-    </div>
+    <Link to="/">
+      <svg
+        width={currentWidth || "150"}
+        height={currentHeight || "150"}
+        viewBox="0 0 1504 513"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <Path
+          d="M91 270.5L40.5 321L37 324H211C221.913 327.881 226.055 331.866 228.5 343.5L221 384.5C218.736 397.215 213.32 401.686 199.5 407H102.5L119 337.5H31.5L1 460.5H261C280.816 454.094 287.963 447.079 296 430.5L321.5 325.5C326 295.5 309.5 273.5 279.5 270.5C249.5 267.5 91 270.5 91 270.5Z"
+          fill="white"
+          // customColor2={currentColor2}
+        />
+        <Path
+          d="M317 460.5L349.5 337.5H437.5L407.5 460.5H317Z"
+          fill="white"
+          customColor2={currentColor2}
+        />
+        <Path d="M453.5 274L441 322.5H353.5L365.5 274H453.5Z" fill="white" />
+        <Path
+          d="M570 274H486L427 512L525 465L554 359L638 465L744 384.5L723.5 465H811.5L859 274H762L643 365L570 274Z"
+          fill="white"
+          customColor2={currentColor2}
+        />
+        <Path
+          d="M938 465H840.5L999.5 274H1095.5L1160 465H1071.5L1064 442H956L938 465Z"
+          fill="white"
+          customColor2={currentColor2}
+        />
+        <Path
+          d="M1184 465L1230.5 274H1318.5L1271.5 465H1184Z"
+          fill="white"
+          customColor2={currentColor2}
+        />
+        <Path
+          d="M1458.5 465L1357.5 318.5L1306.5 369L1373 465H1458.5Z"
+          fill="white"
+          customColor2={currentColor2}
+        />
+        <Path
+          d="M1402.5 274L1366 311.5L1407 369L1502.5 274H1402.5Z"
+          fill="white"
+          customColor2={currentColor2}
+        />
+        <Path
+          d="M91 270.5L40.5 321L37 324H211C221.913 327.881 226.055 331.866 228.5 343.5L221 384.5C218.736 397.215 213.32 401.686 199.5 407H102.5L119 337.5H31.5L1 460.5H261C280.816 454.094 287.963 447.079 296 430.5L321.5 325.5C326 295.5 309.5 273.5 279.5 270.5C249.5 267.5 91 270.5 91 270.5Z"
+          stroke="transparent"
+          customColor2={currentColor2}
+        />
+        <Path
+          d="M317 460.5L349.5 337.5H437.5L407.5 460.5H317Z"
+          stroke="transparent"
+          customColor2={currentColor2}
+        />
+        <Path
+          d="M453.5 274L441 322.5H353.5L365.5 274H453.5Z"
+          stroke="transparent"
+          customColor2={currentColor2}
+        />
+        <path
+          d="M570 274H486L427 512L525 465L554 359L638 465L744 384.5L723.5 465H811.5L859 274H762L643 365L570 274Z"
+          stroke="transparent"
+        />
+        <Path
+          d="M938 465H840.5L999.5 274H1095.5L1160 465H1071.5L1064 442H956L938 465Z"
+          stroke="transparent"
+          customColor2={currentColor2}
+        />
+        <Path
+          d="M1184 465L1230.5 274H1318.5L1271.5 465H1184Z"
+          stroke="transparent"
+        />
+        <Path
+          d="M1458.5 465L1357.5 318.5L1306.5 369L1373 465H1458.5Z"
+          stroke="transparent"
+        />
+        <Path
+          d="M1402.5 274L1366 311.5L1407 369L1502.5 274H1402.5Z"
+          stroke="transparent"
+        />
+        <Path
+          d="M699.76 109.603L654.552 44.1293L697.681 1H810.961L699.76 109.603Z"
+          fill="black"
+        />
+        <Path
+          d="M587 111.162L643.12 56.6005L757.958 226H664.945L587 111.162Z"
+          fill="black"
+        />
+        <Path2
+          d="M780.822 226L739.771 165.203H849.933C860.435 159.236 865.23 155.049 869.679 144.418L881.111 91.4157C881.111 77.3857 860.326 61.2771 853.051 61.2771H774.067L835.903 1H910.21C937.231 6.71594 959.055 24.903 959.055 63.3557C959.055 101.808 927.878 188.587 927.878 188.587C916.73 211.617 906.913 219.257 884.748 226H780.822Z"
+          fill="black"
+        />
+        <Path2
+          d="M699.76 109.603L654.552 44.1293L697.681 1H810.961L699.76 109.603Z"
+          stroke="transparent"
+          strokeWidth="1.03926"
+        />
+        <Path2
+          d="M587 111.162L643.12 56.6005L757.958 226H664.945L587 111.162Z"
+          stroke="transparent"
+          strokeWidth="1.03926"
+        />
+        <Path2
+          d="M780.822 226L739.771 165.203H849.933C860.435 159.236 865.23 155.049 869.679 144.418L881.111 91.4157C881.111 77.3857 860.326 61.2771 853.051 61.2771H774.067L835.903 1H910.21C937.231 6.71594 959.055 24.903 959.055 63.3557C959.055 101.808 927.878 188.587 927.878 188.587C916.73 211.617 906.913 219.257 884.748 226H780.822Z"
+          stroke="transparent"
+          strokeWidth="1.03926"
+        />
+        <Path3
+          d="M1042.5 391.5H997L1029.5 345L1042.5 391.5Z"
+          stroke="transparent"
+          customColor={currentColor}
+        />
+      </svg>
+    </Link>
   );
 };

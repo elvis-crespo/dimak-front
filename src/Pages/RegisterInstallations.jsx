@@ -16,17 +16,18 @@ import {
 import axios from "axios";
 import { API_BASE_URL } from "../utils/config";
 import Swal from "sweetalert2";
-
 import { useState } from "react";
 import { validateFields } from "../utils/validateFields.JS";
 
 export default function RegisterInstallations() {
   const { values, handleChange, resetForm } = useForm({
     plate: "",
+    invoiceNumber: "",
+    technicalFileNumber: "",
     technicianName: "",
     date: "",
     installationCompleted: "",
-    File: null, // Campo para el archivo
+    PhotoUrl: null, // Campo para el archivo
   });
 
   // Estado para almacenar los errores de validación
@@ -37,16 +38,15 @@ export default function RegisterInstallations() {
     const file = e.target.files && e.target.files[0]; // Validar archivo
 
     if (!file) {
-      console.error("No se seleccionó ningún archivo");
       return;
     }
 
-    values.File = file; // Guardar el archivo en los valores del formulario
+    values.PhotoUrl = file; // Guardar el archivo en los valores del formulario
   };
 
   const HandleReset = () => {
     resetForm(); // Resetea los valores controlados por el hook
-    values.File = null; // Limpia el valor del archivo
+    values.PhotoUrl = null; // Limpia el valor del archivo
     const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
     if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
     setErrors({});
@@ -55,9 +55,9 @@ export default function RegisterInstallations() {
   // Función para validar el formulario
   const validateForm = () => {
     const newErrors = {};
-
     // Validar cada campo usando las funciones de validación
     Object.keys(values).forEach((field) => {
+
       const error = validateFields[field](values[field]);
       if (error) {
         newErrors[field] = error; // Si hay error, lo agregamos al objeto newErrors
@@ -70,7 +70,6 @@ export default function RegisterInstallations() {
   // Lógica de envío del formulario con Axios
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
     const validationErrors = validateForm(); // Validar el formulario
     if (Object.keys(validationErrors).length > 0) {
       // Si hay errores, no enviar el formulario y mostrar los errores
@@ -78,17 +77,11 @@ export default function RegisterInstallations() {
       return;
     }
 
-    // if (!values.File) {
-    //   console.error("No se ha seleccionado un archivo");
-    //   return;
-    // }
-
     const formData = new FormData();
-
     // Agregar los valores al FormData
-    formData.append("File", values.File); // Archivo
+    formData.append("PhotoUrl", values.PhotoUrl); // Archivo
     Object.entries(values).forEach(([key, value]) => {
-      if (key !== "File") formData.append(key, value);
+      if (key !== "PhotoUrl") formData.append(key, value);
     });
 
     // Confirmación de SweetAlert
@@ -102,7 +95,6 @@ export default function RegisterInstallations() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const response = await HandleFetch(formData);
-        console.log("resultado ", response);
 
         if (response.isSuccess === true) {
           // Si la respuesta es exitosa, mostramos un SweetAlert de éxito
@@ -120,7 +112,8 @@ export default function RegisterInstallations() {
   };
 
   const HandleFetch = async (formData) => {
-    const url = `${API_BASE_URL}/installation/save?plate=${values.plate}&InstallationCompleted=${values.installationCompleted}&TechnicianName=${values.technicianName}&Date=${values.date}`;
+    // const url = `${API_BASE_URL}/installation/save?plate=${values.plate}&InstallationCompleted=${values.installationCompleted}&TechnicianName=${values.technicianName}&Date=${values.date}`;
+    const url = `${API_BASE_URL}/installation/save?plate=${values.plate}`;
 
     try {
       // Enviar solicitud con Axios
@@ -157,8 +150,6 @@ export default function RegisterInstallations() {
         });
       }
 
-      console.error("Error al enviar los datos de instalación:", error);
-
       return error.response?.data; // Retornar el error desde el servidor si existe
     }
   };
@@ -178,12 +169,46 @@ export default function RegisterInstallations() {
               id="plate"
               name="plate"
               type="text"
-              required
+              required={true}
+              placeholder={"Ej. AAA-1234"}
               value={values.plate}
               onChange={handleChange}
             />
             {errors.plate && (
               <span style={{ color: "red" }}>{errors.plate}</span>
+            )}
+          </FormField>
+
+          <FormField>
+            <Label htmlFor="invoiceNumber">
+              Nº de Factura <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Input
+              id="invoiceNumber"
+              name="invoiceNumber"
+              type="text"
+              placeholder={"Ej. 001-001-123456789"}
+              required={true}
+              value={values.invoiceNumber}
+              onChange={handleChange}
+            />
+            {errors.technicianName && (
+              <span style={{ color: "red" }}>{errors.invoiceNumber}</span>
+            )}
+          </FormField>
+
+          <FormField>
+            <Label htmlFor="technicalFileNumber">Nº de Ficha Técnica</Label>
+            <Input
+              id="technicalFileNumber"
+              name="technicalFileNumber"
+              type="text"
+              required={false}
+              value={values.technicalFileNumber}
+              onChange={handleChange}
+            />
+            {errors.technicianName && (
+              <span style={{ color: "red" }}>{errors.technicalFileNumber}</span>
             )}
           </FormField>
 
@@ -245,7 +270,9 @@ export default function RegisterInstallations() {
               type="file"
               onChange={handleFileChange}
             />
-            {errors.File && <span style={{ color: "red" }}>{errors.File}</span>}
+            {errors.PhotoUrl && (
+              <span style={{ color: "red" }}>{errors.PhotoUrl}</span>
+            )}
           </FormField>
 
           <SubmitButton type="submit">Enviar</SubmitButton>

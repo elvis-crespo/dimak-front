@@ -47,7 +47,6 @@ export default function RegisterUpdate() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const response = await handleFetch();
-        console.log("resultado pagina actualizar", response);
 
         if (response.isSuccess === true) {
           // Si la respuesta es exitosa, mostramos un SweetAlert de éxito
@@ -74,6 +73,7 @@ export default function RegisterUpdate() {
   };
 
   const handleFetch = async () => {
+
     try {
       const response = await axios.put(
         `${API_BASE_URL}/vehicle/update?plate=${values.plate}`, 
@@ -84,8 +84,9 @@ export default function RegisterUpdate() {
           },
         }
       );
-      console.log("response", response.data);
+
       return response.data; // Aquí espero que response.data contenga un campo `success` y `message` desde el backend.
+
     } catch (error) {
       // Verifica si el error es de red (servidor caído o no accesible)
       if (error.message === "Network Error" || error.code === "ECONNREFUSED") {
@@ -113,8 +114,6 @@ export default function RegisterUpdate() {
         });
       }
 
-      console.error("Error deleting vehicle:", error);
-
       return error.response.data;
     }
   };
@@ -125,7 +124,7 @@ export default function RegisterUpdate() {
         <FormContainer style={{ margin: "30px 0" }}>
           <Title>Actualizar datos de Vehículo</Title>
           <StyledForm onSubmit={handleFormSubmit}>
-            <SectionTitle>Car Details</SectionTitle>
+            <SectionTitle>Detalles del Vehículo</SectionTitle>
             <FormField>
               <Label htmlFor="plate">
                 Placa <span style={{ color: "red" }}>*</span>

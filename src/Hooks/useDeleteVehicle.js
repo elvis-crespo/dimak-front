@@ -65,7 +65,6 @@ import Swal from "sweetalert2";
 const useDeleteVehicle = () => {
   const handleFetchDelete = async (plateVehicle) => {
     try {
-        console.log("en use", plateVehicle);
       const response = await axios.delete(
         `https:localhost:7131/api/v1/vehicle/delete?plateVehicle=${plateVehicle}`,
         {

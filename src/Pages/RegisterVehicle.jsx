@@ -66,10 +66,12 @@ export default function RegisterVehicle() {
     brand: "",
     model: "",
     year: "",
+    invoiceNumber: "",
+    technicalFileNumber: "",
     technicianName: "",
     date: "",
     installationCompleted: "",
-    File: null, // Campo para el archivo
+    PhotoUrl: null, // Campo para el archivo
   });
 
   // Estado para almacenar los errores de validación
@@ -77,20 +79,18 @@ export default function RegisterVehicle() {
 
   // Manejo del cambio del archivo
   const handleFileChange = (e) => {
-    console.log("Archivos seleccionados:", e.target.files); // Verifica si se está capturando el archivo
     const file = e.target.files && e.target.files[0]; // Validar archivo
 
     if (!file) {
-      console.error("No se seleccionó ningún archivo");
       return;
     }
 
-    values.File = file; // Guardar el archivo en los valores del formulario
+    values.PhotoUrl = file; // Guardar el archivo en los valores del formulario
   };
 
   const resetFormAndFile = () => {
     resetForm(); // Resetea los valores controlados por el hook
-    values.File = null; // Limpia el valor del archivo
+    values.PhotoUrl = null; // Limpia el valor del archivo
     const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
     if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
     setErrors({});
@@ -99,8 +99,6 @@ export default function RegisterVehicle() {
   
   const [customBrand, setCustomBrand] = useState("");
 
-  console.log("customBrand", customBrand);
-  console.log("values.brand", values.brand);
 
   const handleCustomBrandChange = (e) => {
     e.preventDefault();
@@ -134,20 +132,14 @@ export default function RegisterVehicle() {
       return;
     }
 
-    // if (!values.File) {
-    //   console.error("No se ha seleccionado un archivo");
-    //   return;
-    // }
-
     const formData = new FormData();
 
     // Agregar los valores al FormData
-    formData.append("File", values.File); // Archivo
+    formData.append("PhotoUrl", values.PhotoUrl); // Archivo
     Object.entries(values).forEach(([key, value]) => {
-      if (key !== "File") formData.append(key, value);
+      if (key !== "PhotoUrl") formData.append(key, value);
     });
 
-    // Confirmación de SweetAlert
     Swal.fire({
       title: "¿Deseas Guardar esta Instalación?",
       showDenyButton: true,
@@ -159,7 +151,6 @@ export default function RegisterVehicle() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const response = await HandleFetch(formData);
-        console.log("resultado ", response);
 
         if (response.isSuccess === true) {
           Swal.fire({
@@ -176,7 +167,7 @@ export default function RegisterVehicle() {
   };
 
   const HandleFetch = async (formData) => {
-    const url = `${API_BASE_URL}/vehicle/registerv2`;
+    const url = `${API_BASE_URL}/vehicle/register`;
 
     try {
       // Enviar solicitud con Axios
@@ -186,7 +177,6 @@ export default function RegisterVehicle() {
         },
       });
 
-      console.log("revisa aw", response.data);
       return response.data; // Retornar datos del servidor
     } catch (error) {
       // Verificar si el error es de red o de conexión
@@ -214,8 +204,6 @@ export default function RegisterVehicle() {
         });
       }
 
-      console.error("Error al enviar los datos de instalación:", error);
-
       return error.response?.data; // Retornar el error desde el servidor si existe
     }
   };
@@ -227,7 +215,7 @@ export default function RegisterVehicle() {
           <FormContainer style={{ margin: "30px 0" }}>
             <Title>Registro de Vehículo</Title>
             <StyledForm onSubmit={handleFormSubmit}>
-              <SectionTitle>Car Details</SectionTitle>
+              <SectionTitle>Detalles del Vehículo</SectionTitle>
               <FormField>
                 <Label htmlFor="plate">
                   Placa <span style={{ color: "red" }}>*</span>
@@ -236,7 +224,7 @@ export default function RegisterVehicle() {
                   id="plate"
                   name="plate"
                   type="text"
-                  placeholder={"AAA-1234"}
+                  placeholder={"Ej. AAA-1234"}
                   required={true}
                   value={values.plate}
                   onChange={handleChange}
@@ -248,7 +236,7 @@ export default function RegisterVehicle() {
 
               <FormField>
                 <Label htmlFor="ownerName">
-                  Nombre del Dueño <span style={{ color: "red" }}>*</span>
+                  Nombre del Cliente <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Input
                   id="ownerName"
@@ -302,52 +290,6 @@ export default function RegisterVehicle() {
                 </FormField>
               )}
 
-              {/* <FormField>
-                <Label htmlFor="brand">Marca</Label>
-                <Select
-                  id="brand"
-                  name="brand"
-                  type="select"
-                  placeholder={""}
-                  // required={false}
-                  value={values.brand}
-                  // onChange={(e) => {
-                  //   handleChange(e); // También actualiza el formulario
-                  // }}
-                  onChange={handleChange}
-                >
-                  {carBrands.map((brand) => (
-                    <option key={brand.value} value={brand.value}>
-                      {brand.label}
-                    </option>
-                  ))}
-                </Select>
-                {/* {
-                  <Input
-                    type="text"
-                    placeholder="Escriba su marca de vehículo"
-                    value={values.brand}
-                    onChange={handleChange}
-                  />
-                } */}
-              {/* {errors.brand && (
-                  <span style={{ color: "red" }}>{errors.brand}</span>
-                )} */}
-              {/* </FormField>  */}
-              {/* {values.brand === "others" ? (
-                <FormField>
-                  <Input
-                    type="text"
-                    placeholder="Escriba su marca de vehículo"
-                    value={customBrand}
-                    onChange={handleCustomBrandChange}
-                  />
-              </FormField> 
-              ) : null}
-              {errors.brand && (
-                <span style={{ color: "red" }}>{errors.brand}</span>
-              )} */}
-
               <FormField>
                 <Label htmlFor="model">Modelo</Label>
                 <Input
@@ -371,7 +313,6 @@ export default function RegisterVehicle() {
                   name="year"
                   type="number"
                   placeholder={"2025"}
-                  // required={false}
                   value={values.year}
                   onChange={handleChange}
                 />
@@ -381,8 +322,44 @@ export default function RegisterVehicle() {
               </FormField>
 
               <SectionTitle style={{ marginTop: "30px" }}>
-                Installation Details
+                Detalles de la Instalación
               </SectionTitle>
+
+              <FormField>
+                <Label htmlFor="invoiceNumber">
+                  Nº de Factura <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Input
+                  id="invoiceNumber"
+                  name="invoiceNumber"
+                  type="text"
+                  placeholder={"Ej. 001-001-123456789"}
+                  required={true}
+                  value={values.invoiceNumber}
+                  onChange={handleChange}
+                />
+                {errors.invoiceNumber && (
+                  <span style={{ color: "red" }}>{errors.invoiceNumber}</span>
+                )}
+              </FormField>
+
+              <FormField>
+                <Label htmlFor="technicalFileNumber">Nº de Ficha Técnica</Label>
+                <Input
+                  id="technicalFileNumber"
+                  name="technicalFileNumber"
+                  type="text"
+                  placeholder={""}
+                  required={false}
+                  value={values.technicalFileNumber}
+                  onChange={handleChange}
+                />
+                {errors.technicalFileNumber && (
+                  <span style={{ color: "red" }}>
+                    {errors.technicalFileNumber}
+                  </span>
+                )}
+              </FormField>
 
               <FormField>
                 <Label htmlFor="technicianName">
@@ -450,8 +427,8 @@ export default function RegisterVehicle() {
                   required={false}
                   onChange={handleFileChange}
                 />
-                {errors.File && (
-                  <span style={{ color: "red" }}>{errors.File}</span>
+                {errors.PhotoUrl && (
+                  <span style={{ color: "red" }}>{errors.PhotoUrl}</span>
                 )}
               </FormField>
 
@@ -466,16 +443,3 @@ export default function RegisterVehicle() {
     </>
   );
 }
-
-// onClick={() => {
-//                                           Swal.fire({
-//                                             imageUrl:
-//                                               "https://media.wired.com/photos/627b4658323db22d6ba1fed1/master/pass/Wanda-Dr-Strange-Multiverse-Madness-Culture.jpg",
-//                                             // imageWidth: 400,
-//                                             // imageHeight: 1400,
-//                                             imageAlt: "Imagen",
-//                                             customClass: {
-//                                               popup: "custom-swal-width", // Clase personalizada para el modal
-//                                             },
-//                                             showCloseButton: true,
-//                                           }

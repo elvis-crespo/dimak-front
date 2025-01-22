@@ -15,23 +15,23 @@ import { useState } from "react";
 import { validateFields } from "../utils/validateFields";
 import { API_BASE_URL } from "../utils/config";
 
-export default function DeleteVehicle() {
+export default function DeleteInstallation() {
+
   const [inputValue, setInputValue] = useState("");
   const [lastSearchedValue, setLastSearchedValue] = useState("");
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    // Validar la placa antes de enviar
-    const validationError = validateFields.plate(inputValue.trim());
-    if (validationError ) {
-      Swal.fire({
-        icon: "error",
-        title: "Error de Validación",
-        text: validationError,
-      });
-      return;
-    }
+     const validationError = validateFields.invoiceNumber(inputValue.trim());
+        if (validationError ) {
+          Swal.fire({
+            icon: "error",
+            title: "Error de Validación",
+            text: validationError,
+          });
+          return;
+        }
 
     // Confirmación de SweetAlert
     Swal.fire({
@@ -54,7 +54,9 @@ export default function DeleteVehicle() {
         const response = await handleFetch();
 
         setLastSearchedValue(inputValue.trim()); // Actualiza el último valor buscado.
+
         if (response.isSuccess === true) {
+          // Si la respuesta es exitosa, mostramos un SweetAlert de éxito
           Swal.fire({
             title: "¡Eliminado!",
             text: `Vehículo con placa ${inputValue} ha sido eliminado.`,
@@ -62,6 +64,7 @@ export default function DeleteVehicle() {
           });
           setInputValue("");
         } else {
+          // Si la respuesta es un error, mostramos un SweetAlert con el mensaje de error
           Swal.fire({
             title: "Error",
             text:
@@ -76,14 +79,13 @@ export default function DeleteVehicle() {
   const handleFetch = async () => {
     try {
       const response = await axios.delete(
-        `${API_BASE_URL}/vehicle/delete?plate=${inputValue}`,
+        `${API_BASE_URL}/installation/delete?invoiceNumber=${inputValue}`,
         {
           headers: {
             "Content-Type": "application/json", // Cambié a json porque no parece necesario multipart
           },
         }
       );
-
       return response.data; // Aquí espero que response.data contenga un campo `success` y `message` desde el backend.
     } catch (error) {
       // Verifica si el error es de red (servidor caído o no accesible)
@@ -117,40 +119,38 @@ export default function DeleteVehicle() {
   };
 
   return (
-    <>
-      <Container>
-        <FormContainer style={{ margin: "30px 0" }}>
-          <Title>Eliminar un Vehículo</Title>
-          <StyledForm onSubmit={handleFormSubmit}>
-            <SectionTitle style={{ color: "#d70000" }}>
-              Esta acción es irreversible y no se podrá recuperar el registro
-              eliminado.
-            </SectionTitle>
-            <FormField>
-              <Label htmlFor="plate">
-                Placa <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Input
-                id="plate"
-                name="plate"
-                type="text"
-                placeholder={"AAA-1234"}
-                required={true}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-              />
-            </FormField>
-            <SubmitButton
-              type="submit"
-              disabled={
-                !inputValue.trim() || inputValue.trim() === lastSearchedValue
-              }
-            >
-              Eliminar
-            </SubmitButton>
-          </StyledForm>
-        </FormContainer>
-      </Container>
-    </>
+    <Container>
+      <FormContainer style={{ margin: "30px 0" }}>
+        <Title>Eliminar una Instalación</Title>
+        <StyledForm onSubmit={handleFormSubmit}>
+          <SectionTitle style={{ color: "#d70000" }}>
+            Esta acción es irreversible y no se podrá recuperar el registro
+            eliminado.
+          </SectionTitle>
+          <FormField>
+            <Label htmlFor="plate">
+              Nº de Factura <span style={{ color: "red" }}>*</span>
+            </Label>
+            <Input
+              id="plate"
+              name="plate"
+              type="text"
+              placeholder={"Ej. 001-001-123456789"}
+              required={true}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+          </FormField>
+          <SubmitButton
+            type="submit"
+            disabled={
+              !inputValue.trim() || inputValue.trim() === lastSearchedValue
+            }
+          >
+            Eliminar
+          </SubmitButton>
+        </StyledForm>
+      </FormContainer>
+    </Container>
   );
 }

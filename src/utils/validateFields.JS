@@ -44,6 +44,22 @@ export const validateFields = {
 
     return null;
   },
+  invoiceNumber: (value) => {
+    const regex = /^\d{3}-\d{3}-\d{9}$/; // Tres números, guion, tres números, guion, nueve números
+    if (!value) return "El número de factura es obligatorio.";
+    if (!regex.test(value))
+      return "El formato del número de factura debe ser 001-001-123456789.";
+    if (value.length !== 17)
+      return "El número de factura debe tener exactamente 17 caracteres.";
+    return null;
+  },
+
+  technicalFileNumber: (value) => {
+    const regex = /^\d*$/; // Solo números
+    if (value && !regex.test(value))
+      return "El número de ficha técnica solo puede contener números.";
+    return null; // No es obligatorio
+  },
 
   technicianName: (value) => {
     const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/; // Permite letras (incluidas con tildes) y espacios
@@ -76,7 +92,7 @@ export const validateFields = {
     return null;
   },
 
-  File: (file) => {
+  PhotoUrl: (file) => {
     const maxSize = 1 * 1024 * 1024; // 1MB
     if (file && file.size > maxSize)
       return "La imagen debe pesar menos de 1MB.";

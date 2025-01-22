@@ -15,11 +15,13 @@ const ResgisterIntallations = React.lazy(() => import("./Pages/RegisterInstallat
 
 const SearchCards = React.lazy(() => import("./Pages/SearchCards"));
 const SearchPlate = React.lazy(() => import("./Pages/SearchPlate"));
-const SearchOwner = React.lazy(() => import("./Pages/SearchOwner"));
 const InstallationsTable = React.lazy(() => import("./Pages/InstallationsTable"));
 
+const DeleteCards = React.lazy(() => import("./Pages/DeleteCards"));
 const DeleteVehicle = React.lazy(() => import("./Pages/DeleteVehicle"));
+const DeleteInstallation = React.lazy(() => import("./Pages/DeleteInstallation"));
 
+const Home = React.lazy(() => import("./Pages/Home"));
 const NotFound = React.lazy(() => import("./Pages/NotFound"));
 
 function App() {
@@ -50,22 +52,26 @@ function App() {
         >
           <Routes>
             <Route path="*" element={<NotFound />} />
-            <Route path="/" element={<RegisterCards />} />
+            <Route path="/" element={<Home />} />
+
+            <Route path="/register" element={<RegisterCards />} />
             <Route path="/register-vehicle" element={<RegisterVehicle />} />
-            <Route path="/search-plate" element={<SearchPlate />} />
+            <Route path="/register-installation" element={<ResgisterIntallations />}/>
+
             <Route path="/search" element={<SearchCards />} />
-            <Route path="/search-owner" element={<SearchOwner />} />
+            <Route path="/search-plate" element={<SearchPlate />} />
+
             <Route path="/update" element={<RegisterUpdate />} />
-            <Route path="/delete" element={<DeleteVehicle />} />
+
+            <Route path="/delete" element={<DeleteCards />} />
+            <Route path="/delete-vehicle" element={<DeleteVehicle />} />
+            <Route path="/delete-installation" element={<DeleteInstallation />} />
+
             <Route
               path="/instllationsRecords"
               element={<InstallationsTable />}
             />
             <Route element={<ProtectedRoute isAllowed={true} />}>
-              <Route
-                path="/register-installation"
-                element={<ResgisterIntallations />}
-              />
             </Route>
           </Routes>
         </Suspense>

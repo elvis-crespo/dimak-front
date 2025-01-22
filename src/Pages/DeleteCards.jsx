@@ -4,13 +4,13 @@ import { ResponsiveContainerCard } from "../components/CustomFormStyled";
 import { LuFileSearch } from "react-icons/lu";
 
 
-export default function SearchCards() {
+export default function DeleteCards() {
   return (
     <>
       <ResponsiveContainerCard>
         <div>
-          <NavLink to="/search-plate">
-            <Card title={"Vehículo"} subtitle={"Buscar por Placa"}>
+          <NavLink to="/delete-vehicle">
+            <Card title={"Vehículo"} subtitle={"Elimina un Vehículo"}>
               <LuFileSearch
                 style={{ fontSize: "4em", paddingBottom: "10px" }}
               />
@@ -19,8 +19,8 @@ export default function SearchCards() {
         </div>
 
         <div>
-          <NavLink to="/instllationsRecords">
-            <Card title={"Instalación"} subtitle={"Busar por Número de Factura"}>
+          <NavLink to="/delete-installation">
+            <Card title={"Instalación"} subtitle={"Elimina una Instalación"}>
               <LuFileSearch
                 style={{ fontSize: "4em", paddingBottom: "10px" }}
               />

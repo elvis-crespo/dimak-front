@@ -5,21 +5,37 @@ import { useState } from "react";
 import { SearchInput } from "../components/SearchInput";
 import { API_BASE_URL } from "../utils/config";
 import Swal from "sweetalert2";
+import { validateFields } from "../utils/validateFields.js";
 
 export default function SearchPlate() {
   const columnsHeader = ["Placa", "Dueño", "Marca", "Modelo", "Año"];
   const columnKeys = ["plate", "ownerName", "brand", "model", "year"];
 
   const [inputValue, setInputValue] = useState("");
+  const [lastSearchedValue, setLastSearchedValue] = useState("");
   const [data, setData] = useState([]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (inputValue.trim() === lastSearchedValue) return;
+
+    // Validar la placa antes de enviar
+    const validationError = validateFields.plate(inputValue.trim());
+    if (validationError) {
+      Swal.fire({
+        icon: "error",
+        title: "Error de Validación",
+        text: validationError,
+      });
+      return;
+    }
+
     const response = await handleFetch();
 
     if (response.isSuccess === true) {
-      const transform = [response.data]; 
+      const transform = [response.data];
       setData(transform);
+      setLastSearchedValue(inputValue.trim()); // Actualiza el último valor buscado.
     }
   };
 
@@ -55,8 +71,6 @@ export default function SearchPlate() {
         });
       }
 
-      console.error("Error deleting vehicle:", error);
-
       return error.response.data;
     }
   };
@@ -68,11 +82,14 @@ export default function SearchPlate() {
           handleSubmit={handleSubmit}
           inputValue={inputValue}
           setInputValue={setInputValue}
+          disabled={
+            !inputValue.trim() || inputValue.trim() === lastSearchedValue
+          }
           text={"Placa AAA-1234"}
         />
         {data && data.length > 0 && (
           <>
-          <Title>Resultados de la busqueda:</Title>
+            <Title>Resultados de la busqueda:</Title>
             <CustomerTable
               data={data}
               columnsHeader={columnsHeader}
