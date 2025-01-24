@@ -66,8 +66,6 @@ export default function SearchFactura() {
           },
         }
       );
-      console.log("mis datos ", response.data.installationRecords);
-      console.log("mis datos 2", response.data);
       return response.data;
     } catch (error) {
       // Verifica si el error es de red (servidor caído o no accesible)
@@ -86,8 +84,6 @@ export default function SearchFactura() {
           text: `${error.response.data?.message || error.message}`,
         });
       }
-
-      console.error("Error deleting vehicle:", error);
 
       return error.response.data;
     }

@@ -101,7 +101,6 @@ const TableBody = styled.tbody`
 
 export const CustomerTable = ({ data, columnsHeader, columnKeys }) => {
   // const columns = columnsHeader.map((column) => column.toLowerCase());
-  console.log(data);
   const { handleFetchDelete } = useDeleteVehicle();
 
   return (

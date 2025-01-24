@@ -1,8 +1,8 @@
 import { NavLink } from "react-router-dom";
 import { Card } from "../components/Card";
+import { MdOutlineDeleteOutline } from "react-icons/md";
+import { MdOutlineDeleteSweep } from "react-icons/md";
 import { ResponsiveContainerCard } from "../components/CustomFormStyled";
-import { LuFileSearch } from "react-icons/lu";
-
 
 export default function DeleteCards() {
   return (
@@ -11,7 +11,7 @@ export default function DeleteCards() {
         <div>
           <NavLink to="/delete-vehicle">
             <Card title={"Vehículo"} subtitle={"Elimina un Vehículo"}>
-              <LuFileSearch
+              <MdOutlineDeleteSweep
                 style={{ fontSize: "4em", paddingBottom: "10px" }}
               />
             </Card>
@@ -21,7 +21,7 @@ export default function DeleteCards() {
         <div>
           <NavLink to="/delete-installation">
             <Card title={"Instalación"} subtitle={"Elimina una Instalación"}>
-              <LuFileSearch
+              <MdOutlineDeleteOutline 
                 style={{ fontSize: "4em", paddingBottom: "10px" }}
               />
             </Card>

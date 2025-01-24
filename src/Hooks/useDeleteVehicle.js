@@ -103,8 +103,6 @@ const useDeleteVehicle = () => {
           }`,
         });
       }
-
-      console.error("Error deleting vehicle:", error);
     }
   };
 
