@@ -3,7 +3,7 @@ import { Logo } from "../assets/images/Logo";
 import { Container } from "../components/CustomFormStyled";
 
 export default function Home() {
-  const theme = useSelector((state) => state.theme.theme); // dark or light string
+  const theme = useSelector((state) => state.theme.theme); 
   return (
     <Container>
       <Logo

@@ -246,7 +246,7 @@ export const Sidebar = ({ theme }) => {
             {isExpanded ? <MdOutlineArrowBackIos /> : <MdArrowForwardIos />}
           </Toggle>
           <DarkModeToggle
-            isDarkMode={theme === "dark"}
+            isDarkMode={theme === "light" ? false : true}
             onToggle={() => dispatch(toggleTheme())}
           />
         </Footer>

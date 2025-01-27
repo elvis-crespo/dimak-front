@@ -90,6 +90,7 @@ export const FormContainer = styled.div`
   border-radius: 10px;
   border: 0px solid #fff;
   inline-size: 100%;
+  font-family: ${themeTypography.fontFamily};
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2),
     0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgb(0 0 0 / 32%);
 `;
@@ -102,6 +103,19 @@ export const Title = styled.h1`
   color: ${({ theme }) => theme.text};
   line-height: 1.3em;
   font-weight: 500;
+  font-size: clamp(1.8rem, 1.2rem, 1rem);
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 1rem;
+  }
 `;
 
 export const SectionTitle = styled.div`

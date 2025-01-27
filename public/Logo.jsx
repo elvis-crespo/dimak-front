@@ -16,7 +16,7 @@ const Path3 = styled.path`
 `;
 export const Logo = ({ currentColor, currentColor2, currentWidth, currentHeight }) => {
   return (
-    <Link to="/home">
+    <Link >
       <svg
         width={currentWidth || "150"}
         height={currentHeight || "150"}
