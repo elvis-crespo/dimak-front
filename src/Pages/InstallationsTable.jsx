@@ -1,11 +1,10 @@
 import { Container, Title } from "../components/CustomFormStyled";
 import { CustomerTable } from "../components/CustomTable";
-import axios from "axios";
 import { useState } from "react";
 import { SearchInput } from "../components/SearchInput";
-import { API_BASE_URL } from "../utils/config";
 import Swal from "sweetalert2";
  import { validateFields } from "../utils/validateFields.JS";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function SearchFactura() {
   const columnsHeader = [
@@ -13,7 +12,7 @@ export default function SearchFactura() {
     "Nº de Factura",
     "Nº de ficha técnica",
     "Detalles de la Instalación",
-    "Tecnico",
+    "Técnico",
     "Fecha",
     "Foto",
   ];
@@ -58,8 +57,8 @@ export default function SearchFactura() {
   
   const handleFetch = async () => {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/installation/?invoiceNumber=${inputValue}`,
+      const response = await axiosInstance.get(
+        `/installation/?invoiceNumber=${inputValue}`,
         {
           headers: {
             "Content-Type": "application/json",

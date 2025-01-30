@@ -1,18 +1,22 @@
 /* eslint-disable react/prop-types */
 import styled from "styled-components";
 import { FaRegAddressBook } from "react-icons/fa";
-import { MdArrowForwardIos, MdExitToApp, MdOutlineArrowBackIos, MdOutlineMenu } from "react-icons/md";
+import {
+  MdArrowForwardIos,
+  MdOutlineArrowBackIos,
+  MdOutlineMenu,
+} from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 import { AiOutlineDelete } from "react-icons/ai";
 import { RxUpdate } from "react-icons/rx";
-import { Logo } from "../assets/images/Logo";
-import { Logomin } from "../assets/images/Logomin";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { themeTypography } from "../utils/themes";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import DarkModeToggle, { Toggle } from "../utils/DarkModeToggle";
-import { toggleTheme } from "../redux/themeReducer";
+import { setSystemTheme, toggleTheme } from "../redux/themeReducer";
+import { Logomin } from "../../public/Logomin";
+import { LogoDark, LogoLight } from "../../public/Logo";
 
 const SidebarContainer = styled.div`
   width: ${(props) => (props.$isExpanded ? "250px" : "80px")};
@@ -108,10 +112,8 @@ const MenuItem = styled.li`
 const SideBarOpen = styled.div`
   display: none;
   position: fixed;
-  top: 0;
-  right: 0;
-  // top: 10px;
-  // right: 10px;
+  top: 10px;
+  left: 10px;
   cursor: pointer;
   z-index: 999;
   @media (max-width: 920px) {
@@ -134,13 +136,13 @@ const Footer = styled.div`
   align-items: center;
 `;
 
-export const Sidebar = ({ theme }) => {
+export const Sidebar = ({ theme, isAdmin }) => {
   const [isExpanded, setIsExpanded] = useState(true);
-   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const sidebarRef = useRef(null);
   const toggleButtonRef = useRef(null);
   const dispatch = useDispatch();
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const toggleSidebar = (e) => {
@@ -152,7 +154,7 @@ export const Sidebar = ({ theme }) => {
   };
   const handleLogout = () => {
     setIsSidebarVisible(false);
-  }
+  };
   const handleClickOutside = (e) => {
     if (
       sidebarRef.current &&
@@ -165,22 +167,52 @@ export const Sidebar = ({ theme }) => {
     }
   };
 
-   const handleMenuItemClick = (path) => {
-     navigate(path); // Redirige a la ruta deseada
-   };
+  const handleMenuItemClick = (path) => {
+    navigate(path); // Redirige a la ruta deseada
+  };
 
   useEffect(() => {
-     setIsSidebarVisible(false);
+    setIsSidebarVisible(false);
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    // Función para actualizar el tema basado en la preferencia del sistema
+    const handleSystemThemeChange = (e) => {
+      const newTheme = e.matches ? "dark" : "light";
+      // Solo actualizamos el estado si el usuario no ha cambiado el tema manualmente
+      if (localStorage.getItem("theme") !== newTheme) {
+        dispatch(setSystemTheme(newTheme)); // Actualiza el tema en el estado global de Redux
+      }
+    };
+
+    // Inicializa el tema al cargar la página
+    // Este paso también lee desde localStorage, si el usuario ha hecho cambios manuales
+    const initialTheme = localStorage.getItem("theme");
+    if (initialTheme) {
+      dispatch(setSystemTheme(initialTheme)); // Aplica el tema guardado en localStorage
+    } else {
+      handleSystemThemeChange(mediaQuery);
+    }
+
+    // Escucha los cambios del sistema
+    mediaQuery.addEventListener("change", handleSystemThemeChange);
+
+    // Limpieza del efecto cuando el componente se desmonta
+    return () => {
+      mediaQuery.removeEventListener("change", handleSystemThemeChange);
+    };
+  }, [dispatch]);
+
   return (
     <>
       <SideBarOpen onClick={toggleSidebarVisibility}>
-        {isSidebarVisible ? <MdExitToApp /> : <MdOutlineMenu />}
+        {isSidebarVisible ? "" : <MdOutlineMenu />}
       </SideBarOpen>
       <SidebarContainer
         $isExpanded={isExpanded}
@@ -190,7 +222,20 @@ export const Sidebar = ({ theme }) => {
         <div>
           <LogoContainer>
             {isExpanded ? (
-              <Logo />
+              theme === "dark" ? (
+                <LogoDark
+                  currentcolor={"#888888"}
+                  currentCursor={"pointer"}
+                  redirectTo={"/home"}
+                />
+              ) : (
+                <LogoLight
+                  currentcolor={"#ff5757"}
+                  currentcolor2={"white"}
+                  currentCursor={"pointer"}
+                  redirectTo={"/home"}
+                />
+              )
             ) : (
               <Logomin currentColor={theme === "dark" ? "#fff" : "#000"} />
             )}
@@ -229,16 +274,18 @@ export const Sidebar = ({ theme }) => {
               </NavLink>
             </MenuItem>
 
-            <MenuItem
-              $isExpanded={isExpanded}
-              $isActive={location.pathname === "/delete"}
-              onClick={() => handleMenuItemClick("/delete")}
-            >
-              <NavLink to="/delete" onClick={handleLogout}>
-                <AiOutlineDelete title="Eliminar" />
-                {isExpanded && <span>Eliminar</span>}
-              </NavLink>
-            </MenuItem>
+            {isAdmin && (
+              <MenuItem
+                $isExpanded={isExpanded}
+                $isActive={location.pathname === "/delete"}
+                onClick={() => handleMenuItemClick("/delete")}
+              >
+                <NavLink to="/delete" onClick={handleLogout}>
+                  <AiOutlineDelete title="Eliminar" />
+                  {isExpanded && <span>Eliminar</span>}
+                </NavLink>
+              </MenuItem>
+            )}
           </Menu>
         </div>
         <Footer>

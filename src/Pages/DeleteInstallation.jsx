@@ -10,10 +10,9 @@ import {
   SubmitButton,
   Title,
 } from "../components/CustomFormStyled";
-import axios from "axios";
 import { useState } from "react";
 import { validateFields } from "../utils/validateFields";
-import { API_BASE_URL } from "../utils/config";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function DeleteInstallation() {
 
@@ -78,8 +77,8 @@ export default function DeleteInstallation() {
 
   const handleFetch = async () => {
     try {
-      const response = await axios.delete(
-        `${API_BASE_URL}/installation/delete?invoiceNumber=${inputValue}`,
+      const response = await axiosInstance.delete(
+        `/installation/delete?invoiceNumber=${inputValue}`,
         {
           headers: {
             "Content-Type": "application/json", // Cambié a json porque no parece necesario multipart
@@ -120,7 +119,7 @@ export default function DeleteInstallation() {
 
   return (
     <Container>
-      <FormContainer style={{ margin: "30px 0" }}>
+      <FormContainer>
         <Title>Eliminar una Instalación</Title>
         <StyledForm onSubmit={handleFormSubmit}>
           <SectionTitle style={{ color: "#d70000" }}>

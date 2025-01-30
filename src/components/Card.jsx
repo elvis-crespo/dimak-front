@@ -88,7 +88,6 @@ const Name = styled.div`
   font-weight: 100;
   position: relative;
   top: 1em;
-  text-transform: lowercase;
   font-family: ${themeTypography.fontFamily};
 `;
 

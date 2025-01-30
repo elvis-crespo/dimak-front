@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import "./App.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ThemeProvider } from "styled-components";
 import { useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import { darkTheme, lightTheme } from "./utils/themes";
 import React, { Suspense, useState } from "react";
 import { Sidebar } from "./components/SideBar";
 import { useAuth } from "./Hooks/useAuth";
+import DropdownMenu from "./components/DropdownMenu";
 
 // Lazy loaded components
 const RegisterCards = React.lazy(() => import("./Pages/RegisterCards"));
@@ -34,10 +35,13 @@ const Login = React.lazy(() => import("./Pages/Login"));
 const NotFound = React.lazy(() => import("./Pages/NotFound"));
 
 function App() {
-  // const themes = useSelector((state) => state.theme); // dark or light object
   const theme = useSelector((state) => state.theme.theme); // dark or light string
   const { isLoggedIn } = useAuth();
-  console.log("isLoggedIn", isLoggedIn);
+
+   const { user } = useSelector((state) => state.user);
+   const isAdmin =
+     user?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ===
+     "Admin";
 
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
@@ -45,9 +49,15 @@ function App() {
         // basename={process.env.PUBLIC_URL}
         future={{
           v7_startTransition: true, // Habilitar la future flag
+          v7_relativeSplatPath: true,
         }}
       >
-        {isLoggedIn === true && <Sidebar theme={theme}></Sidebar>}
+        {isLoggedIn && (
+          <>
+            <Sidebar theme={theme} isAdmin={isAdmin}></Sidebar>
+            <DropdownMenu />
+          </>
+        )}
         <Suspense
           fallback={
             <div
@@ -57,21 +67,23 @@ function App() {
                 minHeight: "100vh",
               }}
             >
-              Loading... ❤️
+              Loading... Please wait
             </div>
           }
         >
           <Routes>
             <Route path="*" element={<NotFound />} />
-            <Route path="/" element={<Login />} />
+            {isLoggedIn ? (
+              <Route path="/" element={<Navigate to="/home" />} />
+            ) : (
+              <Route path="/" element={<Login />} />
+            )}
 
-            <Route element={<ProtectedRoute isAllowed = { isLoggedIn } />}>
-              <Route path="/delete" element={<DeleteCards />} />
-              <Route path="/delete-vehicle" element={<DeleteVehicle />} />
-              <Route
-                path="/delete-installation"
-                element={<DeleteInstallation />}
-              />
+            <Route
+              element={
+                <ProtectedRoute isAllowed={isLoggedIn} isAdmin={isAdmin} />
+              }
+            >
               <Route path="/home" element={<Home />} />
 
               <Route path="/register" element={<RegisterCards />} />
@@ -84,11 +96,22 @@ function App() {
               <Route path="/search" element={<SearchCards />} />
               <Route path="/search-plate" element={<SearchPlate />} />
 
-              <Route path="/update" element={<RegisterUpdate />} />
               <Route
                 path="/instllationsRecords"
                 element={<InstallationsTable />}
               />
+              <Route path="/update" element={<RegisterUpdate />} />
+
+              {isAdmin && (
+                <>
+                  <Route path="/delete" element={<DeleteCards />} />
+                  <Route path="/delete-vehicle" element={<DeleteVehicle />} />
+                  <Route
+                    path="/delete-installation"
+                    element={<DeleteInstallation />}
+                  />
+                </>
+              )}
             </Route>
           </Routes>
         </Suspense>

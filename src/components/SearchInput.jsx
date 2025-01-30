@@ -5,17 +5,20 @@ import { themeTypography } from "../utils/themes";
 
 const FormContainer = styled.form`
   display: flex;
+  flex-direction: row; /* Por defecto en fila */
   gap: 10px;
   position: relative;
   width: 400px;
   height: 45px;
-  margin: 80px 30px;
+  margin: 110px 30px 80px 30px;
   font-family: ${themeTypography.fontFamily};
+  
   .button {
     display: flex;
     align-items: center;
     justify-content: center;
   }
+
   input {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 100%;
@@ -61,9 +64,21 @@ const FormContainer = styled.form`
     color: ${({ theme }) => theme.labelText};
     transition: 0.5s;
   }
+
+  /* Media query para pantallas pequeñas */
+  @media (max-width: 600px) {
+    flex-direction: column; /* Cambiar la dirección del formulario a columna */
+    width: 90%; /* Ajustar el ancho */
+    // margin: 50px auto; /* Centrar en la pantalla */
+    height: auto; /* Ajustar la altura según el contenido */
+
+    .button {
+      margin-top: 10px; /* Espaciado entre los elementos */
+    }
+  }
 `;
 
-export const SearchInput = ({handleSubmit, inputValue, setInputValue, text}) => {
+export const SearchInput = ({ handleSubmit, inputValue, setInputValue, text }) => {
   return (
     <FormContainer onSubmit={handleSubmit}>
       <input

@@ -13,11 +13,10 @@ import {
   Title,
 } from "../components/CustomFormStyled";
 
-import axios from "axios";
-import { API_BASE_URL } from "../utils/config";
 import Swal from "sweetalert2";
 import { useState } from "react";
 import { validateFields } from "../utils/validateFields.JS";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function RegisterInstallations() {
   const { values, handleChange, resetForm } = useForm({
@@ -113,11 +112,11 @@ export default function RegisterInstallations() {
 
   const HandleFetch = async (formData) => {
     // const url = `${API_BASE_URL}/installation/save?plate=${values.plate}&InstallationCompleted=${values.installationCompleted}&TechnicianName=${values.technicianName}&Date=${values.date}`;
-    const url = `${API_BASE_URL}/installation/save?plate=${values.plate}`;
+    const url = `/installation/save?plate=${values.plate}`;
 
     try {
       // Enviar solicitud con Axios
-      const response = await axios.post(url, formData, {
+      const response = await axiosInstance.post(url, formData, {
         headers: {
           "Content-Type": "multipart/form-data", // Indicar que es un envío con archivos
         },
@@ -236,7 +235,7 @@ export default function RegisterInstallations() {
             <Input
               id="date"
               name="date"
-              type="datetime-local"
+              type="date"
               required
               value={values.date}
               onChange={handleChange}

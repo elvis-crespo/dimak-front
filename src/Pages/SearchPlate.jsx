@@ -1,14 +1,13 @@
 import { Container, Title } from "../components/CustomFormStyled";
 import { CustomerTable } from "../components/CustomTable";
-import axios from "axios";
 import { useState } from "react";
 import { SearchInput } from "../components/SearchInput";
-import { API_BASE_URL } from "../utils/config";
 import Swal from "sweetalert2";
 import { validateFields } from "../utils/validateFields.js";
+import axiosInstance from "../utils/axiosInstance.js";
 
 export default function SearchPlate() {
-  const columnsHeader = ["Placa", "Dueño", "Marca", "Modelo", "Año"];
+  const columnsHeader = ["Placa", "Propietario", "Marca", "Modelo", "Año"];
   const columnKeys = ["plate", "ownerName", "brand", "model", "year"];
 
   const [inputValue, setInputValue] = useState("");
@@ -42,8 +41,8 @@ export default function SearchPlate() {
 
   const handleFetch = async () => {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/vehicle/search-plate?plate=${inputValue}`,
+      const response = await axiosInstance.get(
+        `/vehicle/search-plate?plate=${inputValue}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -61,7 +60,6 @@ export default function SearchPlate() {
           text: "¡Hubo un problema al conectar con el servidor! Verifica si el servidor está en ejecución.",
         });
       } else {
-        // Si hay una respuesta del servidor con un error (404, 500, etc.)
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -91,6 +89,7 @@ export default function SearchPlate() {
           <>
             <Title>Resultados de la busqueda:</Title>
             <CustomerTable
+              showActions={true}
               data={data}
               columnsHeader={columnsHeader}
               columnKeys={columnKeys}

@@ -10,10 +10,9 @@ import {
   SubmitButton,
   Title,
 } from "../components/CustomFormStyled";
-import axios from "axios";
 import { useState } from "react";
 import { validateFields } from "../utils/validateFields";
-import { API_BASE_URL } from "../utils/config";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function DeleteVehicle() {
   const [inputValue, setInputValue] = useState("");
@@ -75,8 +74,8 @@ export default function DeleteVehicle() {
 
   const handleFetch = async () => {
     try {
-      const response = await axios.delete(
-        `${API_BASE_URL}/vehicle/delete?plate=${inputValue}`,
+      const response = await axiosInstance.delete(
+        `/vehicle/delete?plate=${inputValue}`,
         {
           headers: {
             "Content-Type": "application/json", // Cambié a json porque no parece necesario multipart
@@ -119,7 +118,7 @@ export default function DeleteVehicle() {
   return (
     <>
       <Container>
-        <FormContainer style={{ margin: "30px 0" }}>
+        <FormContainer>
           <Title>Eliminar un Vehículo</Title>
           <StyledForm onSubmit={handleFormSubmit}>
             <SectionTitle style={{ color: "#d70000" }}>

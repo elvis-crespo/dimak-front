@@ -7,13 +7,14 @@ import {
   SectionTitle,
   Title,
 } from "../components/CustomFormStyled";
-import { Logo } from "../assets/images/Logo";
 import Button from "../components/Button";
 import { useState } from "react";
 import { loginUser } from "../redux/userReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../Hooks/useAuth";
+import { LuEyeClosed, LuEye } from "react-icons/lu";
+import { LogoDark } from "../../public/Logo";
+import { themeTypography } from "../utils/themes";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -42,66 +43,55 @@ const LoginContainer = styled.div`
 `;
 
 const Container = styled(FormContainer)`
-  //   background: rgba(254, 254, 254, 0.14);
-  //   border-radius: 16px;
-  //   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  //   backdrop-filter: blur(11.5px);
-  //   -webkit-backdrop-filter: blur(11.5px);
-  //   border: 1px solid rgba(254, 254, 254, 0.16);
-  /* From https://css.glass */
-  /* From https://css.glass */
-  //   background: rgba(0, 0, 0, 0.35);
-  //   border-radius: 16px;
-  //   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  //   backdrop-filter: blur(11.5px);
-  //   -webkit-backdrop-filter: blur(11.5px);
-  //   border: 1px solid rgba(0, 0, 0, 0.16);
-
-  /* From https://css.glass */
-  background: rgba(255, 255, 255, 0);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(11.5px);
-  -webkit-backdrop-filter: blur(11.5px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-
-  /* From https://css.glass */
   background: rgba(255, 255, 255, 0.12);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(11.5px);
   -webkit-backdrop-filter: blur(11.5px);
   border: 1px solid rgba(255, 255, 255, 0.16);
+`;
 
-//   /* From https://css.glass */
-//   background: rgba(255, 255, 255, 0.12);
-//   border-radius: 16px;
-//   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-//   backdrop-filter: blur(14.1px);
-//   -webkit-backdrop-filter: blur(14.1px);
-//   border: 1px solid rgba(255, 255, 255, 0.26);
-
-//   /* From https://css.glass */
-//   background: rgba(0, 0, 0, 0.41);
-//   border-radius: 16px;
-//   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-//   backdrop-filter: blur(9px);
-//   -webkit-backdrop-filter: blur(9px);
-//   border: 1px solid rgba(0, 0, 0, 0.26);
+const ErrorMessage = styled.div`
+  font-family: ${themeTypography.fontFamily};
+  color: #FF0000;
+  text-align: center;
+  border: 1px solid red;
+  padding: 0.5rem;
+  border-radius: 5px;
+  width: 100%;
+  margin-top: 1rem;
 `;
 
 export default function Login() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [passwordValid, setPasswordValid] = useState(true);
+
+ const handleUserNameChange = (event) => {
+   const value = event.target.value;
+   const regex = /^[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9_-]*$/;
+
+   if (regex.test(value) && !value.includes(" ")) {
+     setUserName(value);
+   }
+ };
+
+ const handlePasswordChange = (event) => {
+   const value = event.target.value;
+   setPassword(value);
+
+   // Validación más simple para la contraseña
+   const regex = /^(?=.*[a-zA-Z])(?=.*\d|[!@#$%^&*()_+-=[]{}|;:,.<>?]).{6,}$/;
+   setPasswordValid(regex.test(value) && !value.includes(" ")); // Establecer el estado de validez
+ };
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const { isLoggedIn } = useAuth();
-  if (isLoggedIn) {
-    navigate("/home");
-    return null;
-  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -109,64 +99,108 @@ export default function Login() {
       userName,
       password,
     };
-    
+
     dispatch(loginUser(userCred)).then((result) => {
       if (result.payload) {
-        console.log(result.payload);
         setUserName("");
         setPassword("");
         navigate("/home");
       }
     });
-
-
-    
   };
 
-  // Obtener el token y decodificarlo
-  // useEffect(() => {
-  //   const token = sessionStorage.getItem("idToken");
-  //   if (token) {
-  //     const userInfo = jwtDecode(token);
-  //     setUserInf(userInfo);
-  //     console.log("userInfo", userInfo);
-  //   }
-  // }, []);
+  const { isLoading, error } = useSelector((state) => state.user);
 
   return (
     <>
       <LoginContainer>
         <Container as={"form"} onSubmit={handleLogin}>
-          <Title style={{ marginBottom: "0", textTransform: "uppercase" }}>
+          <Title
+            style={{
+              marginBottom: "0",
+              textTransform: "uppercase",
+              color: "#e7e7e7",
+            }}
+          >
             Inicio de Sesión
           </Title>
-          <Logo />
-          <SectionTitle style={{ textAlign: "center" }}>
+          <LogoDark currentWidth={"200px"} currentHeight={"200px"} />
+          <SectionTitle
+            style={{ textAlign: "center", backgroundColor: "#6d6d6d" }}
+          >
             Sistema Integral de Instalaciones Vehiculares
           </SectionTitle>
           <FormField style={{ marginTop: "1.5rem" }}>
-            <Label htmlFor="username">Usuario</Label>
+            <Label htmlFor="username" style={{ color: "#ffffffab" }}>
+              Usuario
+            </Label>
             <Input
+              style={{ backgroundColor: "#b0b0b0" }}
               id="username"
               type="text"
               placeholder="Usuario"
+              autoComplete="username"
               value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              onChange={handleUserNameChange}
             />
           </FormField>
+
           <FormField style={{ marginTop: "1.5rem" }}>
-            <Label htmlFor="password">Contraseña</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <Label htmlFor="password" style={{ color: "#ffffffab" }}>
+              Contraseña
+            </Label>
+            <div style={{ position: "relative" }}>
+              <Input
+                style={{
+                  backgroundColor: "#b0b0b0",
+                  width: "100%",
+                }}
+                id="password"
+                type={isPasswordVisible ? "text" : "password"}
+                placeholder="Contraseña"
+                autoComplete="current-password"
+                value={password}
+                onChange={handlePasswordChange}
+              />
+
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  right: "10px",
+                  transform: "translateY(-50%)",
+                  cursor: "pointer",
+                }}
+                onClick={togglePasswordVisibility}
+              >
+                {isPasswordVisible ? (
+                  <LuEye style={{ width: "25px", height: "25px" }} />
+                ) : (
+                  <LuEyeClosed style={{ width: "25px", height: "25px" }} />
+                )}
+              </div>
+            </div>
           </FormField>
+          {!passwordValid && (
+            // <ErrorMessage style={{ color: "#ff0000", padding: "0.5rem", fontSize: "1.1rem" }}>
+            <ErrorMessage>
+              La contraseña debe tener al menos 6 caracteres, incluir un número
+              o carácter especial, y no puede tener espacios.
+            </ErrorMessage>
+          )}
+
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <Button text="Iniciar Sesión" type="submit" />
+            <Button
+              // text={"Iniciar Sesión"}
+              text={isLoading ? "Loading..." : "Iniciar Sesión"}
+              type="submit"
+            />
           </div>
+          {error && (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <ErrorMessage>{error}</ErrorMessage>
+            </div>
+          )}
         </Container>
       </LoginContainer>
     </>

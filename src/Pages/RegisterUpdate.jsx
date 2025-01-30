@@ -12,8 +12,7 @@ import {
   Title,
 } from "../components/CustomFormStyled";
 import { useForm } from "../Hooks/useForm";
-import axios from "axios";
-import { API_BASE_URL } from "../utils/config";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function RegisterUpdate() {
   const menuItems = [
@@ -35,7 +34,7 @@ export default function RegisterUpdate() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-   
+
     // Confirmación de SweetAlert
     Swal.fire({
       title: "¿Quieres guardar los cambios?",
@@ -73,20 +72,18 @@ export default function RegisterUpdate() {
   };
 
   const handleFetch = async () => {
-
     try {
-      const response = await axios.put(
-        `${API_BASE_URL}/vehicle/update?plate=${values.plate}`, 
+      const response = await axiosInstance.put(
+        `/vehicle/update?plate=${values.plate}`,
         values,
         {
           headers: {
-            "Content-Type": "application/json", 
+            "Content-Type": "application/json",
           },
         }
       );
 
       return response.data; // Aquí espero que response.data contenga un campo `success` y `message` desde el backend.
-
     } catch (error) {
       // Verifica si el error es de red (servidor caído o no accesible)
       if (error.message === "Network Error" || error.code === "ECONNREFUSED") {
@@ -121,7 +118,7 @@ export default function RegisterUpdate() {
   return (
     <>
       <Container>
-        <FormContainer style={{ margin: "30px 0" }}>
+        <FormContainer>
           <Title>Actualizar datos de Vehículo</Title>
           <StyledForm onSubmit={handleFormSubmit}>
             <SectionTitle>Detalles del Vehículo</SectionTitle>
@@ -142,7 +139,7 @@ export default function RegisterUpdate() {
 
             <FormField>
               <Label htmlFor="ownerName">
-                Nombre del Dueño <span style={{ color: "red" }}>*</span>
+                Nombre del Cliente <span style={{ color: "red" }}>*</span>
               </Label>
               <Input
                 id="ownerName"

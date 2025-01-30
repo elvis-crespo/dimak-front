@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { themeTypography } from "../utils/themes";
 
 export const Container = styled.div`
-  // position: relative;
   background-color: ${({ theme }) => theme.background};
   color: ${({ theme }) => theme.text};
   // max-width: 64rem;
@@ -28,45 +27,6 @@ export const Container = styled.div`
     var(--g2) var(--s) calc(1.73 * var(--s)), var(--g3) var(--s) 0,
     var(--g3) 0 calc(1.73 * var(--s)) ${({ theme }) => theme.bgContainer2};
   background-size: calc(2 * var(--s)) calc(3.46 * var(--s));
-
-  // content: "";
-  // position: absolute;
-  // top: 0;
-  // left: 0;
-  // width: 100%;
-  // height: 100%;
-  // background-image: radial-gradient(
-  //   rgba(255, 255, 255, 0.171) 2px,
-  //   transparent 0
-  // );
-
-  // width: 100%;
-  // height: 100%;
-  // /* Add your background pattern here */
-  // background-color: #313131;
-  // background-image: radial-gradient(rgba(255, 255, 255, 0.171) 2px, transparent 0);
-  // background-size: 30px 30px;
-  // background-position: -5px -5px
-  // background-size: 30px 30px;
-
-  // width: 100%;
-  // height: 100%;
-  // /* Add your background pattern here */
-  // background-color:rgb(219, 219, 219);
-  // background-image: radial-gradient(rgba(0, 0, 0, 0.17) 2px, transparent 0);
-  // background-size: 30px 30px;
-  // background-position: -5px -5px
-  // background-size: 30px 30px;
-
-  // width: 100%;
-  // height: 100%;
-  // /* Add your background pattern here */
-  // background-color:${({ theme }) => theme.bgContainer};
-  // background-image: radial-gradient(${({ theme }) =>
-    theme.bgContainer2} 2px, transparent 0);
-  // background-size: 30px 30px;
-  // background-position: -5px -5px
-  // background-size: 30px 30px;
 `;
 export const ResponsiveContainerCard = styled(Container)`
   justify-content: space-evenly;
@@ -75,10 +35,8 @@ export const ResponsiveContainerCard = styled(Container)`
 
   @media (max-width: 920px) {
     flex-direction: column;
-  }
-
-  @media (max-width: 570px) {
-    flex-direction: column;
+    // padding: 1rem;
+    padding: 80px;
   }
 `;
 
@@ -93,6 +51,9 @@ export const FormContainer = styled.div`
   font-family: ${themeTypography.fontFamily};
   box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2),
     0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgb(0 0 0 / 32%);
+  @media (max-width: 920px) {
+    margin: 80px auto;
+  }
 `;
 
 export const Title = styled.h1`
@@ -171,35 +132,6 @@ export const Input = styled.input`
 export const InputFile = styled(Input)`
   color: #000;
 `;
-// const FormField = styled.div`
-//   padding-top: 6px;
-//   padding-bottom: 6px;
-//   border-width: 2px;
-//   display: flex;
-//   flex-direction: column;
-//   gap: 0.5rem;
-// `;
-
-// const Label = styled.label`
-//   font-size: 1rem;
-//   line-height: 1.3em;
-//   font-weight: 500;
-//   margin-bottom: 0px;
-//   color: rgb(35, 36, 38);
-// `;
-
-// const Input = styled.input`
-//   padding: 0.5rem;
-//   font-size: 1rem;
-//   border: 1px solid #ccc;
-//   border-radius: 5px;
-
-//   &:focus {
-//     border-color: #007bff;
-//     outline: none;
-//     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
-//   }
-// `;
 
 export const Select = styled.select`
   padding: 0.5rem;
@@ -222,6 +154,8 @@ export const TextArea = styled.textarea`
   border-radius: 5px;
   resize: vertical;
   word-break: break-word;
+  field-sizing: content;
+  padding: 0.5rem;
   background-color: ${({ theme }) => theme.inputForm};
 
   &:focus {

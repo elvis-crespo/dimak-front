@@ -14,19 +14,14 @@ import {
 } from "../components/CustomFormStyled";
 import { useState } from "react";
 import { useForm } from "../Hooks/useForm";
-import axios from "axios";
 import styled from "styled-components";
 import Swal from "sweetalert2";
-import { API_BASE_URL } from "../utils/config";
-import { validateFields } from "../utils/validateFields.JS";
+import { validateFields } from "../utils/validateFields";
+import axiosInstance from "../utils/axiosInstance";
 
 const Layout = styled.div`
   display: flex;
   overflow-x: hidden;
-  // overflow-y: hidden;
-  // @media (max-width: 920px) {
-  //   min-height: 100vh;
-  // }
 `;
 
 export default function RegisterVehicle() {
@@ -60,6 +55,10 @@ export default function RegisterVehicle() {
     { label: "Land Rover", value: "land_rover" },
   ];
 
+  const [errors, setErrors] = useState({});
+  const [customBrand, setCustomBrand] = useState("");
+  const [isCustomBrandSelected, setIsCustomBrandSelected] = useState(false);
+
   const { values, handleChange, resetForm } = useForm({
     plate: "",
     ownerName: "",
@@ -74,9 +73,6 @@ export default function RegisterVehicle() {
     PhotoUrl: null, // Campo para el archivo
   });
 
-  // Estado para almacenar los errores de validación
-  const [errors, setErrors] = useState({});
-
   // Manejo del cambio del archivo
   const handleFileChange = (e) => {
     const file = e.target.files && e.target.files[0]; // Validar archivo
@@ -88,40 +84,41 @@ export default function RegisterVehicle() {
     values.PhotoUrl = file; // Guardar el archivo en los valores del formulario
   };
 
-  const resetFormAndFile = () => {
-    resetForm(); // Resetea los valores controlados por el hook
-    values.PhotoUrl = null; // Limpia el valor del archivo
-    const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
-    if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
-    setErrors({});
+  const handleBrandChange = (e) => {
+    const value = e.target.value;
+    handleChange(e);
+
+    if (value === "others") {
+      setIsCustomBrandSelected(true);
+      setCustomBrand(""); // Limpiar el campo cuando se elige "otros"
+    } else {
+      setIsCustomBrandSelected(false);
+      setCustomBrand(""); // También limpiamos en caso de volver a una opción normal
+    }
   };
-
-  
-  const [customBrand, setCustomBrand] = useState("");
-
 
   const handleCustomBrandChange = (e) => {
     e.preventDefault();
-    setCustomBrand(e.target.value); 
+    const value = e.target.value;
+    setCustomBrand(value);
   };
 
-
-  // Función para validar el formulario
   const validateForm = () => {
     const newErrors = {};
-    values.brand = customBrand;
-    // Validar cada campo usando las funciones de validación
+
+    values.brand = isCustomBrandSelected ? customBrand : values.brand;
+ 
     Object.keys(values).forEach((field) => {
       const error = validateFields[field](values[field]);
+      
       if (error) {
-        newErrors[field] = error; // Si hay error, lo agregamos al objeto newErrors
+        newErrors[field] = error; 
       }
     });
 
     return newErrors;
   };
 
-  // Lógica de envío del formulario con Axios
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
@@ -167,11 +164,11 @@ export default function RegisterVehicle() {
   };
 
   const HandleFetch = async (formData) => {
-    const url = `${API_BASE_URL}/vehicle/register`;
+    const url = `/vehicle/register`;
 
     try {
       // Enviar solicitud con Axios
-      const response = await axios.post(url, formData, {
+      const response = await axiosInstance.post(url, formData, {
         headers: {
           "Content-Type": "multipart/form-data", // Indicar que es un envío con archivos
         },
@@ -208,11 +205,20 @@ export default function RegisterVehicle() {
     }
   };
 
+  const resetFormAndFile = () => {
+     resetForm(); // Resetea los valores controlados por el hook
+     values.PhotoUrl = null; // Limpia el valor del archivo
+     setCustomBrand("");
+     const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
+     if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
+     setErrors({});
+  };
+
   return (
     <>
       <Layout>
         <Container id="register">
-          <FormContainer style={{ margin: "30px 0" }}>
+          <FormContainer>
             <Title>Registro de Vehículo</Title>
             <StyledForm onSubmit={handleFormSubmit}>
               <SectionTitle>Detalles del Vehículo</SectionTitle>
@@ -257,10 +263,8 @@ export default function RegisterVehicle() {
                 <Select
                   id="brand"
                   name="brand"
-                  value={values.brand || ""} // Asegura que tenga un valor inicial válido
-                  onChange={(e) => {
-                    handleChange(e); // Actualiza el estado
-                  }}
+                  value={values.brand || ""}
+                  onChange={handleBrandChange}
                 >
                   <option value="" disabled>
                     Selecciona una marca
@@ -274,7 +278,7 @@ export default function RegisterVehicle() {
                 </Select>
               </FormField>
 
-              {values.brand === "others" && (
+              {isCustomBrandSelected && (
                 <FormField>
                   <Label htmlFor="customBrand">Marca Personalizada</Label>
                   <Input
@@ -297,7 +301,6 @@ export default function RegisterVehicle() {
                   name="model"
                   type="text"
                   placeholder={""}
-                  // required={false}
                   value={values.model}
                   onChange={handleChange}
                 />
@@ -363,7 +366,7 @@ export default function RegisterVehicle() {
 
               <FormField>
                 <Label htmlFor="technicianName">
-                  Tecnico <span style={{ color: "red" }}>*</span>
+                  Técnico <span style={{ color: "red" }}>*</span>
                 </Label>
                 <Input
                   id="technicianName"
@@ -386,10 +389,16 @@ export default function RegisterVehicle() {
                 <Input
                   id="date"
                   name="date"
-                  type="datetime-local"
+                  type="date"
                   placeholder={""}
                   required={true}
-                  value={values.date}
+                  value={
+                    values.date
+                      ? values.date.split("T")[0] +
+                        "T" +
+                        values.date.split("T")[1].slice(0, 5)
+                      : ""
+                  }
                   onChange={handleChange}
                 />
                 {errors.date && (
@@ -399,7 +408,7 @@ export default function RegisterVehicle() {
 
               <FormField>
                 <Label htmlFor="installationCompleted">
-                  Instalacion Completada
+                  Instalación Completada
                 </Label>
                 <TextArea
                   id="installationCompleted"
@@ -418,7 +427,7 @@ export default function RegisterVehicle() {
               </FormField>
 
               <FormField>
-                <Label htmlFor="installationPhoto">Foto de Instalacion</Label>
+                <Label htmlFor="installationPhoto">Foto de Instalación</Label>
                 <InputFile
                   id="installationPhoto"
                   name="installationPhoto"
