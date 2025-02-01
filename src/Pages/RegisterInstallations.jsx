@@ -15,7 +15,7 @@ import {
 
 import Swal from "sweetalert2";
 import { useState } from "react";
-import { validateFields } from "../utils/validateFields.JS";
+import { validateFields } from "../utils/validateFields.js";
 import axiosInstance from "../utils/axiosInstance";
 
 export default function RegisterInstallations() {
@@ -109,10 +109,11 @@ export default function RegisterInstallations() {
       }
     });
   };
+  console.log(values);
 
   const HandleFetch = async (formData) => {
     // const url = `${API_BASE_URL}/installation/save?plate=${values.plate}&InstallationCompleted=${values.installationCompleted}&TechnicianName=${values.technicianName}&Date=${values.date}`;
-    const url = `/installation/save?plate=${values.plate}`;
+    const url = `/installation/register?plate=${values.plate}`;
 
     try {
       // Enviar solicitud con Axios
@@ -237,7 +238,7 @@ export default function RegisterInstallations() {
               name="date"
               type="date"
               required
-              value={values.date}
+              value={values.date ? values.date.split("T")[0] : ""}
               onChange={handleChange}
             />
             {errors.date && <span style={{ color: "red" }}>{errors.date}</span>}

@@ -45,7 +45,7 @@ const Menu = styled.div`
   background-color: ${({ theme }) => theme.background};
   color: ${({ theme }) => theme.text};
   border-radius: 12px;
-  width: 250px;
+  width: 300px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
   padding: 10px;
   display: flex;
@@ -71,7 +71,7 @@ const MenuItem = styled.div`
   }
 
   &:hover {
-    background-color:rgba(241, 241, 241, 0.51);
+    background-color: rgba(241, 241, 241, 0.51);
   }
 
   &:last-child {
@@ -121,12 +121,15 @@ const DropdownMenu = () => {
     };
   }, []);
 
+  const letter = String(
+    user?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
+  )[0];
+
   return (
-    
     <DropdownContainer>
       {isLoggedIn ? (
         <ProfileButton onClick={toggleMenu} ref={toggleButtonRef}>
-          {user?.name?.[0] || "A"} {/* Inicial del nombre */}
+          {letter}
         </ProfileButton>
       ) : (
         <ProfileButton>?</ProfileButton>

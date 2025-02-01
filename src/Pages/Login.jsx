@@ -124,7 +124,10 @@ export default function Login() {
           >
             Inicio de Sesión
           </Title>
-          <LogoDark currentWidth={"200px"} currentHeight={"200px"} />
+          <LogoDark
+            currentWidth={"200px"}
+            currentHeight={"200px"}
+          />
           <SectionTitle
             style={{ textAlign: "center", backgroundColor: "#6d6d6d" }}
           >

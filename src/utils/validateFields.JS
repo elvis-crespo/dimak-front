@@ -71,24 +71,27 @@ export const validateFields = {
 
   date: (value) => {
     if (!value) return "La fecha es obligatoria.";
-    // Convertir la fecha a UTC
-    const date = new Date(value).toISOString(); // Esto convertirá la fecha en formato UTC
 
+    // Convertir el valor a una fecha estándar (formato YYYY-MM-DD)
+    const selectedDate = new Date(value + "T00:00:00");
+
+    // Obtener la fecha actual sin la hora
     const currentDate = new Date();
-    currentDate.setUTCHours(0, 0, 0, 0); // Establecer la hora actual a 00:00 en UTC
+    currentDate.setHours(0, 0, 0, 0);
 
-    // Comprobar si la fecha seleccionada es anterior a la fecha actual
-    if (new Date(date) < currentDate) {
+    // Comparar fechas sin hora
+    if (selectedDate < currentDate) {
       return "La fecha no puede ser anterior al día de hoy.";
     }
 
-    if (isNaN(new Date(date).getTime()))
+    if (isNaN(selectedDate.getTime())) {
       return "El formato de la fecha no es válido.";
+    }
+
     return null;
   },
-
   installationCompleted: (value) => {
-    const regex = /^[a-zA-Z0-9\s¿?()¡!ñÑáéíóúÁÉÍÓÚ´$+,.:-]*$/; // Ahora también permite los caracteres que pediste
+    const regex = /^[a-zA-Z0-9\s¿?()¡!ñÑáéíóúÁÉÍÓÚ´$+,.:-]*$/; 
     if (value && !regex.test(value)) {
       return "La descripción solo puede contener letras, números, y los siguientes caracteres: ¿ ? ( ) ¡ ! ñ Ñ á é í ó ú Á É Í Ó Ú ´ $ + , . : -";
     }

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import styled from "styled-components";
 import { themeTypography } from "../utils/themes";
@@ -6,59 +5,8 @@ import { SlOptionsVertical } from "react-icons/sl";
 import Swal from "sweetalert2";
 import InstallationRecordsPopup from "../Pages/InstallationRecordsPopup";
 import { createRoot } from "react-dom/client";
-import { useLocation } from "react-router";
+
 import { useState } from "react";
-
-// const TableContainer = styled.div`
-//  overflow-x: auto;
-//   width: 70%;
-//   padding: 20px;
-//   background: ${({ theme }) => theme.background};
-//   border-radius: 12px;
-//   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-//   // max-width: 75rem;
-//   font-family: ${themeTypography.fontFamily};
-//   overflow: hidden; /* Oculta el desplazamiento horizontal
-// `;
-
-// const Table = styled.table`
-//   width: 100%;
-//   overflow-x: auto;
-//   width: 70%;
-//   border-collapse: collapse;
-//   background-color: ${({ theme }) => theme.bgForm};
-//   min-width: 600px; /* Establece un ancho mínimo para que no se rompa el diseño */
-//   overflow-x: visible; /* Permite el desplazamiento horizontal */
-// `;
-
-// const TableHeader = styled.thead`
-//   color: ${({ theme }) => theme.text};
-//   th {
-//     text-align: left;
-//     padding: 10px;
-//     font-size: 14px;
-//     border-bottom: 2px solid #e0e0e0;
-//     padding: 10px 50px;
-//   }
-// `;
-
-// const TableBody = styled.tbody`
-//   background: ${({ theme }) => theme.bgForm};
-//   tr {
-//     border-bottom: 1px solid #e0e0e0;
-
-//     &:hover {
-//       background: ${({ theme }) => theme.hoverTable};
-//     }
-//   }
-
-//   td {
-//     padding: 10px;
-//     font-size: 14px;
-//     vertical-align: middle;
-//     padding: 10px 50px;
-//   }
-// `;
 
 const TableContainer = styled.div`
   width: 100%;
@@ -256,13 +204,14 @@ export const CustomerTable = ({
                         )
                       ) : key === "date" ? (
                         row[key] && row[key] !== "0001-01-01T00:00:00" ? (
-                          new Date(row[key]).toLocaleDateString()
+                          row[key].split("-").reverse().join("/")
                         ) : (
                           "Fecha no registrada"
                         )
                       ) : (
                         row[key] || "No disponible"
-                      )}
+                      )
+                      }
                     </td>
                   ))}
                   {showActions && (

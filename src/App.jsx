@@ -38,10 +38,10 @@ function App() {
   const theme = useSelector((state) => state.theme.theme); // dark or light string
   const { isLoggedIn } = useAuth();
 
-   const { user } = useSelector((state) => state.user);
-   const isAdmin =
-     user?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ===
-     "Admin";
+  const { user } = useSelector((state) => state.user);
+  const isAdmin =
+    user?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ===
+    "Admin";
 
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>

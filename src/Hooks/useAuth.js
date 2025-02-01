@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 import Swal from "sweetalert2"; 
 import axios from "axios";
+import { API_BASE_URL } from "../utils/config";
 
 export const useAuth = () => {
   const { isLoggedIn, user } = useSelector((state) => state.user);
@@ -65,7 +66,7 @@ export const useAuth = () => {
   const refreshTokenRequest = async (nameIdentifier, refreshToken) => {
     try {
       const request = await axios.post(
-        "https://localhost:7255/api/v1/auth/refresh-token",
+        `${API_BASE_URL}/auth/refresh-token`,
         {
           userId: nameIdentifier,
           refreshToken: refreshToken,

@@ -25,35 +25,46 @@ const Layout = styled.div`
 `;
 
 export default function RegisterVehicle() {
-  const carBrands = [
-    { label: "Toyota", value: "toyota" },
-    { label: "Honda", value: "honda" },
-    { label: "Ford", value: "ford" },
-    { label: "Chevrolet", value: "chevrolet" },
-    { label: "Nissan", value: "nissan" },
-    { label: "BMW", value: "bmw" },
-    { label: "Mercedes-Benz", value: "mercedes_benz" },
-    { label: "Volkswagen", value: "volkswagen" },
-    { label: "Hyundai", value: "hyundai" },
-    { label: "Kia", value: "kia" },
-    { label: "Mazda", value: "mazda" },
-    { label: "Subaru", value: "subaru" },
-    { label: "Tesla", value: "tesla" },
-    { label: "Audi", value: "audi" },
-    { label: "Lexus", value: "lexus" },
-    { label: "Jeep", value: "jeep" },
-    { label: "Porsche", value: "porsche" },
-    { label: "Volvo", value: "volvo" },
-    { label: "Jaguar", value: "jaguar" },
-    { label: "Ferrari", value: "ferrari" },
-    { label: "Lamborghini", value: "lamborghini" },
-    { label: "Mitsubishi", value: "mitsubishi" },
-    { label: "Peugeot", value: "peugeot" },
-    { label: "Renault", value: "renault" },
-    { label: "Suzuki", value: "suzuki" },
-    { label: "Fiat", value: "fiat" },
-    { label: "Land Rover", value: "land_rover" },
-  ];
+ const carBrands = [
+   { label: "Chevrolet", value: "chevrolet" },
+   { label: "Kia", value: "kia" },
+   { label: "Toyota", value: "toyota" },
+   { label: "Hyundai", value: "hyundai" },
+   { label: "Chery", value: "chery" },
+   { label: "Suzuki", value: "suzuki" },
+   { label: "Renault", value: "renault" },
+   { label: "GWM", value: "gwm" },
+   { label: "JAC", value: "jac" },
+   { label: "DFSK", value: "dfsk" },
+   { label: "Volkswagen", value: "volkswagen" },
+   { label: "Nissan", value: "nissan" },
+   { label: "Hino", value: "hino" },
+   { label: "Mazda", value: "mazda" },
+   { label: "Shineray", value: "shineray" },
+   { label: "Dongfeng", value: "dongfeng" },
+   { label: "Sinotruk", value: "sinotruk" },
+   { label: "Jetour", value: "jetour" },
+   { label: "Ford", value: "ford" },
+   { label: "Changan", value: "changan" },
+   { label: "BMW", value: "bmw" },
+   { label: "Mercedes-Benz", value: "mercedes_benz" },
+   { label: "Audi", value: "audi" },
+   { label: "Lexus", value: "lexus" },
+   { label: "Jeep", value: "jeep" },
+   { label: "Porsche", value: "porsche" },
+   { label: "Volvo", value: "volvo" },
+   { label: "Jaguar", value: "jaguar" },
+   { label: "Ferrari", value: "ferrari" },
+   { label: "Lamborghini", value: "lamborghini" },
+   { label: "Mitsubishi", value: "mitsubishi" },
+   { label: "Peugeot", value: "peugeot" },
+   { label: "Fiat", value: "fiat" },
+   { label: "Land Rover", value: "land_rover" },
+   { label: "BYD", value: "byd" },
+   { label: "Subaru", value: "subaru" },
+   { label: "Citroën", value: "citroen" },
+ ];
+
 
   const [errors, setErrors] = useState({});
   const [customBrand, setCustomBrand] = useState("");
@@ -106,18 +117,25 @@ export default function RegisterVehicle() {
   const validateForm = () => {
     const newErrors = {};
 
-    values.brand = isCustomBrandSelected ? customBrand : values.brand;
- 
+    const selectedBrand = carBrands.find(
+      (brand) => brand.value === values.brand
+    );
+    values.brand = isCustomBrandSelected
+      ? customBrand
+      : selectedBrand?.label || values.brand;
+
     Object.keys(values).forEach((field) => {
       const error = validateFields[field](values[field]);
-      
+
       if (error) {
-        newErrors[field] = error; 
+        newErrors[field] = error;
       }
     });
 
     return newErrors;
   };
+
+console.log(values);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -263,7 +281,7 @@ export default function RegisterVehicle() {
                 <Select
                   id="brand"
                   name="brand"
-                  value={values.brand || ""}
+                  value={values.brand}
                   onChange={handleBrandChange}
                 >
                   <option value="" disabled>
@@ -392,13 +410,7 @@ export default function RegisterVehicle() {
                   type="date"
                   placeholder={""}
                   required={true}
-                  value={
-                    values.date
-                      ? values.date.split("T")[0] +
-                        "T" +
-                        values.date.split("T")[1].slice(0, 5)
-                      : ""
-                  }
+                  value={values.date ? values.date.split("T")[0] : ""}
                   onChange={handleChange}
                 />
                 {errors.date && (

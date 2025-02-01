@@ -10,18 +10,7 @@ export default function Home() {
   return (
     <>
       <Container>
-        <AnimatedContainer>
-          {/* <Logo
-            currentcolor={theme === "dark" ? "#000" : "#fff"}
-            currentcolor2={theme === "dark" ? "#ff0000" : "#000"}
-            currentwidth={"75vw"}
-            currentheight={"75vh"}
-          /> */}
-          {/* <img
-          style={{ width: "75vw", height: "75vh" }}
-            src={theme === "dark" ? "/logo-light.svg" : "/logo-dark.svg"}
-            alt="Logo"
-          /> */}
+        <AnimatedContainer style={{ display: "flex", alignItems: "center", flexDirection: "column", justifyContent: "center" }}>
           {theme === "dark" ? (
             <LogoDark currentWidth={"75vw"} currentHeight={"75vh"} />
           ) : (

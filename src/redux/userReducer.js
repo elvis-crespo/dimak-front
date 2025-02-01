@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-const URL = "https://localhost:7255/api/v1/";
+const URL = "https://release.azurewebsites.net/api/v1/";
 
 // Verificación inicial del estado de login
 const storedUser = localStorage.getItem("user");

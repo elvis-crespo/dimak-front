@@ -5,19 +5,14 @@ import { themeTypography } from "../utils/themes";
 export const Container = styled.div`
   background-color: ${({ theme }) => theme.background};
   color: ${({ theme }) => theme.text};
-  // max-width: 64rem;
   min-width: 100vw;
   min-height: 100vh;
   flex: 1;
-  // margin-left: auto;
-  // margin-right: auto;
   scroll-margin-top: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  // width: 100%;
-  // height: 100%;
   --s: 37px; /* control the size */
   --c: #0000, ${({ theme }) => theme.bgContainer} 0.5deg 119.5deg, #0000 120deg;
   --g1: conic-gradient(from 60deg at 56.25% calc(425% / 6), var(--c));
