@@ -27,6 +27,7 @@ const LoginContainer = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   padding: 20px 20px;
+  Z-index: 4;
   transition: all 0.5s ease-in-out;
 
   a {

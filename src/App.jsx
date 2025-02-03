@@ -9,8 +9,8 @@ import React, { Suspense, useState } from "react";
 import { Sidebar } from "./components/SideBar";
 import { useAuth } from "./Hooks/useAuth";
 import DropdownMenu from "./components/DropdownMenu";
+import { BackgroundEffect } from "./components/BackgroundEffect";
 
-// Lazy loaded components
 const RegisterCards = React.lazy(() => import("./Pages/RegisterCards"));
 const RegisterVehicle = React.lazy(() => import("./Pages/RegisterVehicle"));
 const RegisterUpdate = React.lazy(() => import("./Pages/RegisterUpdate"));
@@ -71,49 +71,51 @@ function App() {
             </div>
           }
         >
-          <Routes>
-            <Route path="*" element={<NotFound />} />
-            {isLoggedIn ? (
-              <Route path="/" element={<Navigate to="/home" />} />
-            ) : (
-              <Route path="/" element={<Login />} />
-            )}
-
-            <Route
-              element={
-                <ProtectedRoute isAllowed={isLoggedIn} isAdmin={isAdmin} />
-              }
-            >
-              <Route path="/home" element={<Home />} />
-
-              <Route path="/register" element={<RegisterCards />} />
-              <Route path="/register-vehicle" element={<RegisterVehicle />} />
-              <Route
-                path="/register-installation"
-                element={<ResgisterIntallations />}
-              />
-
-              <Route path="/search" element={<SearchCards />} />
-              <Route path="/search-plate" element={<SearchPlate />} />
-
-              <Route
-                path="/instllationsRecords"
-                element={<InstallationsTable />}
-              />
-              <Route path="/update" element={<RegisterUpdate />} />
-
-              {isAdmin && (
-                <>
-                  <Route path="/delete" element={<DeleteCards />} />
-                  <Route path="/delete-vehicle" element={<DeleteVehicle />} />
-                  <Route
-                    path="/delete-installation"
-                    element={<DeleteInstallation />}
-                  />
-                </>
+          <BackgroundEffect>
+            <Routes>
+              <Route path="*" element={<NotFound />} />
+              {isLoggedIn ? (
+                <Route path="/" element={<Navigate to="/home" />} />
+              ) : (
+                <Route path="/" element={<Login />} />
               )}
-            </Route>
-          </Routes>
+
+              <Route
+                element={
+                  <ProtectedRoute isAllowed={isLoggedIn} isAdmin={isAdmin} />
+                }
+              >
+                <Route path="/home" element={<Home />} />
+
+                <Route path="/register" element={<RegisterCards />} />
+                <Route path="/register-vehicle" element={<RegisterVehicle />} />
+                <Route
+                  path="/register-installation"
+                  element={<ResgisterIntallations />}
+                />
+
+                <Route path="/search" element={<SearchCards />} />
+                <Route path="/search-plate" element={<SearchPlate />} />
+
+                <Route
+                  path="/instllationsRecords"
+                  element={<InstallationsTable />}
+                />
+                <Route path="/update" element={<RegisterUpdate />} />
+
+                {isAdmin && (
+                  <>
+                    <Route path="/delete" element={<DeleteCards />} />
+                    <Route path="/delete-vehicle" element={<DeleteVehicle />} />
+                    <Route
+                      path="/delete-installation"
+                      element={<DeleteInstallation />}
+                    />
+                  </>
+                )}
+              </Route>
+            </Routes>
+          </BackgroundEffect>
         </Suspense>
       </BrowserRouter>
     </ThemeProvider>

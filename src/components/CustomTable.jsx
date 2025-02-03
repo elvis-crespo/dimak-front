@@ -5,8 +5,8 @@ import { SlOptionsVertical } from "react-icons/sl";
 import Swal from "sweetalert2";
 import InstallationRecordsPopup from "../Pages/InstallationRecordsPopup";
 import { createRoot } from "react-dom/client";
-
 import { useState } from "react";
+
 
 const TableContainer = styled.div`
   width: 100%;
@@ -16,7 +16,8 @@ const TableContainer = styled.div`
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: ${themeTypography.fontFamily};
-  overflow-x: auto; /* Permite desplazamiento horizontal */
+  overflow-x: auto; 
+  Z-index: 4;
 
   @media (max-width: 768px) {
     padding: 10px;
@@ -147,6 +148,7 @@ export const CustomerTable = ({
 
   return (
     <>
+    <div style={{ width: "100VW"  }}></div>
       <TableContainer>
         <Table>
           <TableHeader>

@@ -13,6 +13,7 @@ import {
 } from "../components/CustomFormStyled";
 import { useForm } from "../Hooks/useForm";
 import axiosInstance from "../utils/axiosInstance";
+import { AnimatedContainer } from "../components/Animations";
 
 export default function RegisterUpdate() {
   const menuItems = [
@@ -118,82 +119,84 @@ export default function RegisterUpdate() {
   return (
     <>
       <Container>
-        <FormContainer>
-          <Title>Actualizar datos de Vehículo</Title>
-          <StyledForm onSubmit={handleFormSubmit}>
-            <SectionTitle>Detalles del Vehículo</SectionTitle>
-            <FormField>
-              <Label htmlFor="plate">
-                Placa <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Input
-                id="plate"
-                name="plate"
-                type="text"
-                placeholder={"AAA-1234"}
-                required={true}
-                value={values.plate}
-                onChange={handleChange}
-              />
-            </FormField>
+        <AnimatedContainer>
+          <FormContainer>
+            <Title>Actualizar datos de Vehículo</Title>
+            <StyledForm onSubmit={handleFormSubmit}>
+              <SectionTitle>Detalles del Vehículo</SectionTitle>
+              <FormField>
+                <Label htmlFor="plate">
+                  Placa <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Input
+                  id="plate"
+                  name="plate"
+                  type="text"
+                  placeholder={"AAA-1234"}
+                  required={true}
+                  value={values.plate}
+                  onChange={handleChange}
+                />
+              </FormField>
 
-            <FormField>
-              <Label htmlFor="ownerName">
-                Nombre del Cliente <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Input
-                id="ownerName"
-                name="ownerName"
-                type="text"
-                placeholder={""}
-                required={true}
-                value={values.ownerName}
-                onChange={handleChange}
-              />
-            </FormField>
+              <FormField>
+                <Label htmlFor="ownerName">
+                  Nombre del Cliente <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Input
+                  id="ownerName"
+                  name="ownerName"
+                  type="text"
+                  placeholder={""}
+                  required={true}
+                  value={values.ownerName}
+                  onChange={handleChange}
+                />
+              </FormField>
 
-            <FormField>
-              <Label htmlFor="brand">Marca</Label>
-              <Input
-                id="brand"
-                name="brand"
-                type="select"
-                placeholder={""}
-                required={false}
-                value={values.brand}
-                onChange={handleChange}
-              />
-            </FormField>
+              <FormField>
+                <Label htmlFor="brand">Marca</Label>
+                <Input
+                  id="brand"
+                  name="brand"
+                  type="select"
+                  placeholder={""}
+                  required={false}
+                  value={values.brand}
+                  onChange={handleChange}
+                />
+              </FormField>
 
-            <FormField>
-              <Label htmlFor="model">Modelo</Label>
-              <Input
-                id="model"
-                name="model"
-                type="text"
-                placeholder={""}
-                required={false}
-                value={values.model}
-                onChange={handleChange}
-              />
-            </FormField>
+              <FormField>
+                <Label htmlFor="model">Modelo</Label>
+                <Input
+                  id="model"
+                  name="model"
+                  type="text"
+                  placeholder={""}
+                  required={false}
+                  value={values.model}
+                  onChange={handleChange}
+                />
+              </FormField>
 
-            <FormField>
-              <Label htmlFor="year">Año</Label>
-              <Input
-                id="year"
-                name="year"
-                type="number"
-                placeholder={"2025"}
-                required={false}
-                value={values.year}
-                onChange={handleChange}
-              />
-            </FormField>
+              <FormField>
+                <Label htmlFor="year">Año</Label>
+                <Input
+                  id="year"
+                  name="year"
+                  type="number"
+                  placeholder={"2025"}
+                  required={false}
+                  value={values.year}
+                  onChange={handleChange}
+                />
+              </FormField>
 
-            <SubmitButton type="submit">Enviar</SubmitButton>
-          </StyledForm>
-        </FormContainer>
+              <SubmitButton type="submit">Enviar</SubmitButton>
+            </StyledForm>
+          </FormContainer>
+        </AnimatedContainer>
       </Container>
     </>
   );

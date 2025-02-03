@@ -13,24 +13,24 @@ import {
 import { useState } from "react";
 import { validateFields } from "../utils/validateFields";
 import axiosInstance from "../utils/axiosInstance";
+import { AnimatedContainer } from "../components/Animations";
 
 export default function DeleteInstallation() {
-
   const [inputValue, setInputValue] = useState("");
   const [lastSearchedValue, setLastSearchedValue] = useState("");
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-     const validationError = validateFields.invoiceNumber(inputValue.trim());
-        if (validationError ) {
-          Swal.fire({
-            icon: "error",
-            title: "Error de Validación",
-            text: validationError,
-          });
-          return;
-        }
+    const validationError = validateFields.invoiceNumber(inputValue.trim());
+    if (validationError) {
+      Swal.fire({
+        icon: "error",
+        title: "Error de Validación",
+        text: validationError,
+      });
+      return;
+    }
 
     // Confirmación de SweetAlert
     Swal.fire({
@@ -119,37 +119,39 @@ export default function DeleteInstallation() {
 
   return (
     <Container>
-      <FormContainer>
-        <Title>Eliminar una Instalación</Title>
-        <StyledForm onSubmit={handleFormSubmit}>
-          <SectionTitle style={{ color: "#d70000" }}>
-            Esta acción es irreversible y no se podrá recuperar el registro
-            eliminado.
-          </SectionTitle>
-          <FormField>
-            <Label htmlFor="plate">
-              Nº de Factura <span style={{ color: "red" }}>*</span>
-            </Label>
-            <Input
-              id="plate"
-              name="plate"
-              type="text"
-              placeholder={"Ej. 001-001-123456789"}
-              required={true}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-            />
-          </FormField>
-          <SubmitButton
-            type="submit"
-            disabled={
-              !inputValue.trim() || inputValue.trim() === lastSearchedValue
-            }
-          >
-            Eliminar
-          </SubmitButton>
-        </StyledForm>
-      </FormContainer>
+      <AnimatedContainer>
+        <FormContainer>
+          <Title>Eliminar una Instalación</Title>
+          <StyledForm onSubmit={handleFormSubmit}>
+            <SectionTitle style={{ color: "#d70000" }}>
+              Esta acción es irreversible y no se podrá recuperar el registro
+              eliminado.
+            </SectionTitle>
+            <FormField>
+              <Label htmlFor="plate">
+                Nº de Factura <span style={{ color: "red" }}>*</span>
+              </Label>
+              <Input
+                id="plate"
+                name="plate"
+                type="text"
+                placeholder={"Ej. 001-001-123456789"}
+                required={true}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+              />
+            </FormField>
+            <SubmitButton
+              type="submit"
+              disabled={
+                !inputValue.trim() || inputValue.trim() === lastSearchedValue
+              }
+            >
+              Eliminar
+            </SubmitButton>
+          </StyledForm>
+        </FormContainer>
+      </AnimatedContainer>
     </Container>
   );
 }

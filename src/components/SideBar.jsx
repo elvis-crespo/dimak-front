@@ -49,7 +49,7 @@ const LogoContainer = styled.div`
   background-color: ${({ theme }) => theme.hover};
   border-radius: 20px;
   height: 60px;
-  margin: 10px 8px;
+  margin: 20px 8px 48px 8px;
 
   svg {
     transition: all 0.3s ease;

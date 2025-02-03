@@ -1,7 +1,7 @@
 export const lightTheme = {
   sideBarBackground: "#ff2323",
-  background: "#f8f9fc",
-  bgForm: "#fff",
+  bgContainerEffect: "#f8f9fc ",
+  bgForm: "#f8f9fc ",
   text: "#292929",
   bgSubtitle: "#ff9494",
   fill: "#e7e7e7",
@@ -9,15 +9,18 @@ export const lightTheme = {
   svgFill2: "#000",
   hover: "#ff5757",
   hoverTable: "#f8f9fc",
-  inputForm: "#fff",
+  inputForm: " #f8f9fc",
   labelForm: "#000",
   buttonBackground: "#495057",
   buttonTextColor: "#000",
+  boxShadow1: "hsla(0, 0%, 0%, 0.11)",
+  boxShadow2: "hsla(0, 0%, 0%, 0.20)",
 
   bgContainer: "#f8f9fc",
   bgContainer2: "#fff",
 
-  backgroundGradient: "linear-gradient(744deg, rgb(253, 0, 0), rgba(243, 66, 66, 0.73) 60%, rgba(235, 133, 0, 0.9))",
+  backgroundGradient:
+    "linear-gradient(744deg, rgb(253, 0, 0), rgba(243, 66, 66, 0.73) 60%, rgba(235, 133, 0, 0.9))",
 
   inputBackground: "#FFFFFF",
   inputText: "#000000",
@@ -30,7 +33,7 @@ export const lightTheme = {
 
 export const darkTheme = {
   sideBarBackground: "#000",
-  background: "#3d3d3d",
+  bgContainerEffect: "rgba(5, 5, 5, 1) ",
   bgForm: "#000",
   text: "#e7e7e7",
   bgSubtitle: "#6d6d6d",
@@ -43,11 +46,14 @@ export const darkTheme = {
   labelForm: "#ffffffab;",
   buttonBackground: "#495057",
   buttonTextColor: "#000",
+  boxShadow1: "hsla(0, 0.00%, 100.00%, 0.11)",
+  boxShadow2: "hsla(0, 0.00%, 100.00%, 0.20)",
 
   bgContainer: " #282828",
   bgContainer2: "#1e1e1e",
 
-  backgroundGradient: "linear-gradient(744deg, rgb(0, 0, 0), rgba(55, 56, 53, 0.73) 60%, rgba(173, 171, 168, 0.9))",
+  backgroundGradient:
+    "linear-gradient(744deg, rgb(0, 0, 0), rgba(55, 56, 53, 0.73) 60%, rgba(173, 171, 168, 0.9))",
 
   inputBackground: "#000",
   inputText: "#FFFFFF",
@@ -59,5 +65,6 @@ export const darkTheme = {
 };
 
 export const themeTypography = {
-  fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+  fontFamily:
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
 };

@@ -14,7 +14,7 @@ const waveAnimation = keyframes`
 `;
 
 const CardContainer = styled.div`
-//   margin: 100px auto;
+  //   margin: 100px auto;
   background: transparent;
   box-shadow: 0px 8px 28px -9px rgba(0, 0, 0, 0.45);
   position: relative;
@@ -24,7 +24,7 @@ const CardContainer = styled.div`
   overflow: hidden;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
-  
+
   &:hover {
     transform: scale(1.1);
   }

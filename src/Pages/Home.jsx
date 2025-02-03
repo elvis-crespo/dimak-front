@@ -10,9 +10,9 @@ export default function Home() {
   return (
     <>
       <Container>
-        <AnimatedContainer style={{ display: "flex", alignItems: "center", flexDirection: "column", justifyContent: "center" }}>
+        <AnimatedContainer>
           {theme === "dark" ? (
-            <LogoDark currentWidth={"75vw"} currentHeight={"75vh"} />
+            <LogoDark currentWidth={"75vw"} currentHeight={"75vh"} currentcolor={"#000"}/>
           ) : (
             <LogoLight currentWidth={"75vw"} currentHeight={"75vh"} />
           )}

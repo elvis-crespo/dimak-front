@@ -14,19 +14,24 @@ const fadeIn = keyframes`
 
 const Container2 = styled.div`
   text-align: center;
-  // background: ${({ theme }) => theme.bgContainer};
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100vw;
+  z-index: 4;
 `;
 
 const Message = styled.div`
   color: ${({ theme }) => theme.hover};
   font-size: 24px;
   padding-bottom: 20px;
+  background-color: #000;
+  padding: 10px;
+  // box-shadow: 0 2px 6px 0 ${({ theme }) => theme.boxShadow2};
+  margin-bottom: 20px;
+  transition: box-shadow 0.3s ease-in-out;
   &:before,
   &:after {
     content: "[";
@@ -37,6 +42,17 @@ const Message = styled.div`
   }
   &:after {
     content: "]";
+  }
+  &:hover {
+    box-shadow: 0 4px 6px 0 ${({ theme }) => theme.boxShadow2};
+  }
+
+  @media (max-width: 920px) {
+    font-size: 20px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 16px;
   }
 `;
 

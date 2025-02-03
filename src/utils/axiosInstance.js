@@ -1,24 +1,23 @@
 import axios from "axios";
-import { useDispatch } from "react-redux";
 import { API_BASE_URL } from "./config";
-import { logoutUser } from "../redux/userReducer";
-
-const token = localStorage.getItem("user");
-
-const tokenObj = JSON.parse(token);
-const authToken = tokenObj?.auth;
-
-const access_token = authToken?.accessToken;
-
+import { logoutUser, updateUser } from "../redux/userReducer";
+import { jwtDecode } from "jwt-decode";
+import { store } from "../redux/store"; // Importa el store de Redux
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
 });
 
 axiosInstance.interceptors.request.use(
   async (config) => {
+    const tokenData = localStorage.getItem("user");
 
-    if (access_token) {
-      config.headers["Authorization"] = `Bearer ${access_token}`;
+    if (tokenData) {
+      const parsedToken = JSON.parse(tokenData);
+      const accessToken = parsedToken?.auth?.accessToken;
+
+      if (accessToken) {
+        config.headers["Authorization"] = `Bearer ${accessToken}`;
+      }
     }
 
     return config;
@@ -28,12 +27,66 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response.status === 401) {
-      // Acciones de Redux para logout
-      const dispatch = useDispatch();
-      dispatch(logoutUser());
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      const tokenData = localStorage.getItem("user");
+
+      if (tokenData) {
+        const parsedToken = JSON.parse(tokenData);
+        const refreshToken = parsedToken?.auth?.refreshToken;
+        const userId = parsedToken?.user?.nameid; 
+
+        if (refreshToken) {
+          try {
+            // Solicita un nuevo token
+            const refreshResponse = await axios.post(
+              `${API_BASE_URL}/auth/refresh-token`,
+              { userId, refreshToken },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            const newAuthData = refreshResponse.data;
+            const newAccessToken = newAuthData.accessToken;
+
+            if (!newAccessToken) {
+              store.dispatch(logoutUser());
+              return Promise.reject(error);
+            }
+
+            const newUserData = jwtDecode(newAccessToken);
+
+            localStorage.setItem(
+              "user",
+              JSON.stringify({
+                user: newUserData,
+                auth: newAuthData,
+              })
+            );
+
+            store.dispatch(
+              updateUser({ response: newAuthData })
+            );
+
+            originalRequest.headers[
+              "Authorization"
+            ] = `Bearer ${newAccessToken}`;
+            return axiosInstance(originalRequest);
+          } catch (refreshError) {
+            console.error("Error al refrescar token:", refreshError);
+            store.dispatch(logoutUser());
+          }
+        }
+      }
     }
+
     return Promise.reject(error);
   }
 );

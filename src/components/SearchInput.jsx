@@ -12,6 +12,7 @@ const FormContainer = styled.form`
   height: 45px;
   margin: 110px 30px 80px 30px;
   font-family: ${themeTypography.fontFamily};
+  z-index: 4;
   
   .button {
     display: flex;

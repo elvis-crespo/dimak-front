@@ -14,57 +14,51 @@ import {
 } from "../components/CustomFormStyled";
 import { useState } from "react";
 import { useForm } from "../Hooks/useForm";
-import styled from "styled-components";
 import Swal from "sweetalert2";
 import { validateFields } from "../utils/validateFields";
 import axiosInstance from "../utils/axiosInstance";
-
-const Layout = styled.div`
-  display: flex;
-  overflow-x: hidden;
-`;
+import { AnimatedContainer } from "../components/Animations";
 
 export default function RegisterVehicle() {
- const carBrands = [
-   { label: "Chevrolet", value: "chevrolet" },
-   { label: "Kia", value: "kia" },
-   { label: "Toyota", value: "toyota" },
-   { label: "Hyundai", value: "hyundai" },
-   { label: "Chery", value: "chery" },
-   { label: "Suzuki", value: "suzuki" },
-   { label: "Renault", value: "renault" },
-   { label: "GWM", value: "gwm" },
-   { label: "JAC", value: "jac" },
-   { label: "DFSK", value: "dfsk" },
-   { label: "Volkswagen", value: "volkswagen" },
-   { label: "Nissan", value: "nissan" },
-   { label: "Hino", value: "hino" },
-   { label: "Mazda", value: "mazda" },
-   { label: "Shineray", value: "shineray" },
-   { label: "Dongfeng", value: "dongfeng" },
-   { label: "Sinotruk", value: "sinotruk" },
-   { label: "Jetour", value: "jetour" },
-   { label: "Ford", value: "ford" },
-   { label: "Changan", value: "changan" },
-   { label: "BMW", value: "bmw" },
-   { label: "Mercedes-Benz", value: "mercedes_benz" },
-   { label: "Audi", value: "audi" },
-   { label: "Lexus", value: "lexus" },
-   { label: "Jeep", value: "jeep" },
-   { label: "Porsche", value: "porsche" },
-   { label: "Volvo", value: "volvo" },
-   { label: "Jaguar", value: "jaguar" },
-   { label: "Ferrari", value: "ferrari" },
-   { label: "Lamborghini", value: "lamborghini" },
-   { label: "Mitsubishi", value: "mitsubishi" },
-   { label: "Peugeot", value: "peugeot" },
-   { label: "Fiat", value: "fiat" },
-   { label: "Land Rover", value: "land_rover" },
-   { label: "BYD", value: "byd" },
-   { label: "Subaru", value: "subaru" },
-   { label: "Citroën", value: "citroen" },
- ];
-
+  const carBrands = [
+    { label: "Chevrolet", value: "chevrolet" },
+    { label: "Kia", value: "kia" },
+    { label: "Toyota", value: "toyota" },
+    { label: "Hyundai", value: "hyundai" },
+    { label: "Chery", value: "chery" },
+    { label: "Suzuki", value: "suzuki" },
+    { label: "Renault", value: "renault" },
+    { label: "GWM", value: "gwm" },
+    { label: "JAC", value: "jac" },
+    { label: "DFSK", value: "dfsk" },
+    { label: "Volkswagen", value: "volkswagen" },
+    { label: "Nissan", value: "nissan" },
+    { label: "Hino", value: "hino" },
+    { label: "Mazda", value: "mazda" },
+    { label: "Shineray", value: "shineray" },
+    { label: "Dongfeng", value: "dongfeng" },
+    { label: "Sinotruk", value: "sinotruk" },
+    { label: "Jetour", value: "jetour" },
+    { label: "Ford", value: "ford" },
+    { label: "Changan", value: "changan" },
+    { label: "BMW", value: "bmw" },
+    { label: "Mercedes-Benz", value: "mercedes_benz" },
+    { label: "Audi", value: "audi" },
+    { label: "Lexus", value: "lexus" },
+    { label: "Jeep", value: "jeep" },
+    { label: "Porsche", value: "porsche" },
+    { label: "Volvo", value: "volvo" },
+    { label: "Jaguar", value: "jaguar" },
+    { label: "Ferrari", value: "ferrari" },
+    { label: "Lamborghini", value: "lamborghini" },
+    { label: "Mitsubishi", value: "mitsubishi" },
+    { label: "Peugeot", value: "peugeot" },
+    { label: "Fiat", value: "fiat" },
+    { label: "Land Rover", value: "land_rover" },
+    { label: "BYD", value: "byd" },
+    { label: "Subaru", value: "subaru" },
+    { label: "Citroën", value: "citroen" },
+  ];
 
   const [errors, setErrors] = useState({});
   const [customBrand, setCustomBrand] = useState("");
@@ -134,8 +128,6 @@ export default function RegisterVehicle() {
 
     return newErrors;
   };
-
-console.log(values);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -224,18 +216,18 @@ console.log(values);
   };
 
   const resetFormAndFile = () => {
-     resetForm(); // Resetea los valores controlados por el hook
-     values.PhotoUrl = null; // Limpia el valor del archivo
-     setCustomBrand("");
-     const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
-     if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
-     setErrors({});
+    resetForm(); // Resetea los valores controlados por el hook
+    values.PhotoUrl = null; // Limpia el valor del archivo
+    setCustomBrand("");
+    const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
+    if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
+    setErrors({});
   };
 
   return (
     <>
-      <Layout>
-        <Container id="register">
+      <Container id="register">
+        <AnimatedContainer>
           <FormContainer>
             <Title>Registro de Vehículo</Title>
             <StyledForm onSubmit={handleFormSubmit}>
@@ -459,8 +451,8 @@ console.log(values);
               </SubmitButton>
             </StyledForm>
           </FormContainer>
-        </Container>
-      </Layout>
+        </AnimatedContainer>
+      </Container>
     </>
   );
 }

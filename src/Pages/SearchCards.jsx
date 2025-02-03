@@ -25,7 +25,7 @@ export default function SearchCards() {
             <NavLink to="/instllationsRecords">
               <Card
                 title={"Instalación"}
-                subtitle={"Busar por Número de Factura"}
+                subtitle={"Buscar por Número de Factura"}
               >
                 <LuFileSearch
                   style={{ fontSize: "4em", paddingBottom: "10px" }}

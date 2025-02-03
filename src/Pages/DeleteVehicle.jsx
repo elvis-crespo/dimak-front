@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import { validateFields } from "../utils/validateFields";
 import axiosInstance from "../utils/axiosInstance";
+import { AnimatedContainer } from "../components/Animations";
 
 export default function DeleteVehicle() {
   const [inputValue, setInputValue] = useState("");
@@ -23,7 +24,7 @@ export default function DeleteVehicle() {
 
     // Validar la placa antes de enviar
     const validationError = validateFields.plate(inputValue.trim());
-    if (validationError ) {
+    if (validationError) {
       Swal.fire({
         icon: "error",
         title: "Error de Validación",
@@ -118,37 +119,39 @@ export default function DeleteVehicle() {
   return (
     <>
       <Container>
-        <FormContainer>
-          <Title>Eliminar un Vehículo</Title>
-          <StyledForm onSubmit={handleFormSubmit}>
-            <SectionTitle style={{ color: "#d70000" }}>
-              Esta acción es irreversible y no se podrá recuperar el registro
-              eliminado.
-            </SectionTitle>
-            <FormField>
-              <Label htmlFor="plate">
-                Placa <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Input
-                id="plate"
-                name="plate"
-                type="text"
-                placeholder={"AAA-1234"}
-                required={true}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-              />
-            </FormField>
-            <SubmitButton
-              type="submit"
-              disabled={
-                !inputValue.trim() || inputValue.trim() === lastSearchedValue
-              }
-            >
-              Eliminar
-            </SubmitButton>
-          </StyledForm>
-        </FormContainer>
+        <AnimatedContainer>
+          <FormContainer>
+            <Title>Eliminar un Vehículo</Title>
+            <StyledForm onSubmit={handleFormSubmit}>
+              <SectionTitle style={{ color: "#d70000" }}>
+                Esta acción es irreversible y no se podrá recuperar el registro
+                eliminado.
+              </SectionTitle>
+              <FormField>
+                <Label htmlFor="plate">
+                  Placa <span style={{ color: "red" }}>*</span>
+                </Label>
+                <Input
+                  id="plate"
+                  name="plate"
+                  type="text"
+                  placeholder={"AAA-1234"}
+                  required={true}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                />
+              </FormField>
+              <SubmitButton
+                type="submit"
+                disabled={
+                  !inputValue.trim() || inputValue.trim() === lastSearchedValue
+                }
+              >
+                Eliminar
+              </SubmitButton>
+            </StyledForm>
+          </FormContainer>
+        </AnimatedContainer>
       </Container>
     </>
   );

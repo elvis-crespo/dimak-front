@@ -16,6 +16,7 @@ const DropdownContainer = styled.div`
   right: 25px;
   z-index: 1000;
   font-family: ${themeTypography.fontFamily};
+  z-index: 999;
 `;
 
 const ProfileButton = styled.button`
@@ -51,6 +52,7 @@ const Menu = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  z-index: 5;
 `;
 
 const MenuItem = styled.div`
