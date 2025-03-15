@@ -3,8 +3,8 @@ import { CustomerTable } from "../components/CustomTable";
 import { useState } from "react";
 import { SearchInput } from "../components/SearchInput";
 import Swal from "sweetalert2";
-import { validateFields } from "../utils/validateFields.js";
 import axiosInstance from "../utils/axiosInstance.js";
+import { validateFields } from "../utils/validateFields.js";
 
 export default function SearchPlate() {
   const columnsHeader = ["Placa", "Propietario", "Marca", "Modelo", "Año"];
@@ -83,7 +83,7 @@ export default function SearchPlate() {
           disabled={
             !inputValue.trim() || inputValue.trim() === lastSearchedValue
           }
-          text={"Placa AAA-1234"}
+          text={"Placa AAA-1234 o AA-123A"}
         />
         {data && data.length > 0 && (
           <>

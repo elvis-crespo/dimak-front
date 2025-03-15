@@ -11,9 +11,9 @@ import {
   Title,
 } from "../components/CustomFormStyled";
 import { useState } from "react";
-import { validateFields } from "../utils/validateFields";
 import axiosInstance from "../utils/axiosInstance";
 import { AnimatedContainer } from "../components/Animations";
+import { validateFields } from "../utils/validateFields.js";
 
 export default function DeleteInstallation() {
   const [inputValue, setInputValue] = useState("");
@@ -35,7 +35,7 @@ export default function DeleteInstallation() {
     // Confirmación de SweetAlert
     Swal.fire({
       title: `¿Estás seguro?`,
-      html: `¡No podrás revertir esta acción!<br />Se eliminará el vehículo con placa <b>${inputValue}</b>.`,
+      html: `¡No podrás revertir esta acción!<br />Se eliminará la instalación con número de factura <b>${inputValue}</b>.`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -135,7 +135,8 @@ export default function DeleteInstallation() {
                 id="plate"
                 name="plate"
                 type="text"
-                placeholder={"Ej. 001-001-123456789"}
+                autoComplete="off"
+                placeholder={"Ej. 001-001-123456789."}
                 required={true}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}

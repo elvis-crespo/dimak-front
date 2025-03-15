@@ -1,17 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { API_BASE_URL } from "../utils/config";
 
-const URL = "https://release.azurewebsites.net/api/v1/";
-
-// Verificación inicial del estado de login
 const storedUser = localStorage.getItem("user");
 const initialStateFromStorage = storedUser ? JSON.parse(storedUser) : null;
 
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userCred) => {
-    const request = await axios.post(`${URL}auth/login`, userCred, {
+    const request = await axios.post(`${API_BASE_URL}/auth/login`, userCred, {
       headers: {
         "Content-Type": "application/json",
       },

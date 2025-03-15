@@ -9,7 +9,6 @@ export const Container = styled.div.attrs(({ $mouseX, $mouseY }) => ({
   },
 }))`
   color: ${({ theme }) => theme.text};
-  // min-width: 100vw;
   min-height: 100vh;
   scrollbar-width: none;
   display: flex;
@@ -54,14 +53,8 @@ export const ResponsiveContainerCard = styled(Container)`
 
   @media (max-width: 920px) {
     flex-direction: column;
-    padding: 80px;
+    margin: 80px auto;
   }
-`;
-
-export const Layout = styled.div`
-  display: flex;
-  overflow-x: none;
-  scrollbar-width: transparent;
 `;
 
 export const FormContainer = styled.div`

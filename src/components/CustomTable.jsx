@@ -7,7 +7,6 @@ import InstallationRecordsPopup from "../Pages/InstallationRecordsPopup";
 import { createRoot } from "react-dom/client";
 import { useState } from "react";
 
-
 const TableContainer = styled.div`
   width: 100%;
   max-width: 80vw;
@@ -16,8 +15,8 @@ const TableContainer = styled.div`
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: ${themeTypography.fontFamily};
-  overflow-x: auto; 
-  Z-index: 4;
+  overflow-x: auto;
+  z-index: 4;
 
   @media (max-width: 768px) {
     padding: 10px;
@@ -148,7 +147,7 @@ export const CustomerTable = ({
 
   return (
     <>
-    <div style={{ width: "100VW"  }}></div>
+      <div style={{ width: "100VW" }}></div>
       <TableContainer>
         <Table>
           <TableHeader>
@@ -212,68 +211,6 @@ export const CustomerTable = ({
                         )
                       ) : (
                         row[key] || "No disponible"
-                      )
-                      }
-                    </td>
-                  ))}
-                  {showActions && (
-                    <td style={{}}>
-                      <SlOptionsVertical
-                        style={{ cursor: "pointer" }}
-                        onClick={() => openPopup({ plate: row.plate })}
-                      />
-                    </td>
-                  )}
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={columnsHeader.length + 1}
-                  style={{ textAlign: "center" }}
-                >
-                  No hay datos disponibles
-                </td>
-              </tr>
-            )}
-            {/* {data.length > 0 ? (
-              data.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {columnKeys.map((key, colIndex) => (
-                    <td key={colIndex}>
-                      {key === "photoUrl" ? (
-                        row[key] ? (
-                          <img
-                            src={row[key]}
-                            alt="Imagen"
-                            style={{
-                              width: "50px",
-                              height: "50px",
-                              borderRadius: "5px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => {
-                              Swal.fire({
-                                imageUrl: row[key],
-                                imageAlt: "Imagen",
-                                customClass: {
-                                  popup: "custom-swal-width",
-                                },
-                                showCloseButton: true,
-                              });
-                            }}
-                          />
-                        ) : (
-                          "No disponible"
-                        )
-                      ) : key === "date" ? (
-                        row[key] && row[key] !== "0001-01-01T00:00:00" ? (
-                          new Date(row[key]).toLocaleDateString()
-                        ) : (
-                          "Fecha no registrada"
-                        )
-                      ) : (
-                        row[key] || "No disponible"
                       )}
                     </td>
                   ))}
@@ -296,7 +233,7 @@ export const CustomerTable = ({
                   No hay datos disponibles
                 </td>
               </tr>
-            )} */}
+            )}
           </TableBody>
         </Table>
       </TableContainer>

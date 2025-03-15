@@ -19,7 +19,7 @@ import axiosInstance from "../utils/axiosInstance";
 import { AnimatedContainer } from "../components/Animations.jsx";
 import { validateFields } from "../utils/validateFields.js";
 
-export default function RegisterInstallations() {
+export default function UpdateInstallations() {
   const { values, handleChange, resetForm } = useForm({
     plate: "",
     invoiceNumber: "",
@@ -164,7 +164,7 @@ export default function RegisterInstallations() {
                 type="text"
                 autoComplete="off"
                 required={true}
-                placeholder={"Ej. AAA-1234 o AA-123A."}
+                placeholder={"Ej. AAA-1234"}
                 value={values.plate}
                 onChange={handleChange}
               />
@@ -182,7 +182,7 @@ export default function RegisterInstallations() {
                 name="invoiceNumber"
                 type="text"
                 autoComplete="off"
-                placeholder={"Ej. 001-001-123456789."}
+                placeholder={"Ej. 001-001-123456789"}
                 value={values.invoiceNumber}
                 onChange={handleChange}
               />

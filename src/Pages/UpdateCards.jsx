@@ -1,19 +1,18 @@
 import { NavLink } from "react-router-dom";
 import { Card } from "../components/Card";
+import { GrUpdate } from "react-icons/gr";
 import { ResponsiveContainerCard } from "../components/CustomFormStyled";
-import { LuFileSearch } from "react-icons/lu";
 import { AnimatedContainer } from "../components/Animations";
-import { MdOutlineContentPasteSearch } from "react-icons/md";
 
-export default function SearchCards() {
+export default function UpdateCards() {
   return (
     <>
       <ResponsiveContainerCard>
         <AnimatedContainer>
           <div>
-            <NavLink to="/search-plate">
-              <Card title={"Vehículo"} subtitle={"Consultar por placa"}>
-                <MdOutlineContentPasteSearch
+            <NavLink to="/update-vehicle">
+              <Card title={"Vehículo"} subtitle={"Actualizar datos del vehículo"}>
+                <GrUpdate
                   style={{ fontSize: "4em", paddingBottom: "10px" }}
                 />
               </Card>
@@ -23,12 +22,9 @@ export default function SearchCards() {
 
         <AnimatedContainer>
           <div>
-            <NavLink to="/instllationsRecords">
-              <Card
-                title={"Instalación"}
-                subtitle={"Consultar por número de factura"}
-              >
-                <LuFileSearch
+            <NavLink to="/update-installation">
+              <Card title={"Instalación"} subtitle={"Actualizar registro de instalación"}>
+                <GrUpdate
                   style={{ fontSize: "4em", paddingBottom: "10px" }}
                 />
               </Card>

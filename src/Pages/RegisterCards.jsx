@@ -12,7 +12,7 @@ export default function RegisterCards() {
         <AnimatedContainer>
           <div>
             <NavLink to="/register-vehicle">
-              <Card title={"Vehículo"} subtitle={"Registrar Vehículo"}>
+              <Card title={"Vehículo"} subtitle={"Agregar registro de vehículo"}>
                 <CgFolderAdd
                   style={{ fontSize: "4em", paddingBottom: "10px" }}
                 />
@@ -23,7 +23,7 @@ export default function RegisterCards() {
         <AnimatedContainer>
           <div>
             <NavLink to="/register-installation">
-              <Card title={"Instalación"} subtitle={"Registrar Instalación"}>
+              <Card title={"Instalación"} subtitle={"Agregar registro de instalación"}>
                 <TiDocumentAdd
                   style={{ fontSize: "4em", paddingBottom: "10px" }}
                 />

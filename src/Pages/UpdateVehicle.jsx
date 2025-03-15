@@ -15,15 +15,7 @@ import { useForm } from "../Hooks/useForm";
 import axiosInstance from "../utils/axiosInstance";
 import { AnimatedContainer } from "../components/Animations";
 
-export default function RegisterUpdate() {
-  const menuItems = [
-    { path: "/register", label: "Registrar" },
-    { path: "/resgister-installations", label: "Registrar instalación" },
-    { path: "/search", label: "Consultar" },
-    { path: "/instllationsRecords", label: "Historial de instalaciones" },
-    { path: "/update", label: "Actualizar" },
-    { path: "/delete", label: "Eliminar" },
-  ];
+export default function UpdateVehicle() {
 
   const { values, handleChange, resetForm } = useForm({
     plate: "",
@@ -132,7 +124,8 @@ export default function RegisterUpdate() {
                   id="plate"
                   name="plate"
                   type="text"
-                  placeholder={"AAA-1234"}
+                  autoComplete="off"
+                  placeholder={"Ej. AAA-1234 o AA-123A"}
                   required={true}
                   value={values.plate}
                   onChange={handleChange}
@@ -147,6 +140,7 @@ export default function RegisterUpdate() {
                   id="ownerName"
                   name="ownerName"
                   type="text"
+                  autoComplete="off"
                   placeholder={""}
                   required={true}
                   value={values.ownerName}
@@ -160,6 +154,7 @@ export default function RegisterUpdate() {
                   id="brand"
                   name="brand"
                   type="select"
+                  autoComplete="off"
                   placeholder={""}
                   required={false}
                   value={values.brand}
@@ -173,6 +168,7 @@ export default function RegisterUpdate() {
                   id="model"
                   name="model"
                   type="text"
+                  autoComplete="off"
                   placeholder={""}
                   required={false}
                   value={values.model}
@@ -186,14 +182,16 @@ export default function RegisterUpdate() {
                   id="year"
                   name="year"
                   type="number"
+                  autoComplete="off"
                   placeholder={"2025"}
                   required={false}
                   value={values.year}
                   onChange={handleChange}
+                  onWheel={(e) => e.target.blur()} 
                 />
               </FormField>
 
-              <SubmitButton type="submit">Enviar</SubmitButton>
+              <SubmitButton type="submit">Actualizar</SubmitButton>
             </StyledForm>
           </FormContainer>
         </AnimatedContainer>

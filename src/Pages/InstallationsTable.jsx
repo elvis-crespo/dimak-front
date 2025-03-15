@@ -3,7 +3,7 @@ import { CustomerTable } from "../components/CustomTable";
 import { useState } from "react";
 import { SearchInput } from "../components/SearchInput";
 import Swal from "sweetalert2";
- import { validateFields } from "../utils/validateFields.JS";
+import { validateFields } from "../utils/validateFields.js";
 import axiosInstance from "../utils/axiosInstance";
 
 export default function SearchFactura() {
@@ -95,7 +95,7 @@ export default function SearchFactura() {
           handleSubmit={handleSubmit}
           inputValue={inputValue}
           setInputValue={setInputValue}
-          text={"Ej. 001-001-123456789"}
+          text={"Ej. 001-001-123456789 "}
           disabled={
             !inputValue.trim() || inputValue.trim() === lastSearchedValue
           }

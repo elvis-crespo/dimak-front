@@ -11,7 +11,6 @@ import {
   Title,
 } from "../components/CustomFormStyled";
 import { useState } from "react";
-import { validateFields } from "../utils/validateFields";
 import axiosInstance from "../utils/axiosInstance";
 import { AnimatedContainer } from "../components/Animations";
 
@@ -84,7 +83,7 @@ export default function DeleteVehicle() {
         }
       );
 
-      return response.data; // Aquí espero que response.data contenga un campo `success` y `message` desde el backend.
+      return response.data; 
     } catch (error) {
       // Verifica si el error es de red (servidor caído o no accesible)
       if (error.message === "Network Error" || error.code === "ECONNREFUSED") {
@@ -135,7 +134,8 @@ export default function DeleteVehicle() {
                   id="plate"
                   name="plate"
                   type="text"
-                  placeholder={"AAA-1234"}
+                  autoComplete="off"
+                  placeholder={"Ej. AAA-1234 o AA-123A"}
                   required={true}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}

@@ -1,6 +1,3 @@
-
-
-
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser, updateUser } from "../redux/userReducer";
 import { jwtDecode } from "jwt-decode";
@@ -8,146 +5,6 @@ import { useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../utils/config";
 import Swal from "sweetalert2";
-// export const useAuth = () => {
-//   const { isLoggedIn, user } = useSelector((state) => state.user);
-//   const dispatch = useDispatch();
-
-//   const checkAuth = () => {
-//     const token = localStorage.getItem("user");
-
-//     if (!token) {
-//       dispatch(logoutUser());
-//       // window.location.href = "/"; // Redirige al login
-//       return;
-//     }
-
-//     const tokenObj = JSON.parse(token);
-//     const authToken = tokenObj?.auth;
-
-//     const nameIdentity =
-//       user?.[
-//         "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
-//       ];
-//     const refreshToken = authToken?.refreshToken;
-
-//     if (!authToken) {
-//       dispatch(logoutUser());
-//       return;
-//     }
-
-//     const decoded = jwtDecode(authToken.accessToken);
-
-//     if (!decoded) {
-//       dispatch(logoutUser());
-//       return;
-//     }
-
-//     const isTokenValid = decoded.exp * 1000 > Date.now();
-
-//     if (!isTokenValid) {
-//       // Verifica si la pestaña estuvo en segundo plano o suspendida
-//       const wasSuspended = localStorage.getItem("wasSuspended") === "true";
-//       if (wasSuspended) {
-//         dispatch(logoutUser());
-//         // window.location.href = "/"; // Redirige al login directamente
-//         return;
-//       }
-
-//       // Caso normal: Muestra SweetAlert
-//       Swal.fire({
-//         title: "Tu sesión ha expirado",
-//         html: "¿Deseas continuar trabajando?<br><b></b>", // Mensaje con espacio para el contador
-//         icon: "warning",
-//         showCancelButton: true,
-//         confirmButtonText: "Sí, continuar",
-//         cancelButtonText: "No, salir",
-//         timer: 10000, // 10 segundos para que se cierre automáticamente
-//         timerProgressBar: true,
-//         didOpen: () => {
-//           const timer = Swal.getPopup().querySelector("b");
-//           const timerInterval = setInterval(() => {
-//             if (timer) {
-//               timer.textContent = ` Se cerrará en ${Swal.getTimerLeft()} ms`;
-//             }
-//           }, 100);
-//         },
-//         willClose: () => {
-//           localStorage.removeItem("wasSuspended"); // Limpia el estado de suspensión
-//         },
-//       }).then((result) => {
-//         if (result.isConfirmed) {
-//           refreshTokenRequest(nameIdentity, refreshToken);
-//         } else {
-//           dispatch(logoutUser());
-//           // window.location.href = "/"; // Redirige al login
-//         }
-//       });
-//     }
-//   };
-
-//   const refreshTokenRequest = async (nameIdentifier, refreshToken) => {
-//     try {
-//       const request = await axios.post(
-//         `${API_BASE_URL}/auth/refresh-token`,
-//         {
-//           userId: nameIdentifier,
-//           refreshToken: refreshToken,
-//         },
-//         {
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//         }
-//       );
-//       const response = request.data;
-//       const newAccessToken = response.accessToken;
-
-//       if (!newAccessToken) {
-//         dispatch(logoutUser());
-//         return;
-//       }
-
-//       const userData = jwtDecode(newAccessToken);
-//       dispatch(updateUser({ response, userData }));
-//     } catch (error) {
-//       console.error(error);
-//       dispatch(logoutUser());
-//     }
-//   };
-
-//   useEffect(() => {
-//     // Detecta cuando el navegador estuvo en suspensión o se cerró
-//     const handleVisibilityChange = () => {
-//       if (document.visibilityState === "hidden") {
-//         localStorage.setItem("wasSuspended", "true");
-//       } else {
-//         localStorage.removeItem("wasSuspended");
-//       }
-//     };
-
-//     document.addEventListener("visibilitychange", handleVisibilityChange);
-
-//     checkAuth();
-
-//     let interval;
-//     if (isLoggedIn) {
-//       interval = setInterval(() => {
-//         checkAuth();
-//       }, 15000);
-//     }
-
-//     return () => {
-//       document.removeEventListener("visibilitychange", handleVisibilityChange);
-//       if (interval) {
-//         clearInterval(interval);
-//       }
-//     };
-//   }, [dispatch, isLoggedIn]);
-
-//   return { isLoggedIn, user };
-// };
-
-
 
 export const useAuth = () => {
   const { isLoggedIn, user } = useSelector((state) => state.user);
@@ -268,7 +125,7 @@ export const useAuth = () => {
     if (isLoggedIn) {
       interval = setInterval(() => {
         checkAuth();
-      }, 15000);
+      }, 8 * 60 * 60 * 1000);
     }
 
     return () => {

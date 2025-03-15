@@ -129,14 +129,14 @@ const SideBarOpen = styled.div`
 
 const Footer = styled.div`
   padding: 30px;
-  // border-top: 1px solid rgb(220 228 236 / 57%);
   display: flex;
   flex-direction: column;
   gap: 20px;
   align-items: center;
 `;
 
-export const Sidebar = ({ theme, isAdmin }) => {
+// export const Sidebar = ({ theme, isAdmin }) => {
+export const Sidebar = ({ theme }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const sidebarRef = useRef(null);
@@ -263,6 +263,30 @@ export const Sidebar = ({ theme, isAdmin }) => {
               </NavLink>
             </MenuItem>
 
+            {/* {isAdmin && (
+              <>
+                <MenuItem
+                  $isExpanded={isExpanded}
+                  $isActive={location.pathname === "/update"}
+                  onClick={() => handleMenuItemClick("/update")}
+                >
+                  <NavLink to="/update" onClick={handleLogout}>
+                    <RxUpdate title="Actualizar" />
+                    {isExpanded && <span>Actualizar</span>}
+                  </NavLink>
+                </MenuItem>
+                <MenuItem
+                  $isExpanded={isExpanded}
+                  $isActive={location.pathname === "/delete"}
+                  onClick={() => handleMenuItemClick("/delete")}
+                >
+                  <NavLink to="/delete" onClick={handleLogout}>
+                    <AiOutlineDelete title="Eliminar" />
+                    {isExpanded && <span>Eliminar</span>}
+                  </NavLink>
+                </MenuItem>
+              </>
+            )} */}
             <MenuItem
               $isExpanded={isExpanded}
               $isActive={location.pathname === "/update"}
@@ -273,19 +297,16 @@ export const Sidebar = ({ theme, isAdmin }) => {
                 {isExpanded && <span>Actualizar</span>}
               </NavLink>
             </MenuItem>
-
-            {isAdmin && (
-              <MenuItem
-                $isExpanded={isExpanded}
-                $isActive={location.pathname === "/delete"}
-                onClick={() => handleMenuItemClick("/delete")}
-              >
-                <NavLink to="/delete" onClick={handleLogout}>
-                  <AiOutlineDelete title="Eliminar" />
-                  {isExpanded && <span>Eliminar</span>}
-                </NavLink>
-              </MenuItem>
-            )}
+            <MenuItem
+              $isExpanded={isExpanded}
+              $isActive={location.pathname === "/delete"}
+              onClick={() => handleMenuItemClick("/delete")}
+            >
+              <NavLink to="/delete" onClick={handleLogout}>
+                <AiOutlineDelete title="Eliminar" />
+                {isExpanded && <span>Eliminar</span>}
+              </NavLink>
+            </MenuItem>
           </Menu>
         </div>
         <Footer>

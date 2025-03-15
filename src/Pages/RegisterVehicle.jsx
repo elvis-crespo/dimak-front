@@ -12,54 +12,15 @@ import {
   TextArea,
   Title,
 } from "../components/CustomFormStyled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "../Hooks/useForm";
 import Swal from "sweetalert2";
-import { validateFields } from "../utils/validateFields";
 import axiosInstance from "../utils/axiosInstance";
 import { AnimatedContainer } from "../components/Animations";
+import { carBrands, motorcycleBrands } from "../utils/brands";
+import { validateFields } from "../utils/validateFields.js";
 
 export default function RegisterVehicle() {
-  const carBrands = [
-    { label: "Chevrolet", value: "chevrolet" },
-    { label: "Kia", value: "kia" },
-    { label: "Toyota", value: "toyota" },
-    { label: "Hyundai", value: "hyundai" },
-    { label: "Chery", value: "chery" },
-    { label: "Suzuki", value: "suzuki" },
-    { label: "Renault", value: "renault" },
-    { label: "GWM", value: "gwm" },
-    { label: "JAC", value: "jac" },
-    { label: "DFSK", value: "dfsk" },
-    { label: "Volkswagen", value: "volkswagen" },
-    { label: "Nissan", value: "nissan" },
-    { label: "Hino", value: "hino" },
-    { label: "Mazda", value: "mazda" },
-    { label: "Shineray", value: "shineray" },
-    { label: "Dongfeng", value: "dongfeng" },
-    { label: "Sinotruk", value: "sinotruk" },
-    { label: "Jetour", value: "jetour" },
-    { label: "Ford", value: "ford" },
-    { label: "Changan", value: "changan" },
-    { label: "BMW", value: "bmw" },
-    { label: "Mercedes-Benz", value: "mercedes_benz" },
-    { label: "Audi", value: "audi" },
-    { label: "Lexus", value: "lexus" },
-    { label: "Jeep", value: "jeep" },
-    { label: "Porsche", value: "porsche" },
-    { label: "Volvo", value: "volvo" },
-    { label: "Jaguar", value: "jaguar" },
-    { label: "Ferrari", value: "ferrari" },
-    { label: "Lamborghini", value: "lamborghini" },
-    { label: "Mitsubishi", value: "mitsubishi" },
-    { label: "Peugeot", value: "peugeot" },
-    { label: "Fiat", value: "fiat" },
-    { label: "Land Rover", value: "land_rover" },
-    { label: "BYD", value: "byd" },
-    { label: "Subaru", value: "subaru" },
-    { label: "Citroën", value: "citroen" },
-  ];
-
   const [errors, setErrors] = useState({});
   const [customBrand, setCustomBrand] = useState("");
   const [isCustomBrandSelected, setIsCustomBrandSelected] = useState(false);
@@ -78,6 +39,18 @@ export default function RegisterVehicle() {
     PhotoUrl: null, // Campo para el archivo
   });
 
+  const [filteredBrands, setFilteredBrands] = useState([]);
+
+  useEffect(() => {
+    if (/^[A-Z]{3}-\d{4}$/.test(values.plate)) {
+      setFilteredBrands(carBrands);
+    } else if (/^[A-Z]{2}-\d{3}[A-Z]$/.test(values.plate)) {
+      setFilteredBrands(motorcycleBrands);
+    } else {
+      setFilteredBrands([]);
+    }
+  }, [values.plate]);
+
   // Manejo del cambio del archivo
   const handleFileChange = (e) => {
     const file = e.target.files && e.target.files[0]; // Validar archivo
@@ -89,6 +62,7 @@ export default function RegisterVehicle() {
     values.PhotoUrl = file; // Guardar el archivo en los valores del formulario
   };
 
+  // Manejo del cambio de la marca
   const handleBrandChange = (e) => {
     const value = e.target.value;
     handleChange(e);
@@ -102,12 +76,14 @@ export default function RegisterVehicle() {
     }
   };
 
+  // Manejo del cambio del campo personalizado
   const handleCustomBrandChange = (e) => {
     e.preventDefault();
     const value = e.target.value;
     setCustomBrand(value);
   };
 
+  //  Validaciones para el formulario
   const validateForm = () => {
     const newErrors = {};
 
@@ -129,8 +105,11 @@ export default function RegisterVehicle() {
     return newErrors;
   };
 
+  // Función para enviar el formulario
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+   
+    window.scrollTo(0, 0);
 
     // Validar el formulario
     const validationErrors = validateForm();
@@ -146,6 +125,8 @@ export default function RegisterVehicle() {
     Object.entries(values).forEach(([key, value]) => {
       if (key !== "PhotoUrl") formData.append(key, value);
     });
+
+    window.scrollTo({ top: 0, behavior: "instant" });
 
     Swal.fire({
       title: "¿Deseas Guardar esta Instalación?",
@@ -166,13 +147,26 @@ export default function RegisterVehicle() {
             icon: "success",
           });
           resetFormAndFile();
+          
         }
       } else if (result.isDenied) {
         Swal.fire("Cambios no guardados", "", "info");
       }
     });
+
   };
 
+  // Función para limpiar el formulario
+  const resetFormAndFile = () => {
+    resetForm(); // Resetea los valores controlados por el hook
+    values.PhotoUrl = null; // Limpia el valor del archivo
+    setCustomBrand("");
+    const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
+    if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
+    setErrors({});
+  };
+
+  // Función para enviar el formulario
   const HandleFetch = async (formData) => {
     const url = `/vehicle/register`;
 
@@ -210,18 +204,10 @@ export default function RegisterVehicle() {
           }`,
         });
       }
+      window.scrollTo(0, 0);
 
       return error.response?.data; // Retornar el error desde el servidor si existe
     }
-  };
-
-  const resetFormAndFile = () => {
-    resetForm(); // Resetea los valores controlados por el hook
-    values.PhotoUrl = null; // Limpia el valor del archivo
-    setCustomBrand("");
-    const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
-    if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
-    setErrors({});
   };
 
   return (
@@ -240,7 +226,8 @@ export default function RegisterVehicle() {
                   id="plate"
                   name="plate"
                   type="text"
-                  placeholder={"Ej. AAA-1234"}
+                  autoComplete="off"
+                  placeholder={"Ej. AAA-1234 o AA-123A."}
                   required={true}
                   value={values.plate}
                   onChange={handleChange}
@@ -258,6 +245,7 @@ export default function RegisterVehicle() {
                   id="ownerName"
                   name="ownerName"
                   type="text"
+                  autoComplete="off"
                   placeholder={""}
                   required={true}
                   value={values.ownerName}
@@ -279,12 +267,11 @@ export default function RegisterVehicle() {
                   <option value="" disabled>
                     Selecciona una marca
                   </option>
-                  {carBrands.map((brand) => (
+                  {filteredBrands.map((brand) => (
                     <option key={brand.value} value={brand.value}>
                       {brand.label}
                     </option>
                   ))}
-                  <option value="others">Otros</option>
                 </Select>
               </FormField>
 
@@ -295,6 +282,7 @@ export default function RegisterVehicle() {
                     id="customBrand"
                     name="customBrand"
                     type="text"
+                    autoComplete="off"
                     value={customBrand}
                     onChange={handleCustomBrandChange}
                   />
@@ -310,6 +298,7 @@ export default function RegisterVehicle() {
                   id="model"
                   name="model"
                   type="text"
+                  autoComplete="off"
                   placeholder={""}
                   value={values.model}
                   onChange={handleChange}
@@ -325,9 +314,11 @@ export default function RegisterVehicle() {
                   id="year"
                   name="year"
                   type="number"
+                  autoComplete="off"
                   placeholder={"2025"}
                   value={values.year}
                   onChange={handleChange}
+                  onWheel={(e) => e.target.blur()} // Desactivar el desplazamiento scroll(evita que se + o - números)
                 />
                 {errors.year && (
                   <span style={{ color: "red" }}>{errors.year}</span>
@@ -339,15 +330,13 @@ export default function RegisterVehicle() {
               </SectionTitle>
 
               <FormField>
-                <Label htmlFor="invoiceNumber">
-                  Nº de Factura <span style={{ color: "red" }}>*</span>
-                </Label>
+                <Label htmlFor="invoiceNumber">Nº de Factura</Label>
                 <Input
                   id="invoiceNumber"
                   name="invoiceNumber"
                   type="text"
+                  autoComplete="off"
                   placeholder={"Ej. 001-001-123456789"}
-                  required={true}
                   value={values.invoiceNumber}
                   onChange={handleChange}
                 />
@@ -362,6 +351,7 @@ export default function RegisterVehicle() {
                   id="technicalFileNumber"
                   name="technicalFileNumber"
                   type="text"
+                  autoComplete="off"
                   placeholder={""}
                   required={false}
                   value={values.technicalFileNumber}
@@ -375,15 +365,13 @@ export default function RegisterVehicle() {
               </FormField>
 
               <FormField>
-                <Label htmlFor="technicianName">
-                  Técnico <span style={{ color: "red" }}>*</span>
-                </Label>
+                <Label htmlFor="technicianName">Técnico</Label>
                 <Input
                   id="technicianName"
                   name="technicianName"
                   type="text"
+                  autoComplete="off"
                   placeholder={""}
-                  required={true}
                   value={values.technicianName}
                   onChange={handleChange}
                 />
@@ -400,6 +388,7 @@ export default function RegisterVehicle() {
                   id="date"
                   name="date"
                   type="date"
+                  autoComplete="off"
                   placeholder={""}
                   required={true}
                   value={values.date ? values.date.split("T")[0] : ""}
@@ -418,6 +407,7 @@ export default function RegisterVehicle() {
                   id="installationCompleted"
                   name="installationCompleted"
                   type="placeholder"
+                  autoComplete="off"
                   placeholder={"Escribe una descripción"}
                   required={false}
                   value={values.installationCompleted}
@@ -436,6 +426,7 @@ export default function RegisterVehicle() {
                   id="installationPhoto"
                   name="installationPhoto"
                   type="file"
+                  autoComplete="off"
                   placeholder={""}
                   required={false}
                   onChange={handleFileChange}

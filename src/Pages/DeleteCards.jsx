@@ -12,7 +12,7 @@ export default function DeleteCards() {
         <AnimatedContainer>
           <div>
             <NavLink to="/delete-vehicle">
-              <Card title={"Vehículo"} subtitle={"Elimina un Vehículo"}>
+              <Card title={"Vehículo"} subtitle={"Eliminar registro de vehículo"}>
                 <MdOutlineDeleteSweep
                   style={{ fontSize: "4em", paddingBottom: "10px" }}
                 />
@@ -24,7 +24,7 @@ export default function DeleteCards() {
         <AnimatedContainer>
           <div>
             <NavLink to="/delete-installation">
-              <Card title={"Instalación"} subtitle={"Elimina una Instalación"}>
+              <Card title={"Instalación"} subtitle={"Eliminar registro de instalación"}>
                 <MdOutlineDeleteOutline
                   style={{ fontSize: "4em", paddingBottom: "10px" }}
                 />

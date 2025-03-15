@@ -13,10 +13,14 @@ import { BackgroundEffect } from "./components/BackgroundEffect";
 
 const RegisterCards = React.lazy(() => import("./Pages/RegisterCards"));
 const RegisterVehicle = React.lazy(() => import("./Pages/RegisterVehicle"));
-const RegisterUpdate = React.lazy(() => import("./Pages/RegisterUpdate"));
 const ResgisterIntallations = React.lazy(() =>
   import("./Pages/RegisterInstallations")
 );
+
+const UpdateCards = React.lazy(() => import("./Pages/UpdateCards"));
+const UpdateVehicle = React.lazy(() => import("./Pages/UpdateVehicle"));
+const UpdateInstallation = React.lazy(() => import("./Pages/UpdateInstallation"));
+
 
 const SearchCards = React.lazy(() => import("./Pages/SearchCards"));
 const SearchPlate = React.lazy(() => import("./Pages/SearchPlate"));
@@ -36,7 +40,8 @@ const NotFound = React.lazy(() => import("./Pages/NotFound"));
 
 function App() {
   const theme = useSelector((state) => state.theme.theme); // dark or light string
-  const { isLoggedIn } = useAuth();
+  // const { isLoggedIn } = useAuth();
+  const isLoggedIn = true;
 
   const { user } = useSelector((state) => state.user);
   const isAdmin =
@@ -82,7 +87,7 @@ function App() {
 
               <Route
                 element={
-                  <ProtectedRoute isAllowed={isLoggedIn} isAdmin={isAdmin} />
+                  <ProtectedRoute isAllowed={isLoggedIn} isAdmin={true} />
                 }
               >
                 <Route path="/home" element={<Home />} />
@@ -101,9 +106,8 @@ function App() {
                   path="/instllationsRecords"
                   element={<InstallationsTable />}
                 />
-                <Route path="/update" element={<RegisterUpdate />} />
 
-                {isAdmin && (
+                {/* {isAdmin === true && (
                   <>
                     <Route path="/delete" element={<DeleteCards />} />
                     <Route path="/delete-vehicle" element={<DeleteVehicle />} />
@@ -111,8 +115,23 @@ function App() {
                       path="/delete-installation"
                       element={<DeleteInstallation />}
                     />
+                    <Route path="/update" element={<RegisterUpdate />} />
                   </>
-                )}
+                )} */}
+                  <>
+                    <Route path="/delete" element={<DeleteCards />} />
+                    <Route path="/delete-vehicle" element={<DeleteVehicle />} />
+                    <Route
+                      path="/delete-installation"
+                      element={<DeleteInstallation />}
+                    />
+                    <Route path="/update" element={<UpdateCards />} />
+                    <Route path="/update-vehicle" element={<UpdateVehicle />} />
+                    <Route
+                      path="/update-installation"
+                      element={<UpdateInstallation />}
+                    />
+                  </>
               </Route>
             </Routes>
           </BackgroundEffect>
