@@ -113,7 +113,7 @@ export default function UpdateVehicle() {
       <Container>
         <AnimatedContainer>
           <FormContainer>
-            <Title>Actualizar datos de Vehículo</Title>
+            <Title>Actualizar Información de Vehículo</Title>
             <StyledForm onSubmit={handleFormSubmit}>
               <SectionTitle>Detalles del Vehículo</SectionTitle>
               <FormField>

@@ -4,7 +4,6 @@ import {
   FormContainer,
   FormField,
   Input,
-  InputFile,
   Label,
   SectionTitle,
   StyledForm,
@@ -18,6 +17,7 @@ import { useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import { AnimatedContainer } from "../components/Animations.jsx";
 import { validateFields } from "../utils/validateFields.js";
+import ImageUploader from "../components/ImageUploader.jsx";
 
 export default function RegisterInstallations() {
   const { values, handleChange, resetForm } = useForm({
@@ -29,23 +29,20 @@ export default function RegisterInstallations() {
     installationCompleted: "",
     PhotoUrl: null, // Campo para el archivo
   });
-
   // Estado para almacenar los errores de validación
   const [errors, setErrors] = useState({});
+  const [image, setImage] = useState(null);
 
-  // Manejo del cambio del archivo
-  const handleFileChange = (e) => {
-    const file = e.target.files && e.target.files[0]; // Validar archivo
-
-    if (!file) {
-      return;
-    }
-
-    values.PhotoUrl = file; // Guardar el archivo en los valores del formulario
+  // Función para manejar la imagen subida
+  const handleFileChange = (file) => {
+    setImage(file);
+    handleChange({ target: { name: "PhotoUrl", value: file } });
   };
+
 
   const HandleReset = () => {
     resetForm();
+    setImage(null); // Limpia la imagen de la vista previa
     values.PhotoUrl = null; // Limpia el valor del archivo
     const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
     if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
@@ -174,9 +171,7 @@ export default function RegisterInstallations() {
             </FormField>
 
             <FormField>
-              <Label htmlFor="invoiceNumber">
-                Nº de Factura 
-              </Label>
+              <Label htmlFor="invoiceNumber">Nº de Factura</Label>
               <Input
                 id="invoiceNumber"
                 name="invoiceNumber"
@@ -192,17 +187,19 @@ export default function RegisterInstallations() {
             </FormField>
 
             <FormField>
-              <Label htmlFor="technicalFileNumber">Nº de Ficha Técnica</Label>
+              <Label htmlFor="technicalFileNumber">
+                Nº de Ficha Técnica <span style={{ color: "red" }}>*</span>
+              </Label>
               <Input
                 id="technicalFileNumber"
                 name="technicalFileNumber"
                 type="text"
                 autoComplete="off"
-                required={false}
+                required={true}
                 value={values.technicalFileNumber}
                 onChange={handleChange}
               />
-              {errors.technicianName && (
+              {errors.technicalFileNumber && (
                 <span style={{ color: "red" }}>
                   {errors.technicalFileNumber}
                 </span>
@@ -210,9 +207,7 @@ export default function RegisterInstallations() {
             </FormField>
 
             <FormField>
-              <Label htmlFor="technicianName">
-                Técnico 
-              </Label>
+              <Label htmlFor="technicianName">Técnico</Label>
               <Input
                 id="technicianName"
                 name="technicianName"
@@ -264,17 +259,12 @@ export default function RegisterInstallations() {
 
             <FormField>
               <Label htmlFor="installationPhoto">Foto de Instalación</Label>
-              <InputFile
-                id="installationPhoto"
-                name="installationPhoto"
-                type="file"
-                autoComplete="off"
-                onChange={handleFileChange}
-              />
+              <ImageUploader onFileChange={handleFileChange} image={image}/>
               {errors.PhotoUrl && (
                 <span style={{ color: "red" }}>{errors.PhotoUrl}</span>
               )}
             </FormField>
+
 
             <SubmitButton type="submit">Enviar</SubmitButton>
           </StyledForm>

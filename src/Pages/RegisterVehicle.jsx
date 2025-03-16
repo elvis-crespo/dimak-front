@@ -3,7 +3,6 @@ import {
   FormContainer,
   FormField,
   Input,
-  InputFile,
   Label,
   SectionTitle,
   Select,
@@ -19,6 +18,7 @@ import axiosInstance from "../utils/axiosInstance";
 import { AnimatedContainer } from "../components/Animations";
 import { carBrands, motorcycleBrands } from "../utils/brands";
 import { validateFields } from "../utils/validateFields.js";
+import ImageUploader from "../components/ImageUploader.jsx";
 
 export default function RegisterVehicle() {
   const [errors, setErrors] = useState({});
@@ -40,6 +40,7 @@ export default function RegisterVehicle() {
   });
 
   const [filteredBrands, setFilteredBrands] = useState([]);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     if (/^[A-Z]{3}-\d{4}$/.test(values.plate)) {
@@ -51,16 +52,13 @@ export default function RegisterVehicle() {
     }
   }, [values.plate]);
 
-  // Manejo del cambio del archivo
-  const handleFileChange = (e) => {
-    const file = e.target.files && e.target.files[0]; // Validar archivo
 
-    if (!file) {
-      return;
-    }
-
-    values.PhotoUrl = file; // Guardar el archivo en los valores del formulario
+  // Función para manejar la imagen subida
+  const handleFileChange = (file) => {
+    setImage(file);
+    handleChange({ target: { name: "PhotoUrl", value: file } });
   };
+
 
   // Manejo del cambio de la marca
   const handleBrandChange = (e) => {
@@ -159,6 +157,7 @@ export default function RegisterVehicle() {
   // Función para limpiar el formulario
   const resetFormAndFile = () => {
     resetForm(); // Resetea los valores controlados por el hook
+    setImage(null); // Limpia la imagen de la vista previa
     values.PhotoUrl = null; // Limpia el valor del archivo
     setCustomBrand("");
     const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
@@ -346,14 +345,14 @@ export default function RegisterVehicle() {
               </FormField>
 
               <FormField>
-                <Label htmlFor="technicalFileNumber">Nº de Ficha Técnica</Label>
+                <Label htmlFor="technicalFileNumber">Nº de Ficha Técnica <span style={{ color: "red" }}>*</span></Label>
                 <Input
                   id="technicalFileNumber"
                   name="technicalFileNumber"
                   type="text"
                   autoComplete="off"
                   placeholder={""}
-                  required={false}
+                  required={true}
                   value={values.technicalFileNumber}
                   onChange={handleChange}
                 />
@@ -422,15 +421,7 @@ export default function RegisterVehicle() {
 
               <FormField>
                 <Label htmlFor="installationPhoto">Foto de Instalación</Label>
-                <InputFile
-                  id="installationPhoto"
-                  name="installationPhoto"
-                  type="file"
-                  autoComplete="off"
-                  placeholder={""}
-                  required={false}
-                  onChange={handleFileChange}
-                />
+                <ImageUploader onFileChange={handleFileChange} image={image}/>
                 {errors.PhotoUrl && (
                   <span style={{ color: "red" }}>{errors.PhotoUrl}</span>
                 )}

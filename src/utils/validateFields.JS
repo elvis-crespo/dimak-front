@@ -55,9 +55,9 @@ export const validateFields = {
       return null;
     },
     
-  
     technicalFileNumber: (value) => {
       const regex = /^\d*$/; // Solo números
+      if (!value) return "La ficha técnica es obligatoria.";
       if (value && !regex.test(value))
         return "El número de ficha técnica solo puede contener números.";
       return null; // No es obligatorio

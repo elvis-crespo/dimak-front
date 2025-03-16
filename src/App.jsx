@@ -40,8 +40,8 @@ const NotFound = React.lazy(() => import("./Pages/NotFound"));
 
 function App() {
   const theme = useSelector((state) => state.theme.theme); // dark or light string
-  // const { isLoggedIn } = useAuth();
-  const isLoggedIn = true;
+  const { isLoggedIn } = useAuth();
+  // const isLoggedIn = true;
 
   const { user } = useSelector((state) => state.user);
   const isAdmin =
@@ -87,7 +87,7 @@ function App() {
 
               <Route
                 element={
-                  <ProtectedRoute isAllowed={isLoggedIn} isAdmin={true} />
+                  <ProtectedRoute isAllowed={isLoggedIn} isAdmin={isAdmin} />
                 }
               >
                 <Route path="/home" element={<Home />} />
