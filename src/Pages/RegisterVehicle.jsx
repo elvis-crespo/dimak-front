@@ -31,12 +31,12 @@ export default function RegisterVehicle() {
     brand: "",
     model: "",
     year: "",
-    invoiceNumber: "",
     technicalFileNumber: "",
+    invoiceNumber: "",
     technicianName: "",
     date: "",
     installationCompleted: "",
-    PhotoUrl: null, // Campo para el archivo
+    photoUrl: null, // Campo para el archivo
   });
 
   const [filteredBrands, setFilteredBrands] = useState([]);
@@ -56,7 +56,7 @@ export default function RegisterVehicle() {
   // Función para manejar la imagen subida
   const handleFileChange = (file) => {
     setImage(file);
-    handleChange({ target: { name: "PhotoUrl", value: file } });
+    handleChange({ target: { name: "photoUrl", value: file } });
   };
 
 
@@ -119,9 +119,9 @@ export default function RegisterVehicle() {
     const formData = new FormData();
 
     // Agregar los valores al FormData
-    formData.append("PhotoUrl", values.PhotoUrl); // Archivo
+    formData.append("photoUrl", values.photoUrl); // Archivo
     Object.entries(values).forEach(([key, value]) => {
-      if (key !== "PhotoUrl") formData.append(key, value);
+      if (key !== "photoUrl") formData.append(key, value);
     });
 
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -158,7 +158,7 @@ export default function RegisterVehicle() {
   const resetFormAndFile = () => {
     resetForm(); // Resetea los valores controlados por el hook
     setImage(null); // Limpia la imagen de la vista previa
-    values.PhotoUrl = null; // Limpia el valor del archivo
+    values.photoUrl = null; // Limpia el valor del archivo
     setCustomBrand("");
     const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
     if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
@@ -329,22 +329,6 @@ export default function RegisterVehicle() {
               </SectionTitle>
 
               <FormField>
-                <Label htmlFor="invoiceNumber">Nº de Factura</Label>
-                <Input
-                  id="invoiceNumber"
-                  name="invoiceNumber"
-                  type="text"
-                  autoComplete="off"
-                  placeholder={"Ej. 001-001-123456789"}
-                  value={values.invoiceNumber}
-                  onChange={handleChange}
-                />
-                {errors.invoiceNumber && (
-                  <span style={{ color: "red" }}>{errors.invoiceNumber}</span>
-                )}
-              </FormField>
-
-              <FormField>
                 <Label htmlFor="technicalFileNumber">Nº de Ficha Técnica <span style={{ color: "red" }}>*</span></Label>
                 <Input
                   id="technicalFileNumber"
@@ -360,6 +344,22 @@ export default function RegisterVehicle() {
                   <span style={{ color: "red" }}>
                     {errors.technicalFileNumber}
                   </span>
+                )}
+              </FormField>
+
+              <FormField>
+                <Label htmlFor="invoiceNumber">Nº de Factura</Label>
+                <Input
+                  id="invoiceNumber"
+                  name="invoiceNumber"
+                  type="text"
+                  autoComplete="off"
+                  placeholder={"Ej. 001-001-123456789"}
+                  value={values.invoiceNumber}
+                  onChange={handleChange}
+                />
+                {errors.invoiceNumber && (
+                  <span style={{ color: "red" }}>{errors.invoiceNumber}</span>
                 )}
               </FormField>
 
@@ -422,8 +422,8 @@ export default function RegisterVehicle() {
               <FormField>
                 <Label htmlFor="installationPhoto">Foto de Instalación</Label>
                 <ImageUploader onFileChange={handleFileChange} image={image}/>
-                {errors.PhotoUrl && (
-                  <span style={{ color: "red" }}>{errors.PhotoUrl}</span>
+                {errors.photoUrl && (
+                  <span style={{ color: "red" }}>{errors.photoUrl}</span>
                 )}
               </FormField>
 

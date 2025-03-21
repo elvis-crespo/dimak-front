@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import { AnimatedContainer } from "../components/Animations";
+import { validateFields } from "../utils/validateFields";
 
 export default function DeleteVehicle() {
   const [inputValue, setInputValue] = useState("");

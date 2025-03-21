@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Swal from "sweetalert2";
 
@@ -19,7 +19,7 @@ const Label = styled.label`
     background-color: ${({ theme }) => theme.bgSubtitleHover || "#0056b3"};
   }
 `;
-
+// style={{ width: "200px", height: "200px", objectFit: "cover", cursor: "pointer" }}
 const ImagePreview = styled.div`
   margin-top: 15px;
   display: flex;
@@ -27,8 +27,8 @@ const ImagePreview = styled.div`
   gap: 10px;
 
   img {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
     object-fit: cover;
     border-radius: 5px;
     border: 1px solid #ccc;
@@ -45,36 +45,138 @@ const ImagePreview = styled.div`
   }
 `;
 
+// const ImageUploader = ({ image, onFileChange }) => {
+//   const handleFileChange = (event) => {
+//     const file = event.target.files?.[0];
+//     onFileChange(file); // Enviar archivo al padre
+//   };
+
+//   return (
+//     <div>
+//       <Label htmlFor="file-upload">Agregar imagen</Label>
+//       <FileInput
+//         id="file-upload"
+//         name="installationPhoto"
+//         type="file"
+//         autoComplete="off"
+//         accept="image/*"
+//         onChange={handleFileChange}
+//       />
+
+//       {image && (
+//         <ImagePreview>
+//           <img
+//             src={URL.createObjectURL(image)}
+//             alt="preview"
+//             onClick={() => {
+//               Swal.fire({
+//                 imageUrl: URL.createObjectURL(image),
+//                 imageAlt: "Imagen",
+//                 customClass: {
+//                   popup: "custom-swal-width",
+//                 },
+//                 showCloseButton: true,
+//               });
+//             }}
+//           />
+//         </ImagePreview>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default ImageUploader;
+
+
 const ImageUploader = ({ image, onFileChange }) => {
+  // const [preview, setPreview] = useState(null);
+
+  // useEffect(() => {
+  //   if (!image) {
+  //     setPreview(null);
+  //     return;
+  //   }
+
+  //   if (typeof image === "string") {
+  //     setPreview(image); // Si es una URL, la usamos directamente
+  //     onFileChange(null);
+  //   } else if (image instanceof File) {
+  //     const objectUrl = URL.createObjectURL(image);
+  //     setPreview(objectUrl);
+
+  //     // Limpiar URL cuando cambie la imagen o el componente se desmonte
+  //     return () => URL.revokeObjectURL(objectUrl);
+  //   }
+  // }, [image]);
+
+  // const handleFileChange = (event) => {
+  //   const file = event.target.files?.[0];
+  //   if (file && file.type.startsWith("image/")) {
+  //     onFileChange(file); // Enviar archivo al padre
+  //   } else {
+  //     alert("Por favor, selecciona un archivo de imagen válido.");
+  //   }
+  // };
+
+  const [preview, setPreview] = useState(image); // Inicialmente, asignamos la imagen del backend
+
+  useEffect(() => {
+    if (!image) {
+      setPreview(null);
+      return;
+    }
+
+    if (typeof image === "string") {
+      setPreview(image); // Mantener la URL del backend
+    } else if (image instanceof File) {
+      const objectUrl = URL.createObjectURL(image);
+      setPreview(objectUrl);
+
+      // Limpiar URL cuando cambie la imagen o el componente se desmonte
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  }, [image]); // Solo actualizamos si cambia la imagen
+
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
-    onFileChange(file); // Enviar archivo al padre
+
+      if (file && file.type.startsWith("image/")) {
+      onFileChange(file); // Enviar archivo al padre
+    } else {
+      alert("Por favor, selecciona un archivo de imagen válido.");
+    }
   };
+
+// const handleFileChange = (event) => {
+//   const file = event.target.files?.[0];
+//   if (file && file.type.startsWith("image/")) {
+//       onFileChange(file); // Enviar archivo al padre
+//   } else {
+//       alert("Por favor, selecciona un archivo de imagen válido.");
+//   }
+// };
 
   return (
     <div>
-      <Label htmlFor="file-upload">Agregar imagen</Label>
+      <Label htmlFor="file-upload">Cargar imagen</Label>
       <FileInput
         id="file-upload"
         name="installationPhoto"
         type="file"
-        autoComplete="off"
         accept="image/*"
         onChange={handleFileChange}
       />
 
-      {image && (
+      {preview && (
         <ImagePreview>
           <img
-            src={URL.createObjectURL(image)}
+            src={preview}
             alt="preview"
+            style={{ width: "200px", height: "200px", objectFit: "cover", cursor: "pointer" }}
             onClick={() => {
               Swal.fire({
-                imageUrl: URL.createObjectURL(image),
+                imageUrl: preview,
                 imageAlt: "Imagen",
-                customClass: {
-                  popup: "custom-swal-width",
-                },
                 showCloseButton: true,
               });
             }}
@@ -84,5 +186,4 @@ const ImageUploader = ({ image, onFileChange }) => {
     </div>
   );
 };
-
 export default ImageUploader;

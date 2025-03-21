@@ -44,6 +44,14 @@ export const validateFields = {
   
       return null;
     },
+
+    technicalFileNumber: (value) => {
+      const regex = /^\d*$/; // Solo números
+      if (!value) return "La ficha técnica es obligatoria.";
+      if (value && !regex.test(value))
+        return "El número de ficha técnica solo puede contener números.";
+      return null; // No es obligatorio
+    },
  
     invoiceNumber: (value) => {
       const regex = /^\d{3}-\d{3}-(\d{9}|[A-Z]{2}\d{7})$/; // Tres números, guion, tres números, guion, nueve números o dos letras + siete números
@@ -55,14 +63,6 @@ export const validateFields = {
       return null;
     },
     
-    technicalFileNumber: (value) => {
-      const regex = /^\d*$/; // Solo números
-      if (!value) return "La ficha técnica es obligatoria.";
-      if (value && !regex.test(value))
-        return "El número de ficha técnica solo puede contener números.";
-      return null; // No es obligatorio
-    },
-  
     technicianName: (value) => {
       const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/; // Permite letras (incluidas con tildes) y espacios
       if (!value) return null;
@@ -96,7 +96,7 @@ export const validateFields = {
       return null;
     },
     // installationCompleted: () => null,
-    PhotoUrl: (file) => {
+    photoUrl: (file) => {
       const maxSize = 1 * 1024 * 1024; // 1MB
       if (file && file.size > maxSize)
         return "La imagen debe pesar menos de 1MB.";

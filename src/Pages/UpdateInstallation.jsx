@@ -18,35 +18,75 @@ import axiosInstance from "../utils/axiosInstance";
 import { AnimatedContainer } from "../components/Animations.jsx";
 import { validateFields } from "../utils/validateFields.js";
 import ImageUploader from "../components/ImageUploader.jsx";
+import { BiSearchAlt } from "react-icons/bi";
 
 export default function UpdateInstallations() {
-  const { values, handleChange, resetForm } = useForm({
+  const { values, handleChange, resetForm, setValues } = useForm({
+    plate: "",
     technicalFileNumber: "",
     invoiceNumber: "",
     technicianName: "",
     date: "",
     installationCompleted: "",
-    PhotoUrl: null, // Campo para el archivo
+    photoUrl: null, // Campo para el archivo
   });
 
   // Estado para almacenar los errores de validación
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+
+  console.log(values);
+
+  const handleSearch = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `/installation/technical?technicalFileNumber=${values.technicalFileNumber}`
+      );
+      console;
+
+      if (response.data.isSuccess) {
+        const installationData = response.data.data;
+
+        // Actualizamos los valores correctamente
+        setValues({
+          ...values,
+          plate: installationData.plateId,
+          technicalFileNumber: installationData.technicalFileNumber,
+          invoiceNumber: installationData.invoiceNumber,
+          technicianName: installationData.technicianName,
+          date: installationData.date,
+          installationCompleted: installationData.installationCompleted,
+          photoUrl: installationData.photoUrl,
+        });
+        setImage(installationData.photoUrl);
+        setIsEditing(true);
+      } else {
+        Swal.fire({
+          title: "Error",
+          text:
+            response.data.message ||
+            "No se encontraron datos para esta instalación.",
+          icon: "error",
+        });
+      }
+    } catch (error) {
+      console.error("Error al buscar el instalación:", error);
+      Swal.fire({
+        title: "Error",
+        text: `${error.response.data.message || "Hubo un problema al obtener los datos de la instalación."}`,
+        icon: "error",
+      });
+    }
+  };
 
   // Manejo del cambio del archivo
   const handleFileChange = (file) => {
     setImage(file);
-    handleChange({ target: { name: "PhotoUrl", value: file } });
+    handleChange({ target: { name: "photoUrl", value: file } });
   };
 
-  const HandleReset = () => {
-    resetForm();
-    setImage(null); // Limpia la imagen de la vista previa
-    values.PhotoUrl = null; // Limpia el valor del archivo
-    const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
-    if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
-    setErrors({});
-  };
+ 
 
   // Función para validar el formulario
   const validateForm = () => {
@@ -73,11 +113,13 @@ export default function UpdateInstallations() {
     }
 
     const formData = new FormData();
-    // Agregar los valores al FormData
-    formData.append("PhotoUrl", values.PhotoUrl); // Archivo
     Object.entries(values).forEach(([key, value]) => {
-      if (key !== "PhotoUrl") formData.append(key, value);
+      if (key !== "photoUrl") formData.append(key, value);
     });
+
+    if (values.photoUrl instanceof File) {
+      formData.append("photoUrl", values.photoUrl);
+    }
 
     Swal.fire({
       title: "¿Deseas Guardar esta Instalación?",
@@ -93,10 +135,11 @@ export default function UpdateInstallations() {
         if (response.isSuccess === true) {
           Swal.fire({
             title: "¡Guardado!",
-            text: `Instalación con placa ${values.plate} ha sido guardada.`,
+            text: `${response.message}`, // Mensaje de éxito
             icon: "success",
           });
           HandleReset();
+          setIsEditing(false);
         }
       } else if (result.isDenied) {
         Swal.fire("Cambios no guardados", "", "info");
@@ -105,10 +148,10 @@ export default function UpdateInstallations() {
   };
 
   const HandleFetch = async (formData) => {
-    const url = `/installation/register?plate=${values.plate}`;
+    const url = `/installation/update`;
 
     try {
-      const response = await axiosInstance.post(url, formData, {
+      const response = await axiosInstance.put(url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -142,6 +185,17 @@ export default function UpdateInstallations() {
     }
   };
 
+
+  // Función para limpiar el formulario
+  const HandleReset = () => {
+    resetForm();
+    setImage(null); // Limpia la imagen de la vista previa
+    values.photoUrl = null; // Limpia el valor del archivo
+    const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
+    if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
+    setErrors({});
+  };
+
   return (
     <Container>
       <AnimatedContainer>
@@ -154,99 +208,142 @@ export default function UpdateInstallations() {
               <Label htmlFor="technicalFileNumber">
                 Nº de Ficha Técnica <span style={{ color: "red" }}>*</span>
               </Label>
-              <Input
-                id="technicalFileNumber"
-                name="technicalFileNumber"
-                type="text"
-                autoComplete="off"
-                placeholder={"Solo números"}
-                required={true}
-                value={values.technicalFileNumber}
-                onChange={handleChange}
-              />
-              {errors.technicianName && (
-                <span style={{ color: "red" }}>
-                  {errors.technicalFileNumber}
-                </span>
-              )}
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+              >
+                <Input
+                  style={{ width: "95%" }}
+                  id="technicalFileNumber"
+                  name="technicalFileNumber"
+                  type="text"
+                  autoComplete="off"
+                  placeholder={"Solo números"}
+                  required={true}
+                  value={values.technicalFileNumber}
+                  onChange={handleChange}
+                />
+                {errors.technicianName && (
+                  <span style={{ color: "red" }}>
+                    {errors.technicalFileNumber}
+                  </span>
+                )}
+                <BiSearchAlt
+                  onClick={handleSearch}
+                  style={{ cursor: "pointer", fontSize: "1.5em" }}
+                />
+              </div>
             </FormField>
+            {isEditing && (
+              <>
+                <div
+                  style={{
+                    borderTop: "1px solid #ccc",
+                    width: "100%",
+                    margin: "1rem 0",
+                  }}
+                />
 
-            <FormField>
-              <Label htmlFor="invoiceNumber">Nº de Factura</Label>
-              <Input
-                id="invoiceNumber"
-                name="invoiceNumber"
-                type="text"
-                autoComplete="off"
-                placeholder={"Ej. 001-001-123456789"}
-                value={values.invoiceNumber}
-                onChange={handleChange}
-              />
-              {errors.technicianName && (
-                <span style={{ color: "red" }}>{errors.invoiceNumber}</span>
-              )}
-            </FormField>
+                <FormField>
+                  <Label htmlFor="plateId">
+                    Placa 
+                  </Label>
+                    <Input
+                      id="plateId"
+                      name="plateId"
+                      type="text"
+                      autoComplete="off"
+                      placeholder="Ej. AAA-1234 o AA-123A"
+                      required
+                      value={values.plate}
+                      readOnly
+                      disabled
+                    />
+                </FormField>
 
-            <FormField>
-              <Label htmlFor="technicianName">Técnico</Label>
-              <Input
-                id="technicianName"
-                name="technicianName"
-                type="text"
-                autoComplete="off"
-                value={values.technicianName}
-                onChange={handleChange}
-              />
-              {errors.technicianName && (
-                <span style={{ color: "red" }}>{errors.technicianName}</span>
-              )}
-            </FormField>
+                <FormField>
+                  <Label htmlFor="invoiceNumber">Nº de Factura</Label>
+                  <Input
+                    id="invoiceNumber"
+                    name="invoiceNumber"
+                    type="text"
+                    autoComplete="off"
+                    placeholder={"Ej. 001-001-123456789"}
+                    value={values.invoiceNumber}
+                    readOnly
+                    disabled
+                  />
+                  {errors.invoiceNumber && (
+                    <span style={{ color: "red" }}>{errors.invoiceNumber}</span>
+                  )}
+                </FormField>
 
-            <FormField>
-              <Label htmlFor="date">
-                Fecha <span style={{ color: "red" }}>*</span>
-              </Label>
-              <Input
-                id="date"
-                name="date"
-                type="date"
-                autoComplete="off"
-                required
-                value={values.date ? values.date.split("T")[0] : ""}
-                onChange={handleChange}
-              />
-              {errors.date && (
-                <span style={{ color: "red" }}>{errors.date}</span>
-              )}
-            </FormField>
+                <FormField>
+                  <Label htmlFor="technicianName">Técnico</Label>
+                  <Input
+                    id="technicianName"
+                    name="technicianName"
+                    type="text"
+                    autoComplete="off"
+                    value={values.technicianName}
+                    onChange={handleChange}
+                  />
+                  {errors.technicianName && (
+                    <span style={{ color: "red" }}>
+                      {errors.technicianName}
+                    </span>
+                  )}
+                </FormField>
 
-            <FormField>
-              <Label htmlFor="installationCompleted">
-                Instalación Completada
-              </Label>
-              <TextArea
-                id="installationCompleted"
-                name="installationCompleted"
-                placeholder="Escribe una descripción"
-                value={values.installationCompleted}
-                onChange={handleChange}
-              />
-              {errors.installationCompleted && (
-                <span style={{ color: "red" }}>
-                  {errors.installationCompleted}
-                </span>
-              )}
-            </FormField>
+                <FormField>
+                  <Label htmlFor="date">
+                    Fecha <span style={{ color: "red" }}>*</span>
+                  </Label>
+                  <Input
+                    id="date"
+                    name="date"
+                    type="date"
+                    autoComplete="off"
+                    required
+                    value={values.date ? values.date.split("T")[0] : ""}
+                    onChange={handleChange}
+                  />
+                  {errors.date && (
+                    <span style={{ color: "red" }}>{errors.date}</span>
+                  )}
+                </FormField>
 
-            <FormField>
-              <Label htmlFor="installationPhoto">Foto de Instalación</Label>
-              <ImageUploader onFileChange={handleFileChange} image={image}/>
-              {errors.PhotoUrl && (
-                <span style={{ color: "red" }}>{errors.PhotoUrl}</span>
-              )}
-            </FormField>
+                <FormField>
+                  <Label htmlFor="installationCompleted">
+                    Instalación Completada
+                  </Label>
+                  <TextArea
+                    id="installationCompleted"
+                    name="installationCompleted"
+                    placeholder="Escribe una descripción"
+                    value={values.installationCompleted || undefined}
+                    onChange={handleChange}
+                  />
+                  {errors.installationCompleted && (
+                    <span style={{ color: "red" }}>
+                      {errors.installationCompleted}
+                    </span>
+                  )}
+                </FormField>
 
-            <SubmitButton type="submit">Actualizar</SubmitButton>
+                <FormField>
+                  <Label htmlFor="installationPhoto">Foto de Instalación</Label>
+                  <ImageUploader
+                    onFileChange={handleFileChange}
+                    image={image}
+                  />
+                  {errors.photoUrl && (
+                    <span style={{ color: "red" }}>{errors.photoUrl}</span>
+                  )}
+                </FormField>
+
+                <SubmitButton type="submit">Actualizar</SubmitButton>
+              </>
+            )}
           </StyledForm>
         </FormContainer>
       </AnimatedContainer>

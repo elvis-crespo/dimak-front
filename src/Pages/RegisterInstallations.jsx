@@ -22,12 +22,12 @@ import ImageUploader from "../components/ImageUploader.jsx";
 export default function RegisterInstallations() {
   const { values, handleChange, resetForm } = useForm({
     plate: "",
-    invoiceNumber: "",
     technicalFileNumber: "",
+    invoiceNumber: "",
     technicianName: "",
     date: "",
     installationCompleted: "",
-    PhotoUrl: null, // Campo para el archivo
+    photoUrl: null, // Campo para el archivo
   });
   // Estado para almacenar los errores de validación
   const [errors, setErrors] = useState({});
@@ -36,14 +36,14 @@ export default function RegisterInstallations() {
   // Función para manejar la imagen subida
   const handleFileChange = (file) => {
     setImage(file);
-    handleChange({ target: { name: "PhotoUrl", value: file } });
+    handleChange({ target: { name: "photoUrl", value: file } });
   };
 
 
   const HandleReset = () => {
     resetForm();
     setImage(null); // Limpia la imagen de la vista previa
-    values.PhotoUrl = null; // Limpia el valor del archivo
+    values.photoUrl = null; // Limpia el valor del archivo
     const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
     if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
     setErrors({});
@@ -75,9 +75,9 @@ export default function RegisterInstallations() {
 
     const formData = new FormData();
     // Agregar los valores al FormData
-    formData.append("PhotoUrl", values.PhotoUrl); // Archivo
+    formData.append("photoUrl", values.photoUrl); // Archivo
     Object.entries(values).forEach(([key, value]) => {
-      if (key !== "PhotoUrl") formData.append(key, value);
+      if (key !== "photoUrl") formData.append(key, value);
     });
 
     Swal.fire({
@@ -170,21 +170,11 @@ export default function RegisterInstallations() {
               )}
             </FormField>
 
-            <FormField>
-              <Label htmlFor="invoiceNumber">Nº de Factura</Label>
-              <Input
-                id="invoiceNumber"
-                name="invoiceNumber"
-                type="text"
-                autoComplete="off"
-                placeholder={"Ej. 001-001-123456789."}
-                value={values.invoiceNumber}
-                onChange={handleChange}
-              />
-              {errors.technicianName && (
-                <span style={{ color: "red" }}>{errors.invoiceNumber}</span>
-              )}
-            </FormField>
+            <div
+              style={{
+                borderTop: "1px solid #ccc",
+              }}
+            />
 
             <FormField>
               <Label htmlFor="technicalFileNumber">
@@ -203,6 +193,22 @@ export default function RegisterInstallations() {
                 <span style={{ color: "red" }}>
                   {errors.technicalFileNumber}
                 </span>
+              )}
+            </FormField>
+
+            <FormField>
+              <Label htmlFor="invoiceNumber">Nº de Factura</Label>
+              <Input
+                id="invoiceNumber"
+                name="invoiceNumber"
+                type="text"
+                autoComplete="off"
+                placeholder={"Ej. 001-001-123456789."}
+                value={values.invoiceNumber}
+                onChange={handleChange}
+              />
+              {errors.technicianName && (
+                <span style={{ color: "red" }}>{errors.invoiceNumber}</span>
               )}
             </FormField>
 
@@ -260,8 +266,8 @@ export default function RegisterInstallations() {
             <FormField>
               <Label htmlFor="installationPhoto">Foto de Instalación</Label>
               <ImageUploader onFileChange={handleFileChange} image={image}/>
-              {errors.PhotoUrl && (
-                <span style={{ color: "red" }}>{errors.PhotoUrl}</span>
+              {errors.photoUrl && (
+                <span style={{ color: "red" }}>{errors.photoUrl}</span>
               )}
             </FormField>
 
