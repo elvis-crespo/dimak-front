@@ -17,6 +17,7 @@ import DarkModeToggle, { Toggle } from "../utils/DarkModeToggle";
 import { setSystemTheme, toggleTheme } from "../redux/themeReducer";
 import { Logomin } from "../../public/Logomin";
 import { LogoDark, LogoLight } from "../../public/Logo";
+import { RiSearchFill } from "react-icons/ri";
 
 const SidebarContainer = styled.div`
   width: ${(props) => (props.$isExpanded ? "250px" : "80px")};
@@ -135,8 +136,7 @@ const Footer = styled.div`
   align-items: center;
 `;
 
-// export const Sidebar = ({ theme, isAdmin }) => {
-export const Sidebar = ({ theme }) => {
+export const Sidebar = ({ theme, isAdmin }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const sidebarRef = useRef(null);
@@ -263,7 +263,7 @@ export const Sidebar = ({ theme }) => {
               </NavLink>
             </MenuItem>
 
-            {/* {isAdmin && (
+            {isAdmin && (
               <>
                 <MenuItem
                   $isExpanded={isExpanded}
@@ -286,27 +286,7 @@ export const Sidebar = ({ theme }) => {
                   </NavLink>
                 </MenuItem>
               </>
-            )} */}
-            <MenuItem
-              $isExpanded={isExpanded}
-              $isActive={location.pathname === "/update"}
-              onClick={() => handleMenuItemClick("/update")}
-            >
-              <NavLink to="/update" onClick={handleLogout}>
-                <RxUpdate title="Actualizar" />
-                {isExpanded && <span>Actualizar</span>}
-              </NavLink>
-            </MenuItem>
-            <MenuItem
-              $isExpanded={isExpanded}
-              $isActive={location.pathname === "/delete"}
-              onClick={() => handleMenuItemClick("/delete")}
-            >
-              <NavLink to="/delete" onClick={handleLogout}>
-                <AiOutlineDelete title="Eliminar" />
-                {isExpanded && <span>Eliminar</span>}
-              </NavLink>
-            </MenuItem>
+            )}
           </Menu>
         </div>
         <Footer>

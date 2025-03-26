@@ -15,7 +15,7 @@ import {
 import Swal from "sweetalert2";
 import { useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
-import { AnimatedContainer } from "../components/Animations.jsx";
+import { AnimatedContainerSlight } from "../components/Animations.jsx";
 import { validateFields } from "../utils/validateFields.js";
 import ImageUploader from "../components/ImageUploader.jsx";
 import { BiSearchAlt } from "react-icons/bi";
@@ -28,22 +28,37 @@ export default function UpdateInstallations() {
     technicianName: "",
     date: "",
     installationCompleted: "",
-    photoUrl: null, // Campo para el archivo
+    photoUrl: null,
   });
 
-  // Estado para almacenar los errores de validación
+  const [lastSearchedValue, setLastSearchedValue] = useState("");
   const [errors, setErrors] = useState({});
-  const [image, setImage] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-
-  console.log(values);
+  const [image, setImage] = useState(null);
+  const [initialValues, setInitialValues] = useState(null);
 
   const handleSearch = async () => {
+    const validationError = validateFields.technicalFileNumber(
+      values.technicalFileNumber.trim()
+    );
+    if (validationError) {
+      Swal.fire({
+        icon: "error",
+        title: "Error de Validación",
+        text: validationError,
+      });
+      return;
+    }
+
+    if (values.technicalFileNumber.trim() === lastSearchedValue.trim()) {
+      return;
+    }
+    setLastSearchedValue(values.technicalFileNumber.trim());
+
     try {
       const response = await axiosInstance.get(
         `/installation/technical?technicalFileNumber=${values.technicalFileNumber}`
       );
-      console;
 
       if (response.data.isSuccess) {
         const installationData = response.data.data;
@@ -51,14 +66,18 @@ export default function UpdateInstallations() {
         // Actualizamos los valores correctamente
         setValues({
           ...values,
-          plate: installationData.plateId,
-          technicalFileNumber: installationData.technicalFileNumber,
-          invoiceNumber: installationData.invoiceNumber,
-          technicianName: installationData.technicianName,
-          date: installationData.date,
-          installationCompleted: installationData.installationCompleted,
-          photoUrl: installationData.photoUrl,
+          plate: installationData.plateId || "",
+          technicalFileNumber: installationData.technicalFileNumber || "",
+          invoiceNumber: installationData.invoiceNumber || "",
+          technicianName: installationData.technicianName || "",
+          date: installationData.date
+            ? installationData.date.split("T")[0]
+            : "",
+          installationCompleted: installationData.installationCompleted || "",
+          photoUrl: installationData.photoUrl || null,
         });
+
+        setInitialValues(installationData); // Guardamos los valores iniciales
         setImage(installationData.photoUrl);
         setIsEditing(true);
       } else {
@@ -71,13 +90,28 @@ export default function UpdateInstallations() {
         });
       }
     } catch (error) {
-      console.error("Error al buscar el instalación:", error);
       Swal.fire({
         title: "Error",
-        text: `${error.response.data.message || "Hubo un problema al obtener los datos de la instalación."}`,
+        text: `${
+          error.response.data.message ||
+          "Hubo un problema al obtener los datos de la instalación."
+        }`,
         icon: "error",
       });
     }
+  };
+
+  const hasChanges = () => {
+    if (!initialValues) return false; // Si no hay datos iniciales, no se puede comparar
+    return (
+      values.plate !== initialValues.plateId ||
+      values.technicalFileNumber !== initialValues.technicalFileNumber ||
+      values.invoiceNumber !== initialValues.invoiceNumber ||
+      values.technicianName !== initialValues.technicianName ||
+      values.date !== initialValues.date ||
+      values.installationCompleted !== initialValues.installationCompleted ||
+      (values.photoUrl && values.photoUrl !== initialValues.photoUrl)
+    );
   };
 
   // Manejo del cambio del archivo
@@ -86,30 +120,23 @@ export default function UpdateInstallations() {
     handleChange({ target: { name: "photoUrl", value: file } });
   };
 
- 
-
-  // Función para validar el formulario
-  const validateForm = () => {
-    const newErrors = {};
-    // Validar cada campo usando las funciones de validación
-    Object.keys(values).forEach((field) => {
-      const error = validateFields[field](values[field]);
-      if (error) {
-        newErrors[field] = error; // Si hay error, lo agregamos al objeto newErrors
-      }
-    });
-
-    return newErrors;
-  };
-
   // Lógica de envío del formulario con Axios
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+
     const validationErrors = validateForm(); // Validar el formulario
     if (Object.keys(validationErrors).length > 0) {
-      // Si hay errores, no enviar el formulario y mostrar los errores
       setErrors(validationErrors);
       return;
+    }
+
+    if (!hasChanges()) {
+      Swal.fire({
+        title: "No hay cambios",
+        text: "No se han realizado cambios en los datos de la instalación.",
+        icon: "info",
+      });
+      return; // Si no hay cambios, no hacer nada
     }
 
     const formData = new FormData();
@@ -185,7 +212,6 @@ export default function UpdateInstallations() {
     }
   };
 
-
   // Función para limpiar el formulario
   const HandleReset = () => {
     resetForm();
@@ -193,15 +219,34 @@ export default function UpdateInstallations() {
     values.photoUrl = null; // Limpia el valor del archivo
     const fileInput = document.querySelector('input[type="file"]'); // Selecciona el campo de archivo
     if (fileInput) fileInput.value = ""; // Limpia el valor del campo de archivo en el DOM
+    setInitialValues(null); // Limpia los valores iniciales
+    setLastSearchedValue(""); // Limpia el último valor buscado
     setErrors({});
+  };
+
+  // Función para validar el formulario
+  const validateForm = () => {
+    const newErrors = {};
+    // Validar cada campo usando las funciones de validación
+    Object.keys(values).forEach((field) => {
+      const error = validateFields[field](values[field]);
+      if (error) {
+        newErrors[field] = error; // Si hay error, lo agregamos al objeto newErrors
+      }
+    });
+
+    return newErrors;
   };
 
   return (
     <Container>
-      <AnimatedContainer>
+      <AnimatedContainerSlight>
         <FormContainer style={{ margin: "30px 0" }} id="register">
           <Title>Actualizar Información de Instalación</Title>
-          <StyledForm onSubmit={handleFormSubmit}>
+          <StyledForm
+            onSubmit={handleFormSubmit}
+            onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
+          >
             <SectionTitle>Detalles de la Instalación</SectionTitle>
 
             <FormField>
@@ -222,7 +267,7 @@ export default function UpdateInstallations() {
                   value={values.technicalFileNumber}
                   onChange={handleChange}
                 />
-                {errors.technicianName && (
+                {errors.technicalFileNumber && (
                   <span style={{ color: "red" }}>
                     {errors.technicalFileNumber}
                   </span>
@@ -233,6 +278,7 @@ export default function UpdateInstallations() {
                 />
               </div>
             </FormField>
+
             {isEditing && (
               <>
                 <div
@@ -244,20 +290,18 @@ export default function UpdateInstallations() {
                 />
 
                 <FormField>
-                  <Label htmlFor="plateId">
-                    Placa 
-                  </Label>
-                    <Input
-                      id="plateId"
-                      name="plateId"
-                      type="text"
-                      autoComplete="off"
-                      placeholder="Ej. AAA-1234 o AA-123A"
-                      required
-                      value={values.plate}
-                      readOnly
-                      disabled
-                    />
+                  <Label htmlFor="plateId">Placa</Label>
+                  <Input
+                    id="plateId"
+                    name="plateId"
+                    type="text"
+                    autoComplete="off"
+                    placeholder="Ej. AAA-1234 o AA-123A"
+                    required
+                    value={values.plate}
+                    readOnly
+                    disabled
+                  />
                 </FormField>
 
                 <FormField>
@@ -286,6 +330,7 @@ export default function UpdateInstallations() {
                     autoComplete="off"
                     value={values.technicianName}
                     onChange={handleChange}
+                    $hasError={!!errors.technicianName}
                   />
                   {errors.technicianName && (
                     <span style={{ color: "red" }}>
@@ -306,6 +351,7 @@ export default function UpdateInstallations() {
                     required
                     value={values.date ? values.date.split("T")[0] : ""}
                     onChange={handleChange}
+                    $hasError={!!errors.date}
                   />
                   {errors.date && (
                     <span style={{ color: "red" }}>{errors.date}</span>
@@ -322,6 +368,7 @@ export default function UpdateInstallations() {
                     placeholder="Escribe una descripción"
                     value={values.installationCompleted || undefined}
                     onChange={handleChange}
+                    $hasError={!!errors.installationCompleted}
                   />
                   {errors.installationCompleted && (
                     <span style={{ color: "red" }}>
@@ -335,6 +382,8 @@ export default function UpdateInstallations() {
                   <ImageUploader
                     onFileChange={handleFileChange}
                     image={image}
+                    title={"Actualizar Foto"}
+                    $hasError={!!errors.photoUrl}
                   />
                   {errors.photoUrl && (
                     <span style={{ color: "red" }}>{errors.photoUrl}</span>
@@ -346,7 +395,7 @@ export default function UpdateInstallations() {
             )}
           </StyledForm>
         </FormContainer>
-      </AnimatedContainer>
+      </AnimatedContainerSlight>
     </Container>
   );
 }

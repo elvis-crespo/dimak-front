@@ -12,7 +12,7 @@ import {
 } from "../components/CustomFormStyled";
 import { useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
-import { AnimatedContainer } from "../components/Animations";
+import { AnimatedContainerSlight } from "../components/Animations";
 import { validateFields } from "../utils/validateFields";
 
 export default function DeleteVehicle() {
@@ -119,7 +119,7 @@ export default function DeleteVehicle() {
   return (
     <>
       <Container>
-        <AnimatedContainer>
+        <AnimatedContainerSlight>
           <FormContainer>
             <Title>Eliminar un Vehículo</Title>
             <StyledForm onSubmit={handleFormSubmit}>
@@ -152,7 +152,7 @@ export default function DeleteVehicle() {
               </SubmitButton>
             </StyledForm>
           </FormContainer>
-        </AnimatedContainer>
+        </AnimatedContainerSlight>
       </Container>
     </>
   );

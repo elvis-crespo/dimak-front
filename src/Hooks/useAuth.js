@@ -103,7 +103,6 @@ export const useAuth = () => {
       const userData = jwtDecode(newAccessToken);
       dispatch(updateUser({ response, userData }));
     } catch (error) {
-      console.error(error);
       dispatch(logoutUser());
     }
   };

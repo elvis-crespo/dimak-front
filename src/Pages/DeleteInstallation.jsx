@@ -12,7 +12,7 @@ import {
 } from "../components/CustomFormStyled";
 import { useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
-import { AnimatedContainer } from "../components/Animations";
+import { AnimatedContainerSlight } from "../components/Animations";
 import { validateFields } from "../utils/validateFields.js";
 
 export default function DeleteInstallation() {
@@ -119,7 +119,7 @@ export default function DeleteInstallation() {
 
   return (
     <Container>
-      <AnimatedContainer>
+      <AnimatedContainerSlight>
         <FormContainer>
           <Title>Eliminar una Instalación</Title>
           <StyledForm onSubmit={handleFormSubmit}>
@@ -152,7 +152,7 @@ export default function DeleteInstallation() {
             </SubmitButton>
           </StyledForm>
         </FormContainer>
-      </AnimatedContainer>
+      </AnimatedContainerSlight>
     </Container>
   );
 }

@@ -19,8 +19,9 @@ const ResgisterIntallations = React.lazy(() =>
 
 const UpdateCards = React.lazy(() => import("./Pages/UpdateCards"));
 const UpdateVehicle = React.lazy(() => import("./Pages/UpdateVehicle"));
-const UpdateInstallation = React.lazy(() => import("./Pages/UpdateInstallation"));
-
+const UpdateInstallation = React.lazy(() =>
+  import("./Pages/UpdateInstallation")
+);
 
 const SearchCards = React.lazy(() => import("./Pages/SearchCards"));
 const SearchPlate = React.lazy(() => import("./Pages/SearchPlate"));
@@ -107,17 +108,7 @@ function App() {
                   element={<InstallationsTable />}
                 />
 
-                {/* {isAdmin === true && (
-                  <>
-                    <Route path="/delete" element={<DeleteCards />} />
-                    <Route path="/delete-vehicle" element={<DeleteVehicle />} />
-                    <Route
-                      path="/delete-installation"
-                      element={<DeleteInstallation />}
-                    />
-                    <Route path="/update" element={<RegisterUpdate />} />
-                  </>
-                )} */}
+                {isAdmin === true && (
                   <>
                     <Route path="/delete" element={<DeleteCards />} />
                     <Route path="/delete-vehicle" element={<DeleteVehicle />} />
@@ -132,6 +123,7 @@ function App() {
                       element={<UpdateInstallation />}
                     />
                   </>
+                )}
               </Route>
             </Routes>
           </BackgroundEffect>

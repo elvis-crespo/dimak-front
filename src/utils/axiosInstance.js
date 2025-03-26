@@ -80,7 +80,6 @@ axiosInstance.interceptors.response.use(
             ] = `Bearer ${newAccessToken}`;
             return axiosInstance(originalRequest);
           } catch (refreshError) {
-            console.error("Error al refrescar token:", refreshError);
             store.dispatch(logoutUser());
           }
         }

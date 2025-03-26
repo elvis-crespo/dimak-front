@@ -5,6 +5,7 @@ import { SearchInput } from "../components/SearchInput";
 import Swal from "sweetalert2";
 import axiosInstance from "../utils/axiosInstance.js";
 import { validateFields } from "../utils/validateFields.js";
+import { AnimatedContainerSlight } from "../components/Animations.jsx";
 
 export default function SearchPlate() {
   const columnsHeader = ["Placa", "Propietario", "Marca", "Modelo", "Año"];
@@ -38,7 +39,6 @@ export default function SearchPlate() {
     }
   };
 
-
   const handleFetch = async () => {
     try {
       const response = await axiosInstance.get(
@@ -49,7 +49,7 @@ export default function SearchPlate() {
           },
         }
       );
-      return response.data; 
+      return response.data;
     } catch (error) {
       // Verifica si el error es de red (servidor caído o no accesible)
       if (error.message === "Network Error" || error.code === "ECONNREFUSED") {
@@ -63,9 +63,7 @@ export default function SearchPlate() {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: `${
-            error.response.data?.message || error.message
-          }`,
+          text: `${error.response.data?.message || error.message}`,
         });
       }
 
@@ -76,15 +74,17 @@ export default function SearchPlate() {
   return (
     <>
       <Container style={{ justifyContent: "flex-start" }}>
-        <SearchInput
-          handleSubmit={handleSubmit}
-          inputValue={inputValue}
-          setInputValue={setInputValue}
-          disabled={
-            !inputValue.trim() || inputValue.trim() === lastSearchedValue
-          }
-          text={"Placa AAA-1234 o AA-123A"}
-        />
+        <AnimatedContainerSlight>
+          <SearchInput
+            handleSubmit={handleSubmit}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            disabled={
+              !inputValue.trim() || inputValue.trim() === lastSearchedValue
+            }
+            text={"Placa AAA-1234 o AA-123A"}
+          />
+        </AnimatedContainerSlight>
         {data && data.length > 0 && (
           <>
             <Title>Resultados de la busqueda:</Title>

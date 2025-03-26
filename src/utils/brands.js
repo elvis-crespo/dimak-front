@@ -52,7 +52,7 @@ export const carBrands = [
     { label: "Suzuki", value: "suzuki" },
     { label: "Tuko", value: "tuko" },
     { label: "Yamaha", value: "yamaha" },
-    { label: "Motor 1", value: "motor_1" },
+    { label: "Motor one", value: "motor_one" },
     { label: "Loncin", value: "loncin" },
     { label: "Honda", value: "honda" },
     { label: "Pulsar", value: "pulsar" },
