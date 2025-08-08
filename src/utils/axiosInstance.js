@@ -79,8 +79,8 @@ axiosInstance.interceptors.response.use(
               "Authorization"
             ] = `Bearer ${newAccessToken}`;
             return axiosInstance(originalRequest);
+          // eslint-disable-next-line no-unused-vars
           } catch (refreshError) {
-            console.error("Error al refrescar token:", refreshError);
             store.dispatch(logoutUser());
           }
         }

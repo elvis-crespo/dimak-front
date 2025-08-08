@@ -146,13 +146,13 @@ export const Label = styled.label`
 export const Input = styled.input`
   padding: 0.5rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid ${({ $hasError }) => ($hasError ? "red" : "#ccc")};
   border-radius: 5px;
   background-color: ${({ theme }) => theme.inputForm};
   box-shadow: inset 0 2px 4px 0 hsla(0, 0, 0, 0.8);
 
   &:focus {
-    border-color: #007bff;
+    border-color: ${({ $hasError }) => ($hasError ? "darkred" : "#007bff")};
     outline: none;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
   }
@@ -166,7 +166,7 @@ export const InputFile = styled(Input)`
 export const Select = styled.select`
   padding: 0.5rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid ${({ $hasError }) => ($hasError ? "red" : "#ccc")};
   border-radius: 5px;
   background-color: ${({ theme }) => theme.inputForm};
   box-shadow: inset 0 2px 4px 0 hsla(0, 0, 0, 0.8);
@@ -181,7 +181,7 @@ export const Select = styled.select`
 export const TextArea = styled.textarea`
   padding: 0.5rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid ${({ $hasError }) => ($hasError ? "red" : "#ccc")};
   border-radius: 5px;
   resize: vertical;
   word-break: break-word;

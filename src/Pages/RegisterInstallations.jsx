@@ -15,7 +15,7 @@ import {
 import Swal from "sweetalert2";
 import { useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
-import { AnimatedContainer } from "../components/Animations.jsx";
+import { AnimatedContainerSlight } from "../components/Animations.jsx";
 import { validateFields } from "../utils/validateFields.js";
 import ImageUploader from "../components/ImageUploader.jsx";
 
@@ -38,7 +38,6 @@ export default function RegisterInstallations() {
     setImage(file);
     handleChange({ target: { name: "photoUrl", value: file } });
   };
-
 
   const HandleReset = () => {
     resetForm();
@@ -145,7 +144,7 @@ export default function RegisterInstallations() {
 
   return (
     <Container>
-      <AnimatedContainer>
+      <AnimatedContainerSlight>
         <FormContainer style={{ margin: "30px 0" }} id="register">
           <Title>Instalaciones de Vehículo</Title>
           <StyledForm onSubmit={handleFormSubmit}>
@@ -164,6 +163,7 @@ export default function RegisterInstallations() {
                 placeholder={"Ej. AAA-1234 o AA-123A."}
                 value={values.plate}
                 onChange={handleChange}
+                $hasError={!!errors.plate}
               />
               {errors.plate && (
                 <span style={{ color: "red" }}>{errors.plate}</span>
@@ -188,6 +188,7 @@ export default function RegisterInstallations() {
                 required={true}
                 value={values.technicalFileNumber}
                 onChange={handleChange}
+                $hasError={!!errors.technicalFileNumber}
               />
               {errors.technicalFileNumber && (
                 <span style={{ color: "red" }}>
@@ -206,8 +207,9 @@ export default function RegisterInstallations() {
                 placeholder={"Ej. 001-001-123456789."}
                 value={values.invoiceNumber}
                 onChange={handleChange}
+                $hasError={!!errors.invoiceNumber}
               />
-              {errors.technicianName && (
+              {errors.invoiceNumber && (
                 <span style={{ color: "red" }}>{errors.invoiceNumber}</span>
               )}
             </FormField>
@@ -221,6 +223,7 @@ export default function RegisterInstallations() {
                 autoComplete="off"
                 value={values.technicianName}
                 onChange={handleChange}
+                $hasError={!!errors.technicianName}
               />
               {errors.technicianName && (
                 <span style={{ color: "red" }}>{errors.technicianName}</span>
@@ -239,6 +242,7 @@ export default function RegisterInstallations() {
                 required
                 value={values.date ? values.date.split("T")[0] : ""}
                 onChange={handleChange}
+                $hasError={!!errors.date}
               />
               {errors.date && (
                 <span style={{ color: "red" }}>{errors.date}</span>
@@ -255,6 +259,7 @@ export default function RegisterInstallations() {
                 placeholder="Escribe una descripción"
                 value={values.installationCompleted}
                 onChange={handleChange}
+                $hasError={!!errors.installationCompleted}
               />
               {errors.installationCompleted && (
                 <span style={{ color: "red" }}>
@@ -265,17 +270,21 @@ export default function RegisterInstallations() {
 
             <FormField>
               <Label htmlFor="installationPhoto">Foto de Instalación</Label>
-              <ImageUploader onFileChange={handleFileChange} image={image}/>
+              <ImageUploader
+                onFileChange={handleFileChange}
+                image={image}
+                title="Cargar Foto"
+                $hasError={!!errors.photoUrl}
+              />
               {errors.photoUrl && (
                 <span style={{ color: "red" }}>{errors.photoUrl}</span>
               )}
             </FormField>
 
-
             <SubmitButton type="submit">Enviar</SubmitButton>
           </StyledForm>
         </FormContainer>
-      </AnimatedContainer>
+      </AnimatedContainerSlight>
     </Container>
   );
 }

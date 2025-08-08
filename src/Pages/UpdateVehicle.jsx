@@ -13,9 +13,10 @@ import {
 } from "../components/CustomFormStyled";
 import { useForm } from "../Hooks/useForm";
 import axiosInstance from "../utils/axiosInstance";
-import { AnimatedContainer } from "../components/Animations";
+import { AnimatedContainerSlight } from "../components/Animations";
 import { BiSearchAlt } from "react-icons/bi";
 import { useState } from "react";
+import { validateFields } from "../utils/validateFields";
 
 export default function UpdateVehicle() {
   const { values, handleChange, resetForm, setValues } = useForm({
@@ -26,9 +27,27 @@ export default function UpdateVehicle() {
     year: "",
   });
 
+  const [lastSearchedValue, setLastSearchedValue] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [initialValues, setInitialValues] = useState(null);
 
   const handleSearch = async () => {
+    const validationError = validateFields.plate(values.plate.trim());
+    if (validationError) {
+      Swal.fire({
+        icon: "error",
+        title: "Error de Validación",
+        text: validationError,
+      });
+      return;
+    }
+
+    if (values.plate.trim() === lastSearchedValue.trim()) {
+      return;
+    }
+    setLastSearchedValue(values.plate.trim());
+
     try {
       const response = await axiosInstance.get(
         `/vehicle/search-plate?plate=${values.plate}`
@@ -46,6 +65,7 @@ export default function UpdateVehicle() {
           year: vehicleData.year,
         });
 
+        setInitialValues(vehicleData); // Guardamos los valores iniciales
         setIsEditing(true);
       } else {
         Swal.fire({
@@ -56,18 +76,45 @@ export default function UpdateVehicle() {
         });
       }
     } catch (error) {
-      console.error("Error al buscar el vehículo:", error);
       Swal.fire({
         title: "Error",
-        text: `${error.response?.data?.message || "Hubo un problema al buscar el vehículo."}`,
+        text: `${
+          error.response?.data?.message ||
+          "Hubo un problema al buscar el vehículo."
+        }`,
         icon: "error",
       });
     }
   };
 
+  // Función para verificar si hay cambios
+  const hasChanges = () => {
+    if (!initialValues) return false; // Si no hay valores iniciales, no hay cambios
+    return (
+      values.ownerName !== initialValues.ownerName ||
+      values.brand !== initialValues.brand ||
+      values.model !== initialValues.model ||
+      values.year !== initialValues.year
+    );
+  };
+
   const handleFormSubmit = async (e) => {
-      e.preventDefault(); // Prevenir el envío del formulario al presionar Enter
-    
+    e.preventDefault();
+
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    if (!hasChanges()) {
+      Swal.fire({
+        title: "No hay cambios",
+        text: "No se han realizado cambios en los datos del vehículo.",
+        icon: "info",
+      });
+      return;
+    }
 
     Swal.fire({
       title: "¿Quieres guardar los cambios?",
@@ -87,6 +134,9 @@ export default function UpdateVehicle() {
           });
 
           resetForm();
+          setErrors({}); // Limpiar errores
+          setInitialValues(null); // Limpiar valores iniciales
+          setLastSearchedValue(""); // Limpiar el último valor buscado
           setIsEditing(false); // Deshabilita edición después de actualizar
         } else {
           Swal.fire({
@@ -108,7 +158,6 @@ export default function UpdateVehicle() {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      console.log(response.data);
       return response.data;
     } catch (error) {
       Swal.fire({
@@ -123,12 +172,28 @@ export default function UpdateVehicle() {
     }
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    // Validar cada campo usando las funciones de validación
+    Object.keys(values).forEach((field) => {
+      const error = validateFields[field](values[field]);
+      if (error) {
+        newErrors[field] = error; // Si hay error, lo agregamos al objeto newErrors
+      }
+    });
+
+    return newErrors;
+  };
+
   return (
     <Container>
-      <AnimatedContainer>
+      <AnimatedContainerSlight>
         <FormContainer>
           <Title>Actualizar Información de Vehículo</Title>
-          <StyledForm onSubmit={handleFormSubmit}>
+          <StyledForm
+            onSubmit={handleFormSubmit}
+            onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
+          >
             <SectionTitle>Detalles del Vehículo</SectionTitle>
 
             {/* Input de placa con botón de búsqueda */}
@@ -157,7 +222,6 @@ export default function UpdateVehicle() {
               </div>
             </FormField>
 
-            {/* Inputs que solo se habilitan después de la búsqueda */}
             {isEditing && (
               <>
                 <div
@@ -179,7 +243,11 @@ export default function UpdateVehicle() {
                     required
                     value={values.ownerName}
                     onChange={handleChange}
+                    $hasError={!!errors.ownerName}
                   />
+                  {errors.ownerName && (
+                    <span style={{ color: "red" }}>{errors.ownerName}</span>
+                  )}
                 </FormField>
 
                 <FormField>
@@ -191,7 +259,11 @@ export default function UpdateVehicle() {
                     autoComplete="off"
                     value={values.brand}
                     onChange={handleChange}
+                    $hasError={!!errors.brand}
                   />
+                  {errors.brand && (
+                    <span style={{ color: "red" }}>{errors.brand}</span>
+                  )}
                 </FormField>
 
                 <FormField>
@@ -203,7 +275,11 @@ export default function UpdateVehicle() {
                     autoComplete="off"
                     value={values.model}
                     onChange={handleChange}
+                    $hasError={!!errors.model}
                   />
+                  {errors.model && (
+                    <span style={{ color: "red" }}>{errors.model}</span>
+                  )}
                 </FormField>
 
                 <FormField>
@@ -217,15 +293,19 @@ export default function UpdateVehicle() {
                     value={values.year}
                     onChange={handleChange}
                     onWheel={(e) => e.target.blur()}
+                    $hasError={!!errors.year}
                   />
+                  {errors.year && (
+                    <span style={{ color: "red" }}>{errors.year}</span>
+                  )}
                 </FormField>
 
-                <SubmitButton type="button" >Actualizar</SubmitButton>
+                <SubmitButton type="submit">Actualizar</SubmitButton>
               </>
             )}
           </StyledForm>
         </FormContainer>
-      </AnimatedContainer>
+      </AnimatedContainerSlight>
     </Container>
   );
 }

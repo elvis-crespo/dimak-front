@@ -5,6 +5,7 @@ import { SearchInput } from "../components/SearchInput";
 import Swal from "sweetalert2";
 import { validateFields } from "../utils/validateFields.js";
 import axiosInstance from "../utils/axiosInstance";
+import { AnimatedContainerSlight } from "../components/Animations.jsx";
 
 export default function SearchFactura() {
   const columnsHeader = [
@@ -35,16 +36,16 @@ export default function SearchFactura() {
 
     if (inputValue.trim() === lastSearchedValue) return;
 
-     // Validar la placa antes de enviar
-        const validationError = validateFields.invoiceNumber(inputValue.trim());
-        if (validationError) {
-          Swal.fire({
-            icon: "error",
-            title: "Error de Validación",
-            text: validationError,
-          });
-          return;
-        }
+    // Validar la placa antes de enviar
+    const validationError = validateFields.invoiceNumber(inputValue.trim());
+    if (validationError) {
+      Swal.fire({
+        icon: "error",
+        title: "Error de Validación",
+        text: validationError,
+      });
+      return;
+    }
 
     const response = await handleFetch();
 
@@ -54,7 +55,7 @@ export default function SearchFactura() {
       setLastSearchedValue(inputValue.trim()); // Actualiza el último valor buscado.
     }
   };
-  
+
   const handleFetch = async () => {
     try {
       const response = await axiosInstance.get(
@@ -91,15 +92,17 @@ export default function SearchFactura() {
   return (
     <>
       <Container style={{ justifyContent: "flex-start" }}>
-        <SearchInput
-          handleSubmit={handleSubmit}
-          inputValue={inputValue}
-          setInputValue={setInputValue}
-          text={"Ej. 001-001-123456789 "}
-          disabled={
-            !inputValue.trim() || inputValue.trim() === lastSearchedValue
-          }
-        />
+        <AnimatedContainerSlight>
+          <SearchInput
+            handleSubmit={handleSubmit}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            text={"Ej. 001-001-123456789 "}
+            disabled={
+              !inputValue.trim() || inputValue.trim() === lastSearchedValue
+            }
+          />
+        </AnimatedContainerSlight>
         {data && data.length > 0 && (
           <>
             <Title>Resultados de la busqueda:</Title>
